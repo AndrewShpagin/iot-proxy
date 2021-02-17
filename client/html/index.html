@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Blockly Demo: Toolbox</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+      overflow: hidden;
+      background: darkcyan;
+    }
+
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+      background: darkcyan;
+      font-family: Impact;
+      color: white;
+      border: 0px;
+      padding: 5px;
+      margin: 0px;
+    }
+
+    table {
+      height: 100%;
+      width: 100%;
+    }
+
+    #blocklyArea {
+      height: 70%;
+      background: darkcyan;
+      text-align: center;
+    }
+
+    #textarea {
+      height: 22%;
+      background: darkcyan;
+      text-align: left;
+      font-family: Monaco;
+      white-space: pre;
+      color: white;
+    }
+
+    #login_ewelink {
+      background: darkcyan;
+      font-family: Monaco;
+      color: white;
+      padding: 5px;
+    }
+
+    .flex-container {
+      display: flex;
+      background-color: darkcyan;
+    }
+
+    .flex-container>div {
+      background-color:  darkcyan;
+      margin: 0px;
+      padding: 5px;
+      font-size: 20px;
+    }
+
+    .flex-container>div1 {
+      background-color:  darkcyan;
+      margin: 0px;
+      padding: 5px;
+      font-size: 15px;
+      align-content:stretch;
+    }
+  </style>
+</head>
+
+<body>
+  <section>
+    <div class="flex-container">
+      <div>
+        <h1 id="hdr1">Manage IOT devices via Blockly.</h1>
+      </div>
+      <div1>
+        <form id="login_ewelink" action="/login_ewelink">
+          <label for="email"> Email:</label><input type="text" id="email" name="email" value="">
+          <label for="password"> Password:</label><input type="text" id="password" name="password" value="">
+          <label> Region:</label>
+          <select id="myList">
+            <option value="eu">one</option>
+            <option value="us">two</option>
+            <option value="cn">three</option>
+          </select>
+          <input type="submit" value="Submit">
+        </form>
+      </div1>
+    </div>
+  </section>
+  <div id="blocklyArea"></div>
+  <div id="blocklyDiv" style="position: absolute"></div>
+  <p id="textarea" style="position: absolute">text</p>
+</body>
+
+</html>
