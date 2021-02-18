@@ -8,7 +8,7 @@ const Interpreter = require('js-interpreter');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const fs = require('fs');
 const custom = require('./custom-blocks').customBlocks;
-const { setScriptTask } = require('./execute');
+const { setScriptTask, lastResult } = require('./execute');
 const { getDevList, handle_ew, extractLoginData } = require('./ewelink');
 
 const webpackConfig = require('../webpack.dev.js');
@@ -35,7 +35,7 @@ app.use(async (req, res, next) => {
       const str = decodeURI(req.path.substring(idx + 11));
       const login = extractLoginData(req.path);
       setScriptTask(login, str);
-      send('application', '{}');
+      send('text', lastResult);
     }
   } else
   if (req.path.indexOf('toolbox.xml') >= 0) {

@@ -1,9 +1,12 @@
+/* eslint-disable no-undef */
+/* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 import Blockly from 'blockly';
 import { download, multiDownload } from './assets';
 import './generators';
 import Cookies from 'js-cookie';
+import { openLoginPopup } from './ui';
 
 const options = {
   collapse: true,
@@ -22,64 +25,57 @@ const options = {
   toolbox: '',
 };
 
-const blocklyArea = document.getElementById('blocklyArea');
-const blocklyDiv = document.getElementById('blocklyDiv');
-const textArea = document.getElementById('textarea');
-
 const blocks = 'custom-blocks.json';
 const tools = 'toolbox.xml';
 function loginData() {
-  return '/email=andrewshpagin@gmail.com/password=Andrew75/region=eu';
+  return Cookies.get('userlogindata');
 }
 function myBlocks() {
   return `${blocks}${loginData()}`;
 }
+export function injectBlockly() {
+  console.log(loginData());
+  multiDownload([myBlocks(), tools], response => {
+    const blocklyDiv = w2ui.layout.el('top');
+    blocklyDiv.style.padding = '0px';
+    w2ui.layout.el('left').style['white-space'] = 'pre';
+    w2ui.layout.el('main').style['white-space'] = 'pre';
 
-multiDownload([myBlocks(), tools], response => {
-  const customBlocks = JSON.parse(response[myBlocks()]);
-  options.toolbox = response[tools];
-  const workspace = Blockly.inject(blocklyDiv, options);
-  Blockly.defineBlocksWithJsonArray(customBlocks);
+    const customBlocks = JSON.parse(response[myBlocks()]);
+    options.toolbox = response[tools];
+    const workspace = Blockly.inject(blocklyDiv, options);
+    Blockly.defineBlocksWithJsonArray(customBlocks);
 
-  function myUpdateFunction(event) {
-    const code = Blockly.JavaScript.workspaceToCode(workspace);
-    document.getElementById('textarea').textContent = code;
-    const comm = `${loginData()}/runjscode/${encodeURI(code)}`;
-    download(comm, response => { console.log(response); });
-    const xml = Blockly.Xml.workspaceToDom(workspace);
-    const xml_text = Blockly.Xml.domToText(xml);
-    Cookies.set('Blockly_workspace', xml_text, { expires: 365 });
-  }
-  const workspaceBlocks = Cookies.get('Blockly_workspace');
-  console.log(workspaceBlocks);
-  Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceBlocks), workspace);
-  workspace.addChangeListener(myUpdateFunction);
-
-  const onresize = e => {
-    // Compute the absolute coordinates and dimensions of blocklyArea.
-    let element = blocklyArea;
-    let x = 0;
-    let y = 0;
-    do {
-      x += element.offsetLeft;
-      y += element.offsetTop;
-      element = element.offsetParent;
-    } while (element);
-    // Position blocklyDiv over blocklyArea.
-    blocklyDiv.style.left = `${x}px`;
-    blocklyDiv.style.top = `${y}px`;
-    blocklyDiv.style.width = `${blocklyArea.offsetWidth}px`;
-    blocklyDiv.style.height = `${blocklyArea.offsetHeight}px`;
-
-    textArea.style.left = `${x}px`;
-    textArea.style.top = `${y + blocklyArea.offsetHeight}px`;
-    textArea.style.width = `${blocklyArea.offsetWidth}px`;
-    textArea.style.height = `${textArea.offsetHeight}px`;
-
+    function myUpdateFunction(event) {
+      const code = Blockly.JavaScript.workspaceToCode(workspace);
+      w2ui.layout.el('left').textContent = code;
+      const comm = `${loginData()}/runjscode/${encodeURI(code)}`;
+      download(comm, response => { w2ui.layout.el('main').textContent = response; });
+      const xml = Blockly.Xml.workspaceToDom(workspace);
+      const xmlText = Blockly.Xml.domToText(xml);
+      console.log('xmlText', xmlText);
+      Cookies.set('Blockly_workspace', xmlText, { expires: 365 });
+    }
+    w2ui.layout.on('resize', event => {
+      setTimeout(() => Blockly.svgResize(workspace), 100);
+    });
+    workspace.addChangeListener(myUpdateFunction);
+    const workspaceBlocks = Cookies.get('Blockly_workspace');
+    if (workspaceBlocks) {
+      console.log(workspaceBlocks);
+      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceBlocks), workspace);
+    }
     Blockly.svgResize(workspace);
-  };
-
-  window.addEventListener('resize', onresize, false);
-  onresize();
-  Blockly.svgResize(workspace);
-});
+  });
+}
+if (loginData()) {
+  injectBlockly();
+} else {
+  setTimeout(() => {
+    w2alert('You may operate devices only after login. You need to provide email and password to your eWeLink account to access the devices.')
+      .ok(() => {
+        setTimeout(() => openLoginPopup(), 2000);
+      });
+  }, 2000);
+  injectBlockly();
+}

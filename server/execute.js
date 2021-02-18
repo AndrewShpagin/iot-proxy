@@ -24,31 +24,35 @@ const initFunc = function (interpreter, globalObject) {
     interpreter.createNativeFunction(console_command));
 };
 
+let lastResult = '';
+
 async function doScriptCommand(comm, login) {
   try {
     console.log('execute:', comm);
     const myInterpreter = new Interpreter(comm, initFunc);
     myInterpreter.login = login;
     myInterpreter.run();
+    lastResult = myInterpreter.value;
+    console.log('con:', lastResult);
+    return myInterpreter.value;
   } catch (error) {
-    console.log('Execution failed.');
+    return 'Execution failed.';
   }
 }
-
 function setScriptTask(login, comm) {
   const user = getUser(login);
   user.currentScriptTask = comm;
-  execCycle(login);
+  return execCycle(login);
 }
 
 function execCycle(login) {
   const user = getUser(login);
   if (user.taskEnded && user.currentScriptTask.length) {
     user.taskEnded = false;
-    doScriptCommand(user.currentScriptTask, login).then(() => {
-      console.log('Task finished.');
+    doScriptCommand(user.currentScriptTask, login).then(res => {
+      console.log(res);
       user.taskEnded = true;
     });
   }
 }
-module.exports = { doScriptCommand, setScriptTask };
+module.exports = { doScriptCommand, setScriptTask, lastResult };

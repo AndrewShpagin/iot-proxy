@@ -2,6 +2,9 @@
 <html>
 
 <head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+  <script type="text/javascript" src="http://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css" />
   <meta charset="utf-8">
   <title>Blockly Demo: Toolbox</title>
   <style>
@@ -20,7 +23,7 @@
 
     h1 {
       font-weight: normal;
-      font-size: 140%;
+      font-size: 120%;
       background: darkcyan;
       font-family: Impact;
       color: white;
@@ -29,51 +32,16 @@
       margin: 0px;
     }
 
-    table {
-      height: 100%;
-      width: 100%;
-    }
-
-    #blocklyArea {
-      height: 70%;
-      background: darkcyan;
-      text-align: center;
-    }
-
-    #textarea {
-      height: 22%;
-      background: darkcyan;
-      text-align: left;
-      font-family: Monaco;
-      white-space: pre;
-      color: white;
-    }
-
-    #login_ewelink {
-      background: darkcyan;
-      font-family: Monaco;
-      color: white;
-      padding: 5px;
-    }
-
     .flex-container {
       display: flex;
       background-color: darkcyan;
     }
 
     .flex-container>div {
-      background-color:  darkcyan;
+      background-color: darkcyan;
       margin: 0px;
       padding: 5px;
       font-size: 20px;
-    }
-
-    .flex-container>div1 {
-      background-color:  darkcyan;
-      margin: 0px;
-      padding: 5px;
-      font-size: 15px;
-      align-content:stretch;
     }
   </style>
 </head>
@@ -81,27 +49,15 @@
 <body>
   <section>
     <div class="flex-container">
-      <div>
-        <h1 id="hdr1">Manage IOT devices via Blockly.</h1>
+      <div style="flex-grow: 1">
+        <h1>Manage IOT devices via Blockly.</h1>
       </div>
-      <div1>
-        <form id="login_ewelink" action="/login_ewelink">
-          <label for="email"> Email:</label><input type="text" id="email" name="email" value="">
-          <label for="password"> Password:</label><input type="text" id="password" name="password" value="">
-          <label> Region:</label>
-          <select id="myList">
-            <option value="eu">one</option>
-            <option value="us">two</option>
-            <option value="cn">three</option>
-          </select>
-          <input type="submit" value="Submit">
-        </form>
-      </div1>
+      <div style="flex-grow: 1" align="right">
+        <button type="button" OnClick="openLoginPopup()">Change user</button>
+      </div>
     </div>
   </section>
-  <div id="blocklyArea"></div>
-  <div id="blocklyDiv" style="position: absolute"></div>
-  <p id="textarea" style="position: absolute">text</p>
+  <div id="layout" style="width: 100%; height: 94%;"></div>
 </body>
 
 </html>
