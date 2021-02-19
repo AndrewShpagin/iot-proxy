@@ -1,13 +1,29 @@
 <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
   <category name="Devices" colour="#5ba58c">
     <block type="device"></block>
-    <block type="switched"></block>
+    <block type="switchedOn"></block>
     <block type="switchedOff"></block>
+    <block type="temperature"></block>
+    <block type="humidity"></block>
+    <block type="power"></block>
     <block type="device_state"></block>
-    <block type="pause"></block>
     <block type="turnon"></block>
     <block type="turnoff"></block>
+  </category>
+    <category name="System" colour="#5ba58c">
     <block type="console"></block>
+    <block type="pause"></block>
+    <block type="currenttime"></block>
+    <block type="passedsince"></block>
+    <block type="addsectodate"></block>
+    <block type="addmintodate"></block>
+    <block type="addhourstodate"></block>
+  </category>
+  <category name="Google sheets" colour="#5ba58c">
+    <block type="namedsheet"></block>
+    <block type="getcellvalue"></block>
+    <block type="setcellvalue"></block>
+    <block type="getlastrow"></block>
   </category>
   <category name="Logic" colour="#5b80a5">
     <block type="controls_if"></block>

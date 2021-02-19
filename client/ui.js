@@ -69,9 +69,26 @@ $(() => {
     padding: 4,
     panels: [
       { type: 'top', size: '70%', resizable: true, style: `${pstyle}border-top: 0px;` },
-      { type: 'left', size: '33%', resizable: true, style: pstyle, title: 'JS code:' },
-      { type: 'main', resizable: true, style: pstyle, title: 'Console output:' },
-      { type: 'right', size: '33%', resizable: true, style: pstyle, name: 'devices', title: 'Devices:' },
+      { type: 'left',
+        size: '70%',
+        resizable: true,
+        style: pstyle,
+        toolbar: {
+          items: [
+            { type: 'button', id: 'CopyGS', caption: 'Copy GS code to clipboard', icon: 'icon-page', hint: 'Copy gs (Google Sheets) code to clipboard.' },
+          ],
+          onClick(event) {
+            if (event.target === 'CopyGS') {
+              const range = document.createRange();
+              range.selectNode(w2ui.layout.el('left'));
+              window.getSelection().addRange(range);
+              document.execCommand('copy');
+              window.getSelection().removeAllRanges();
+            }
+          },
+        },
+      },
+      { type: 'main', size: '30%', resizable: true, style: pstyle, name: 'devices', title: 'Devices:' },
     ],
   });
 });
@@ -92,7 +109,7 @@ const grid1 = {
 };
 $(() => {
   // initialization
-  w2ui.layout.content('right', $().w2grid(grid1));
+  w2ui.layout.content('main', $().w2grid(grid1));
 });
 
 window.openLoginPopup = openLoginPopup;
