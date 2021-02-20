@@ -24,7 +24,6 @@ function deviceInfo(element) {
 class UserDevices {
   constructor(login) {
     this.user = login;
-    this.user.apiKey = '334577b7-c33a-4c12-bc02-6cc26328cfa0';
     this.devices = {};
     this.currentScriptTask = '';
     this.taskEnded = true;
@@ -42,23 +41,6 @@ class UserDevices {
     this.lasConnectTime = Date.now();
     try {
       this.connection = await new ewelink(this.user);
-      // await this.connection.login();
-      this.socket = await this.connection.openWebSocket(async data => {
-        // data is the message from eWeLink
-        try {
-          console.log('openWebSocket:', data);
-        } catch (error) {
-          console.log('openWebSocket error:', error);
-        }
-      });
-      process.on('SIGINT', () => {
-        console.log(' - Caught SIGINT. Exiting in 3 seconds.');
-        console.log('Closing WebSocket...');
-        this.socket.close();
-        setTimeout(() => {
-          process.exit(0);
-        }, 3000);
-      });
     } catch (error) {
       this.connectionError = true;
       this.connectionLost = true;
@@ -80,6 +62,7 @@ class UserDevices {
     const conn = await this.getConnection();
     if (conn) {
       const devs = await conn.getDevices();
+      if (devs.hasOwnProperty('error')) return null;
       devs.forEach(element => {
         const dev = deviceInfo(element);
         this.setDevice(dev);
@@ -89,8 +72,8 @@ class UserDevices {
     return null;
   }
 
-  async sendGetDivice(deviceid) {
-    const conn = this.getConnection();
+  async sendGetDevice(deviceid) {
+    const conn = await this.getConnection();
     if (conn) {
       const dev = await conn.getDevice(deviceid);
       const mydev = deviceInfo(dev);

@@ -11,19 +11,140 @@
     <block type="turnoff"></block>
   </category>
     <category name="System" colour="#5ba58c">
+    <block type="comment"></block>
     <block type="console"></block>
     <block type="pause"></block>
     <block type="currenttime"></block>
     <block type="passedsince"></block>
-    <block type="addsectodate"></block>
-    <block type="addmintodate"></block>
-    <block type="addhourstodate"></block>
+    <block type="addsectodate">
+      <value name="interval">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="addmintodate">
+      <value name="interval">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="addhourstodate">
+      <value name="interval">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
   </category>
   <category name="Google sheets" colour="#5ba58c">
     <block type="namedsheet"></block>
-    <block type="getcellvalue"></block>
-    <block type="setcellvalue"></block>
+    <block type="getcellvalue">
+      <value name="row">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="column">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="setcellvalue">
+      <value name="row">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="column">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+        <value name="Value">
+        <shadow type="math_number">
+          <field name="NUM">0</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="accamulatecell">
+      <value name="row">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="column">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="Value">
+        <shadow type="math_number">
+          <field name="NUM">0</field>
+        </shadow>
+      </value>
+    </block>
     <block type="getlastrow"></block>
+    <block type="removerow">
+      <value name="NAME">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="removecolumn">
+      <value name="NAME">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="clearrange">
+      <value name="row0">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="column0">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="row1">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="column1">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="operaterange">
+      <value name="row0">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="column0">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="row1">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="column1">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
   </category>
   <category name="Logic" colour="#5b80a5">
     <block type="controls_if"></block>

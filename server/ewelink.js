@@ -76,12 +76,13 @@ function getTag(path) {
   ];
 }
 
-async function handle_ew(rpath) {
+async function handleEWeLinkRequests(rpath) {
   const login = extractLoginData(rpath);
   if (login.hasOwnProperty('email')) {
     const user = getUser(login);
     const connection = await user.getConnection();
     if (connection) {
+      console.log('USER:', user);
       let path = decodeURI(rpath);
       path = removeTags(path, '/eWeLink', '/email=', '/password=', '/region=');
       let answer = '';
@@ -97,16 +98,24 @@ async function handle_ew(rpath) {
           some = false;
           if (key === 'devices') {
             await user.sendGetDevices();
-            user.devices.forEach(element => accumulate(JSON.stringify(element)));
+            accumulate(JSON.stringify(user.devices, null, '\t'));
+          }
+          if (key === 'raw') {
+            const conn = await user.getConnection();
+            if (conn) {
+              const devices = await conn.getDevices();
+              accumulate(JSON.stringify(devices, null, '\t'));
+            }
           }
           if (key === 'device') {
             deviceid = val;
+            console.log('device:', user);
             await user.sendGetDevice(deviceid);
             state = user.getDevice(deviceid);
             some = true;
           }
           if (state && deviceid.length) {
-            if (key === 'info') accumulate(JSON.stringify(state));
+            if (key === 'info') accumulate(JSON.stringify(state, null, '\t'));
             if (key === 'toggle') {
               user.sendToggleDevice(deviceid);
               some = true;
@@ -135,7 +144,7 @@ function get_device_state(login, device, field) {
   if (!dev)dt = 3000;
   if (Date.now() - user.lastQuest > dt) {
     user.lastQuest = Date.now();
-    handle_ew(`/email=${login.email}/password=${login.password}/region=${login.region}/devices/`);
+    handleEWeLinkRequests(`/email=${login.email}/password=${login.password}/region=${login.region}/devices/`);
   }
   if (dev) {
     return dev[field];
@@ -143,6 +152,6 @@ function get_device_state(login, device, field) {
 }
 
 function device_command(login, command) {
-  handle_ew(`/email=${login.email}/password=${login.password}/region=${login.region}${command}/`);
+  handleEWeLinkRequests(`/email=${login.email}/password=${login.password}/region=${login.region}${command}/`);
 }
-module.exports = { getDevList, handle_ew, get_device_state, extractLoginData, device_command };
+module.exports = { getDevList, handleEWeLinkRequests, get_device_state, extractLoginData, device_command };

@@ -210,14 +210,18 @@ const customBlocks =
       },
     ],
     inputsInline: true,
-    output: 'String',
+    output: [
+      'Number',
+      'String',
+      'Time',
+    ],
     colour: 150,
     tooltip: '',
     helpUrl: '',
   },
   {
     type: 'setcellvalue',
-    message0: 'Set Cell value,  %1 Row %2 Column %3 Value %4',
+    message0: 'Set cell value,  %1 Row %2 Column %3 Value %4',
     args0: [
       {
         type: 'input_dummy',
@@ -235,6 +239,36 @@ const customBlocks =
       {
         type: 'input_value',
         name: 'Value',
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 230,
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'accamulatecell',
+    message0: 'Increment the cell, %1 Row %2 Column %3 Increment %4',
+    args0: [
+      {
+        type: 'input_dummy',
+      },
+      {
+        type: 'input_value',
+        name: 'row',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'column',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'Value',
+        check: 'Number',
       },
     ],
     inputsInline: true,
@@ -352,6 +386,167 @@ const customBlocks =
     inputsInline: true,
     output: 'Time',
     colour: 90,
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'comment',
+    message0: '/* %1 %2 */',
+    args0: [
+      {
+        type: 'field_input',
+        name: 'NAME',
+        text: 'Enter the comment there',
+      },
+      {
+        type: 'input_dummy',
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'removerow',
+    message0: 'Remove the row %1',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'NAME',
+        check: 'Number',
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 0,
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'removecolumn',
+    message0: 'Remove the column %1',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'NAME',
+        check: 'Number',
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 0,
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'clearrange',
+    message0: 'Clear range, from %1 row %2 column %3 to row %4 column %5',
+    args0: [
+      {
+        type: 'input_dummy',
+      },
+      {
+        type: 'input_value',
+        name: 'row0',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'column0',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'row1',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'column1',
+        check: 'Number',
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 0,
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'operaterange',
+    message0: 'do %1 , from %2 row %3 column %4 to row %5 column %6',
+    args0: [
+      {
+        type: 'field_dropdown',
+        name: 'NAME',
+        options: [
+          [
+            'summ',
+            'summCells',
+          ],
+          [
+            'multiply',
+            'multiplyCells',
+          ],
+          [
+            'max',
+            'maxInCells',
+          ],
+          [
+            'min',
+            'minInCells',
+          ],
+          [
+            'average',
+            'averageInCells',
+          ],
+          [
+            'deviation',
+            'deviationInCells',
+          ],
+          [
+            'concatenate',
+            'concatenateCells',
+          ],
+          [
+            'count filled',
+            'countFilledCells',
+          ],
+        ],
+      },
+      {
+        type: 'input_dummy',
+      },
+      {
+        type: 'input_value',
+        name: 'row0',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'column0',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'row1',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'column1',
+        check: 'Number',
+      },
+    ],
+    inputsInline: true,
+    output: null,
+    colour: 180,
     tooltip: '',
     helpUrl: '',
   },

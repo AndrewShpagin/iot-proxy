@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 import Cookies from 'js-cookie';
 import { injectBlockly } from './workspace';
@@ -75,13 +77,14 @@ $(() => {
         style: pstyle,
         toolbar: {
           items: [
-            { type: 'button', id: 'CopyGS', caption: 'Copy GS code to clipboard', icon: 'icon-page', hint: 'Copy gs (Google Sheets) code to clipboard.' },
+            { type: 'button', id: 'CopyGS', caption: 'Copy GS code to clipboard', img: 'icon-page', hint: 'Copy gs (Google Sheets) code to clipboard.' },
           ],
           onClick(event) {
             if (event.target === 'CopyGS') {
-              const range = document.createRange();
-              range.selectNode(w2ui.layout.el('left'));
-              window.getSelection().addRange(range);
+              const r = document.createRange();
+              r.selectNode(w2ui.layout.el('left'));
+              window.getSelection().removeAllRanges();
+              window.getSelection().addRange(r);
               document.execCommand('copy');
               window.getSelection().removeAllRanges();
             }
@@ -94,18 +97,16 @@ $(() => {
 });
 
 const grid1 = {
-  name: 'ggg1',
+  name: 'devGrid',
   columns: [
     { field: 'deviceid', caption: 'DeviceID', size: '20%' },
     { field: 'deviceName', caption: 'Name', size: '40%' },
     { field: 'temperature', caption: 'Temperature', size: '13%' },
     { field: 'humidity', caption: 'Humidity', size: '13%' },
     { field: 'online', caption: 'Online', size: '60px' },
-    { field: 'State', caption: 'State', size: '60px' },
+    { field: 'state', caption: 'State', size: '60px' },
   ],
-  records: [
-    { recid: 1, fname: 'John', lname: 'Doe', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
-  ],
+  records: [],
 };
 $(() => {
   // initialization

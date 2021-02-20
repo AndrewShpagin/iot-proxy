@@ -7,9 +7,9 @@ const webpack = require('webpack');
 const Interpreter = require('js-interpreter');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const fs = require('fs');
-const custom = require('./custom-blocks').customBlocks;
+const custom = require('../client/custom-blocks').customBlocks;
 const { setScriptTask, lastResult } = require('./execute');
-const { getDevList, handle_ew, extractLoginData } = require('./ewelink');
+const { getDevList, handleEWeLinkRequests, extractLoginData } = require('./ewelink');
 
 const webpackConfig = require('../webpack.dev.js');
 
@@ -26,9 +26,6 @@ app.use(async (req, res, next) => {
     res.end();
   };
   console.log(req.path);
-  if (req.path.indexOf('/eWeLink/') >= 0) {
-    send('application/json', await handle_ew(req.path));
-  } else
   if (req.path.indexOf('/runjscode/') >= 0) {
     const idx = req.path.indexOf('/runjscode/');
     if (idx >= 0) {
@@ -45,6 +42,10 @@ app.use(async (req, res, next) => {
       send('application/xml', data);
     });
   } else
+  if (req.path.indexOf('custom-blocks-raw') >= 0) {
+    const login = extractLoginData(req.path);
+    send('application/json', JSON.stringify(custom));
+  } else
   if (req.path.indexOf('custom-blocks') >= 0) {
     const login = extractLoginData(req.path);
     getDevList(login).then(result => {
@@ -56,6 +57,9 @@ app.use(async (req, res, next) => {
       });
       send('application/json', JSON.stringify(custom));
     });
+  } else
+  if (req.path.indexOf('/email=') >= 0) {
+    send('application/json', await handleEWeLinkRequests(req.path));
   } else {
     next();
   }
