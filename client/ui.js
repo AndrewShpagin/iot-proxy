@@ -4,6 +4,20 @@
 import Cookies from 'js-cookie';
 import { injectBlockly } from './workspace';
 
+export function downloadScript() {
+  console.log('downloadScript');
+  const element = document.createElement('a');
+  element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(window.localStorage.getItem('Blockly_workspace'))}`);
+  element.setAttribute('download', 'project.ewelink.xml');
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
 export function openLoginPopup() {
   console.log('Try to login');
   if (!w2ui.foo) {
@@ -114,3 +128,4 @@ $(() => {
 });
 
 window.openLoginPopup = openLoginPopup;
+window.downloadScript = downloadScript;

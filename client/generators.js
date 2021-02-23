@@ -7,13 +7,13 @@ import Blockly from 'blockly';
 
 Blockly.JavaScript.switchedOn = function (block) {
   const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `deviceGet(${value_device}, 'switch') === 'on'`;
+  const code = `ew.deviceGet(${value_device}, 'switch') === 'on'`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.switchedOff = function (block) {
   const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `deviceGet(${value_device}, 'switch') === 'off'`;
+  const code = `ew.deviceGet(${value_device}, 'switch') === 'off'`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
@@ -33,7 +33,7 @@ Blockly.JavaScript.console = function (block) {
 Blockly.JavaScript.device_state = function (block) {
   const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
   const value_state = Blockly.JavaScript.valueToCode(block, 'State', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `deviceGet(${value_device}, '${value_state}')`;
+  const code = `ew.deviceGet(${value_device}, '${value_state}')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
@@ -45,12 +45,12 @@ Blockly.JavaScript.pause = function (block) {
 
 Blockly.JavaScript.turnon = function (block) {
   const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
-  return `deviceSet(${value_device}, 'on');\n`;
+  return `ew.deviceSet(${value_device}, {switch: 'on', pulse: 'off'});\n`;
 };
 
 Blockly.JavaScript.turnoff = function (block) {
   const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
-  return `deviceSet(${value_device}, 'off');\n`;
+  return `ew.deviceSet(${value_device}, {switch: 'off', pulse: 'off'});\n`;
 };
 
 Blockly.JavaScript.ewelink_devices_access = function (block) {
@@ -58,25 +58,25 @@ Blockly.JavaScript.ewelink_devices_access = function (block) {
   const text_pass = block.getFieldValue('PASS');
   const dropdown_reg_list = block.getFieldValue('reg_list');
   // TODO: Assemble JavaScript into code variable.
-  const code = '...;\n';
+  const code = ';\n';
   return code;
 };
 
 Blockly.JavaScript.temperature = function (block) {
   const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `deviceGet(${value_device}, 'currentTemperature')`;
+  const code = `ew.deviceGet(${value_device}, 'currentTemperature')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.humidity = function (block) {
   const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `deviceGet(${value_device}, 'currentHumidity')`;
+  const code = `ew.deviceGet(${value_device}, 'currentHumidity')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.power = function (block) {
   const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `deviceGet(${value_device}, 'power')`;
+  const code = `ew.deviceGet(${value_device}, 'power')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
@@ -87,7 +87,7 @@ function sheet(value_sheet) {
 Blockly.JavaScript.getcellvalue = function (block) {
   const value_column = Blockly.JavaScript.valueToCode(block, 'column', Blockly.JavaScript.ORDER_ATOMIC);
   const value_row = Blockly.JavaScript.valueToCode(block, 'row', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `getCell(${value_row}, ${value_column})`;
+  const code = `ew.getCell(${value_row}, ${value_column})`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
@@ -96,7 +96,7 @@ Blockly.JavaScript.setcellvalue = function (block) {
   const value_row = Blockly.JavaScript.valueToCode(block, 'row', Blockly.JavaScript.ORDER_ATOMIC);
   const value_value = Blockly.JavaScript.valueToCode(block, 'Value', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  const code = `setCell(${value_row}, ${value_column}, ${value_value});\n`;
+  const code = `ew.setCell(${value_row}, ${value_column}, ${value_value});\n`;
   return code;
 };
 
@@ -104,50 +104,50 @@ Blockly.JavaScript.accamulatecell = function (block) {
   const value_column = Blockly.JavaScript.valueToCode(block, 'column', Blockly.JavaScript.ORDER_ATOMIC);
   const value_row = Blockly.JavaScript.valueToCode(block, 'row', Blockly.JavaScript.ORDER_ATOMIC);
   const value_value = Blockly.JavaScript.valueToCode(block, 'Value', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `incrementCell(${value_row}, ${value_column}, ${value_value});\n`;
+  const code = `ew.incrementCell(${value_row}, ${value_column}, ${value_value});\n`;
   return code;
 };
 
 Blockly.JavaScript.getlastrow = function (block) {
-  const code = 'mySheet.getLastRow() + 1';
+  const code = 'ew.mySheet.getLastRow() + 1';
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.namedsheet = function (block) {
   const value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `mySheet = SpreadsheetApp.getSheetByName(${value_name})`;
+  const code = `ew.mySheet = SpreadsheetApp.getSheetByName(${value_name})`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.currenttime = function (block) {
-  const code = 'now()';
+  const code = 'ew.now()';
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.passedsince = function (block) {
   const value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `(now() - ${value_time})/1000`;
+  const code = `(ew.now() - ${value_time})/1000`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.addsectodate = function (block) {
   const value_date = Blockly.JavaScript.valueToCode(block, 'date', Blockly.JavaScript.ORDER_ATOMIC);
   const value_interval = Blockly.JavaScript.valueToCode(block, 'interval', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `toDate(${value_date}.getTime() + ${value_interval}*1000)`;
+  const code = `ew.toDate(${value_date}.getTime() + ${value_interval}*1000)`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.addmintodate = function (block) {
   const value_date = Blockly.JavaScript.valueToCode(block, 'date', Blockly.JavaScript.ORDER_ATOMIC);
   const value_interval = Blockly.JavaScript.valueToCode(block, 'interval', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `toDate(${value_date}.getTime() + ${value_interval}*1000*60)`;
+  const code = `ew.toDate(${value_date}.getTime() + ${value_interval}*1000*60)`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.addhourstodate = function (block) {
   const value_date = Blockly.JavaScript.valueToCode(block, 'date', Blockly.JavaScript.ORDER_ATOMIC);
   const value_interval = Blockly.JavaScript.valueToCode(block, 'interval', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `toDate(${value_date}.getTime() + ${value_interval}*1000*60*60)`;
+  const code = `ew.toDate(${value_date}.getTime() + ${value_interval}*1000*60*60)`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
@@ -162,21 +162,21 @@ Blockly.JavaScript.clearrange = function (block) {
   const value_column0 = Blockly.JavaScript.valueToCode(block, 'column0', Blockly.JavaScript.ORDER_ATOMIC);
   const value_row1 = Blockly.JavaScript.valueToCode(block, 'row1', Blockly.JavaScript.ORDER_ATOMIC);
   const value_column1 = Blockly.JavaScript.valueToCode(block, 'column1', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `clearCells(${value_row0}, ${value_column0}, ${value_row1}, ${value_column1});\n`;
+  const code = `ew.clearCells(${value_row0}, ${value_column0}, ${value_row1}, ${value_column1});\n`;
   return code;
 };
 
 Blockly.JavaScript.removerow = function (block) {
   const value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  const code = `removeRow(${value_name});\n`;
+  const code = `ew.removeRow(${value_name});\n`;
   return code;
 };
 
 Blockly.JavaScript.removecolumn = function (block) {
   const value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  const code = `removeColumn(${value_name});\n`;
+  const code = `ew.removeColumn(${value_name});\n`;
   return code;
 };
 
@@ -188,4 +188,24 @@ Blockly.JavaScript.operaterange = function (block) {
   const value_column1 = Blockly.JavaScript.valueToCode(block, 'column1', Blockly.JavaScript.ORDER_ATOMIC);
   const code = `${dropdown_name}(${value_row0}, ${value_column0}, ${value_row1}, ${value_column1})`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.turnontemporary = function (block) {
+  const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `ew.deviceSet(${value_device}, {switch: 'on', pulse: 'on', pulseWidth: ${value_time}*1000});\n`;
+  return code;
+};
+
+Blockly.JavaScript.turnonpulsemode = function (block) {
+  const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `ew.deviceSet(${value_device}, {pulse: 'on', pulseWidth: ${value_time}*1000});\n`;
+  return code;
+};
+
+Blockly.JavaScript.turnoffpulsemode = function (block) {
+  const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `ew.deviceSet(${value_device}, {pulse: 'off'});\n`;
+  return code;
 };

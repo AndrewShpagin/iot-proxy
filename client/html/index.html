@@ -5,6 +5,8 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   <script type="text/javascript" src="http://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.js"></script>
   <link rel="stylesheet" type="text/css" href="http://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css" />
+  <!-- Add icon library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <meta charset="utf-8">
   <title>Blockly Demo: Toolbox</title>
@@ -19,45 +21,49 @@
       background-color: #fff;
       font-family: sans-serif;
       overflow: hidden;
-      background: darkcyan;
+      background: #4CAF50;
     }
 
-    h1 {
-      font-weight: normal;
-      font-size: 120%;
-      background: darkcyan;
-      font-family: Impact;
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+    }
+
+    .topnav a {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .topnav a.active {
+      background-color: #4CAF50;
       color: white;
-      border: 0px;
-      padding: 5px;
-      margin: 0px;
-    }
-
-    .flex-container {
-      display: flex;
-      background-color: darkcyan;
-    }
-
-    .flex-container>div {
-      background-color: darkcyan;
-      margin: 0px;
-      padding: 5px;
-      font-size: 20px;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
-  <section>
-    <div class="flex-container">
-      <div style="flex-grow: 1">
-        <h1>Manage IOT devices via Blockly and GoogleSheets.</h1>
-      </div>
-      <div style="flex-grow: 1" align="right">
-        <button type="button" OnClick="openLoginPopup()">Change user</button>
-      </div>
-    </div>
-  </section>
+  <div class="topnav">
+    <a class="active" href="#home">Manage eWeLink devices via Blockly and GoogleSheets</a>
+    <a onclick="scripInfo()"><i class="fa fa-info"></i> How it works?</a>
+    <a onclick="downloadScript()"><i class="fa fa-download"></i> Save</a>
+    <a onclick="uploadScript()"><i class="fa fa-upload"></i> Load</a>
+    <a onclick="openLoginPopup()"><i class="fa fa-user"></i> Login</a>
+  </div>
   <div id="layout" style="width: 100%; height: 94%;"></div>
 </body>
 

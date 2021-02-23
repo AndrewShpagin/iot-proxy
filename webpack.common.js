@@ -3,12 +3,15 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: {
-    toolbox: './client/index.js',
-  },
+  entry: ['babel-polyfill', './client/index.js'],
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
+  },
+  resolve: {
+    fallback: {
+      crypto: false,
+    },
   },
   module: {
     rules: [

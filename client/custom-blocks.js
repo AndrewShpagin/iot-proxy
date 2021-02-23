@@ -551,6 +551,66 @@ const customBlocks =
     helpUrl: '',
   },
   {
+    type: 'turnontemporary',
+    message0: 'Turn ON the device %1 and turn off after  %2 sec',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'device',
+        check: 'deviceID',
+      },
+      {
+        type: 'input_value',
+        name: 'time',
+        check: 'Number',
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: 'The device will be turned on and then turned off after the  period of time even if script will finish.  Pay attention that auto-turning off mode will be enabled on the device till the next tun on/off command from the script.',
+    helpUrl: '',
+  },
+  {
+    type: 'turnoffpulsemode',
+    message0: 'Turn off pulse mode %1',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'device',
+        check: 'deviceID',
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 0,
+    tooltip: 'The pulse mode allows to turn off the device after the period of time after it will be turned ON.',
+    helpUrl: '',
+  },
+  {
+    type: 'turnonpulsemode',
+    message0: 'Turn on pulse mode %1 , the delay is %2 sec',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'device',
+        check: 'deviceID',
+      },
+      {
+        type: 'input_value',
+        name: 'time',
+        check: 'Number',
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: 'The pulse mode allows to turn off the device after the period of time after it will be turned ON.',
+    helpUrl: '',
+  },
+  {
     type: 'ewelink',
     lastDummyAlign0: 'CENTRE',
     message0: 'eWeLink devices access %1 Email: %2 Password: %3 Region %4',

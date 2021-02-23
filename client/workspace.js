@@ -9,11 +9,22 @@ import Cookies from 'js-cookie';
 
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
+import { ewSimple } from '../common/eWeLinkSimple';
 import 'highlight.js/styles/github.css';
 import { openLoginPopup } from './ui';
 import { customBlocks } from './custom-blocks';
 import customToolbox from './toolbox.xml';
-import { reg_custom } from './custom_render';
+import './custom_render';
+
+require('babel-core/register');
+require('babel-polyfill');
+
+console.log('eTest');
+const eTest = new ewSimple('andrewshpagin@gmail.com', 'Andrew75', 'eu');
+console.log('eTest1');
+eTest.getDevice().then(res => {
+  console.log(res);
+});
 
 hljs.registerLanguage('javascript', javascript);
 
@@ -30,7 +41,17 @@ const options = {
   rtl: false,
   scrollbars: true,
   sounds: true,
-  oneBasedIndex: true,
+  renderer: 'custom_renderer',
+  zoom: {
+    controls: true,
+    wheel: true,
+    startScale: 1.0,
+    maxScale: 3,
+    minScale: 0.3,
+    scaleSpeed: 1.2,
+    pinch: true,
+  },
+  oneBasedIndex: false,
   toolbox: customToolbox,
 };
 
@@ -41,16 +62,29 @@ function loginData() {
 function myBlocks() {
   return blocks;
 }
+function extract(path, key) {
+  const idx = path.indexOf(key);
+  if (idx >= 0) {
+    let sub = path.substring(idx + key.length);
+    const r = sub.indexOf('/');
+    if (r > 0)sub = sub.substring(0, r);
+    return sub;
+  }
+  return null;
+}
 let baseJs = '';
-const iot_server = 'http://iot-proxy.com';
 function getWholeCode(code) {
-  const pre = baseJs.replace('serverNameThere', `${iot_server}${encodeURI(loginData())}`);
+  const email = extract(loginData(), '/email=');
+  const password = extract(loginData(), '/password=');
+  const region = extract(loginData(), '/region=');
+  let pre = baseJs.replace('useremail', email);
+  pre = pre.replace('userpassword', password);
+  pre = pre.replace('userregion', region);
   const rcode = code.trim().replace(/\n/g, '\n  ');
   return pre.replace('\'...functionBodyThere...\';', rcode);
 }
-reg_custom();
 export function injectBlockly() {
-  const ioturl = `/eWeLink${loginData()}/devices/`;
+  const ioturl = `${loginData()}/devices/`;
   multiDownload(['base.js', ioturl], response => {
     const blocklyDiv = w2ui.layout.el('top');
     blocklyDiv.innerHTML = '';
