@@ -111,11 +111,12 @@ export function injectBlockly() {
         deviceName: element[1].name,
         temperature: element[1].currentTemperature,
         humidity: element[1].currentHumidity,
-        online: element[1].online,
-        state: element[1].switch,
+        online: element[1].online ? 'YES' : 'NO',
+        state: element[1].switch === 'on' ? 'YES' : 'NO',
       });
       i++;
     });
+    console.log(w2ui.devGrid);
     // w2ui.devGrid.innerHTML = `<span class="notranslate">${w2ui.devGrid.innerHTML}`;
     if (customBlocks[0].args0[0].options.length === 0) {
       customBlocks[0].args0[0].options.push(['You need to login', 'You need to login']);

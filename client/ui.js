@@ -451,7 +451,7 @@ const grid1 = {
     { field: 'temperature', caption: 'Temperature', size: '13%' },
     { field: 'humidity', caption: 'Humidity', size: '13%' },
     { field: 'online', caption: 'Online', size: '60px' },
-    { field: 'state', caption: 'State', size: '60px' },
+    { field: 'state', caption: 'Switched ON', size: '60px' },
   ],
   records: [],
 };
