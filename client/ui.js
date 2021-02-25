@@ -4,6 +4,8 @@
 import Cookies from 'js-cookie';
 import { injectBlockly, assignProject } from './workspace';
 
+export let helpTriggered = false;
+
 export function downloadScript() {
   const element = document.createElement('a');
   element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(window.localStorage.getItem('Blockly_workspace'))}`);
@@ -223,10 +225,7 @@ function renameCurrentTab() {
         Rename() {
           const prjName = w2ui.renameTab.record['New name'];
           w2popup.close();
-          // w2ui.layout_top_tabs
-          console.log('tabs', w2ui.layout_top_tabs.tabs);
           const tab = w2ui.layout_top_tabs.tabs.find(el => el.id === w2ui.layout_top_tabs.active);
-          console.log(tab);
           if (tab)tab.text = prjName;
           w2ui.layout_top_tabs.refresh(w2ui.layout_top_tabs.active);
           window.localStorage.setItem(`name_${currentContentTab}`, prjName);
@@ -359,6 +358,13 @@ function closeTab(tabId) {
 function addNewLayoutTab() {
   askNewTabName();
 }
+function restoreToolbar() {
+  const item = w2ui.layout_left_toolbar.items[0];
+  item.text = 'Copy GS code to clipboard';
+  item.hint = 'Copy gs (Google Sheets) code to clipboard.';
+  item.img = 'icon-page';
+  w2ui.layout_left_toolbar.refresh();
+}
 $(() => {
   const pstyle = 'padding: 0px;';
   $('#layout').w2layout({
@@ -401,12 +407,15 @@ $(() => {
           ],
           onClick(event) {
             if (event.target === 'CopyGS') {
-              const r = document.createRange();
-              r.selectNode(w2ui.layout.el('left'));
-              window.getSelection().removeAllRanges();
-              window.getSelection().addRange(r);
-              document.execCommand('copy');
-              window.getSelection().removeAllRanges();
+              if (helpTriggered)removeHelp();
+              else {
+                const r = document.createRange();
+                r.selectNode(w2ui.layout.el('left'));
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(r);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+              }
             }
           },
         },
@@ -450,7 +459,28 @@ $(() => {
   // initialization
   w2ui.layout.content('main', $().w2grid(grid1));
 });
+function removeHelp() {
+  if (helpTriggered) {
+    helpTriggered = false;
+    restoreToolbar();
+    w2ui.layout.show('top');
+  }
+}
+function scriptInfo() {
+  console.log(w2ui.layout_left_toolbar.items[0]);
+  const item = w2ui.layout_left_toolbar.items[0];
+  item.text = '<< Back to projects';
+  item.tooltip = '';
+  item.img = '';
+  w2ui.layout_left_toolbar.refresh();
+  if (!helpTriggered) {
+    helpTriggered = true;
+    w2ui.layout.hide('top');
+    w2ui.layout.load('left', 'howitworks.html');
+  }
+}
 
 window.openLoginPopup = openLoginPopup;
 window.downloadScript = downloadScript;
 window.uploadScript = uploadScript;
+window.scriptInfo = scriptInfo;

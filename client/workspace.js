@@ -11,7 +11,7 @@ import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import 'highlight.js/styles/github.css';
 
-import { openLoginPopup, currentTabContentTag } from './ui';
+import { openLoginPopup, currentTabContentTag, helpTriggered } from './ui';
 import { customBlocks } from './custom-blocks';
 import customToolbox from './toolbox.xml';
 import './custom_render';
@@ -116,6 +116,7 @@ export function injectBlockly() {
       });
       i++;
     });
+    // w2ui.devGrid.innerHTML = `<span class="notranslate">${w2ui.devGrid.innerHTML}`;
     if (customBlocks[0].args0[0].options.length === 0) {
       customBlocks[0].args0[0].options.push(['You need to login', 'You need to login']);
     }
@@ -127,9 +128,13 @@ export function injectBlockly() {
 
     function myUpdateFunction(event) {
       const code = Blockly.JavaScript.workspaceToCode(workspace);
-      const wholecode = getWholeCode(code);
-      w2ui.layout.el('left').textContent = wholecode;
-      hljs.highlightBlock(w2ui.layout.el('left'));
+      if (!helpTriggered) {
+        const wholecode = getWholeCode(code);
+        w2ui.layout.el('left').textContent = wholecode;
+
+        hljs.highlightBlock(w2ui.layout.el('left'));
+        w2ui.layout.el('left').innerHTML = `<span class="notranslate">${w2ui.layout.el('left').innerHTML}`;
+      }
       // const comm = `${loginData()}/runjscode/${encodeURI(code)}`;
       // download(comm, response => { w2ui.layout.el('main').textContent = response; });
       const xml = Blockly.Xml.workspaceToDom(workspace);
