@@ -4,6 +4,5 @@ function myFunction() {
   '...functionBodyThere...';
 }
 
-/// you need to add library, use + button near the Library in the left panel, provide the identifier
-/// 1xywPDL7eF7XlwT0EXVrN0Z2nfkUGibVWEa8iyrZ-1qAkxnMCuERSJdkD
-/// Press Look Up and then Add
+/// This script intended to be used with Google Script. Look the usage instructions at
+/// https://docs.google.com/document/d/1njeC7HDMiKD_mA3W2cHIRj6zp8KUaNhuktbY-x5EOyU/edit?usp=sharing

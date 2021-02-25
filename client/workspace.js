@@ -3,28 +3,27 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 import Blockly from 'blockly';
-import { download, multiDownload } from './assets';
+import { multiDownload } from './assets';
 import './generators';
 import Cookies from 'js-cookie';
 
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
-import { ewSimple } from '../common/eWeLinkSimple';
 import 'highlight.js/styles/github.css';
-import { openLoginPopup } from './ui';
+
+import { openLoginPopup, currentTabContentTag } from './ui';
 import { customBlocks } from './custom-blocks';
 import customToolbox from './toolbox.xml';
 import './custom_render';
 
-require('babel-core/register');
-require('babel-polyfill');
-
+/*
 console.log('eTest');
 const eTest = new ewSimple('andrewshpagin@gmail.com', 'Andrew75', 'eu');
 console.log('eTest1');
 eTest.getDevice().then(res => {
   console.log(res);
 });
+*/
 
 hljs.registerLanguage('javascript', javascript);
 
@@ -83,6 +82,10 @@ function getWholeCode(code) {
   const rcode = code.trim().replace(/\n/g, '\n  ');
   return pre.replace('\'...functionBodyThere...\';', rcode);
 }
+let workspace = null;
+export function assignProject(text) {
+  Blockly.Xml.clearWorkspaceAndLoadFromXml(Blockly.Xml.textToDom(text), workspace);
+}
 export function injectBlockly() {
   const ioturl = `${loginData()}/devices/`;
   multiDownload(['base.js', ioturl], response => {
@@ -119,7 +122,7 @@ export function injectBlockly() {
     // w2ui.layout.html('main').html = '';
     // w2ui.layout.html('main', $().w2grid(grid1));
 
-    const workspace = Blockly.inject(blocklyDiv, options);
+    workspace = Blockly.inject(blocklyDiv, options);
     Blockly.defineBlocksWithJsonArray(customBlocks);
 
     function myUpdateFunction(event) {
@@ -131,13 +134,13 @@ export function injectBlockly() {
       // download(comm, response => { w2ui.layout.el('main').textContent = response; });
       const xml = Blockly.Xml.workspaceToDom(workspace);
       const xmlText = Blockly.Xml.domToText(xml);
-      window.localStorage.setItem('Blockly_workspace', xmlText);
+      window.localStorage.setItem(currentTabContentTag(), xmlText);
     }
     w2ui.layout.on('resize', event => {
       setTimeout(() => Blockly.svgResize(workspace), 100);
     });
     workspace.addChangeListener(myUpdateFunction);
-    const workspaceBlocks = window.localStorage.getItem('Blockly_workspace');
+    const workspaceBlocks = window.localStorage.getItem(currentTabContentTag());
     if (workspaceBlocks) {
       Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceBlocks), workspace);
     }
