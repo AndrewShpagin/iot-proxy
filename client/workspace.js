@@ -116,7 +116,6 @@ export function injectBlockly() {
       });
       i++;
     });
-    console.log(w2ui.devGrid);
     // w2ui.devGrid.innerHTML = `<span class="notranslate">${w2ui.devGrid.innerHTML}`;
     if (customBlocks[0].args0[0].options.length === 0) {
       customBlocks[0].args0[0].options.push(['You need to login', 'You need to login']);

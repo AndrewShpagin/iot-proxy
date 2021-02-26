@@ -297,7 +297,6 @@ window.downloadTab = downloadTab;
 window.restoreTab = restoreTab;
 
 function checkClosableImmediately() {
-  console.log('check closing', w2ui.layout_top_tabs.tabs.length, w2ui.layout_top_tabs);
   if (w2ui.layout_top_tabs.tabs.length < 3) {
     w2ui.layout_top_tabs.tabs.forEach(element => {
       if (element.closable) {

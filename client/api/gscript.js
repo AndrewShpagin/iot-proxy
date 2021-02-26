@@ -1,6 +1,11 @@
 /**
  * Provide email, password and region to control the eWeLink devices through the script.
  *
+ * @param {string} mail - email for the eWeLinkAccount
+ * @param {string} pass - password for the eWeLinkAccount
+ * @param {string} region - region, one of eu, us, cn
+ * @param {sheet} sheet - the sheet to operate, usually it is SpreadsheetApp.getActiveSheet()
+ *
  */
 function setup(mail, pass, reg, sheet) {
   email = mail;
@@ -95,7 +100,7 @@ function getDeviceID(deviceName) {
 
 /**
    * Get the device state related to the given field.
-   *
+   * @ignore
    * @param {string} device - the device identifier, in ''
    * @param {string} field - the value to get state, usually it are 'switch', 'currentTemperature', 'currentHumidity'.
    */
@@ -220,14 +225,14 @@ const clearCells = (r0, c0, r1, c1) => mySheet.getRange(r0, c0, r1, c1).clear();
    * @param {number} c0 - start column
    * @param {number} r1 - end row
    * @param {number} c1 - end column
-   * @param {init} the initial value
-   * @param {op} the function to operate, example of usage:
+   * @param {string/number} init - the initial value
+   * @param {function} func - the function to operate, example of usage:
    * const summCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 0, (summ, value) => summ + Number(value));
    */
-const cellsOperate = (r0, c0, r1, c1, init, op) => {
+const cellsOperate = (r0, c0, r1, c1, init, func) => {
   let initial = init;
   for (let r = r0; r <= r1; r++) {
-    for (let c = c0; c <= c1; c++) { initial = op(initial, getCell(r, c)); }
+    for (let c = c0; c <= c1; c++) { initial = func(initial, getCell(r, c)); }
   }
   return valid(initial);
 };

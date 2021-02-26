@@ -35,6 +35,8 @@
 </a>
 <script>
     function copygCode() {
+        summWidth();
+
         const r = document.createRange();
         r.selectNode(document.getElementById("gslibcode"));
         window.getSelection().removeAllRanges();
@@ -42,8 +44,29 @@
         document.execCommand('copy');
         window.getSelection().removeAllRanges();
     }
+    function summWidth(element){
+        var totalWidth = 0;
+        $(element).each(function(index) {
+            totalWidth += parseInt($(this).width(), 10);
+        });
+        return totalWidth;
+    }
 </script>
 <ol style="white-space: normal;line-height: 1.8; font-weight: 400; max-width: 960px; margin: 0 auto;">
+    <div id="promo" class="promo">
+        <div class="myButton" style="text-align: center;vertical-align: center; font-weight: bold; font-size: 20px;">Scenario<br>via<br>Blocks</div>
+        <img style="height: 60pt" src="right.png" /><img style="height: 72pt" src="Sheets.png" />
+        <img style="height: 60pt" src="right.png" /><img style="height: 72pt" src="AppsScript.png" />
+        <img style="height: 60pt" src="right.png" />
+        <div class="myButton" style="text-align: center;vertical-align: center; font-weight: bold; font-size: 20px;">Execute<br>on Google servers<br>every 1,5 or 10 min.</div>
+    </div>
+    <script>
+        $(".promo").css('transform', `translate(${(960 - summWidth('.promo'))/2}pt)`);
+    </script>
+    <br>
+    <div style="font-weight: bold; font-size: 18px; text-align: center; max-width: 960px; padding: 0px; margin: 0 auto;">No need custom firmware! No programming skills! No any additional devices!   </div>
+    <br>
+
     <li><span>First, provide basic eWeLink access information - email, password, region using the Login button. We store
             that strings locally and never store it anywhere except your computer.</span></li>
     <li><span>Use blocks to create scenario to be executed periodically, for example once in 5 or 10 minutes. For
