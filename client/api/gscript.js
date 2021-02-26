@@ -1,3 +1,14 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-undef */
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
+
+let email = '';
+let password = '';
+let region = '';
+let devices = null;
+let mySheet = SpreadsheetApp.getActiveSheet();
+
 /**
  * Provide email, password and region to control the eWeLink devices through the script.
  *
@@ -13,17 +24,12 @@ function setup(mail, pass, reg, sheet) {
   region = reg;
   mySheet = sheet;
 }
-let email = '';
-let password = '';
-let region = '';
-let devices = null;
+
 const APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
 function baseUrl() {
   return `https://${region}-api.coolkit.cc:8080/api/user`;
 }
 let token = null;
-
-let mySheet = SpreadsheetApp.getActiveSheet();
 
 function ewLogin() {
   if (!token) {
@@ -86,13 +92,13 @@ function ewGetDevices() {
 function getDeviceID(deviceName) {
   const dev = ewGetDevices();
   if (dev) {
-    const device = dev.devicelist.find(el => el.name == deviceName);
+    const device = dev.devicelist.find(el => el.name === deviceName);
     if (device) {
       console.log(`Found the device by name: ${deviceName} => ${device.deviceid}`);
       return device.deviceid;
     } else {
       console.error(`Device "${deviceName}" not found. This is the list of available devices:`);
-      dev.devicelist.forEach(dev => console.log(`${dev.deviceid}: ${dev.name}`));
+      dev.devicelist.forEach(d => console.log(`${d.deviceid}: ${d.name}`));
     }
   }
   return '';

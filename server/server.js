@@ -6,7 +6,7 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const fs = require('fs');
 const custom = require('../client/custom-blocks').customBlocks;
-const { handle_ew } = require('./serverless');
+const { ewRequest } = require('./serverless');
 const dev = require('../webpack.dev.js');
 const prod = require('../webpack.prod.js');
 
@@ -17,7 +17,7 @@ console.log(`Server listening on port ${port}`);
 
 app.use(async (req, res, next) => {
   console.log('path:', req.path);
-  await handle_ew(req, res, next);
+  await ewRequest(req, res, next);
 });
 
 app.use(express.static('public'));

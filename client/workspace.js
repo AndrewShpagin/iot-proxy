@@ -1,20 +1,33 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 import Blockly from 'blockly';
-import { multiDownload } from './assets';
 import './generators';
-import Cookies from 'js-cookie';
 
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import 'highlight.js/styles/github.css';
 
-import { openLoginPopup, currentTabContentTag, helpTriggered } from './ui';
+import { randomBytes, randomInt } from 'crypto';
+import { multiDownload } from './assets';
+import { currentTabContentTag, helpShown } from './ui';
 import { customBlocks } from './custom-blocks';
 import customToolbox from './toolbox.xml';
 import './custom_render';
+
+const CryptoJS = require('crypto-js');
+
+const seqPp = 'JHghhjJHgYiguuyuy786GhhjbYT6';
+
+function encStr(str) {
+  return CryptoJS.AES.encrypt(str, seqPp);
+}
+
+function decStr(str) {
+  return CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(str, seqPp));
+}
 
 /*
 console.log('eTest');
@@ -54,28 +67,36 @@ const options = {
   toolbox: customToolbox,
 };
 
-const tools = 'toolbox.xml';
-function loginData() {
-  return Cookies.get('userlogindata');
+export function getUserData() {
+  const log = window.localStorage.getItem('userlogindata');
+  if (log) {
+    return decStr(log);
+  }
+  return null;
 }
-function myBlocks() {
-  return blocks;
+
+export function storeUser(log) {
+  window.localStorage.setItem('userlogindata', encStr(log));
 }
+
 function extract(path, key) {
-  const idx = path.indexOf(key);
-  if (idx >= 0) {
-    let sub = path.substring(idx + key.length);
-    const r = sub.indexOf('/');
-    if (r > 0)sub = sub.substring(0, r);
-    return sub;
+  if (path) {
+    const idx = path.indexOf(key);
+    if (idx >= 0) {
+      let sub = path.substring(idx + key.length);
+      const r = sub.indexOf('/');
+      if (r > 0)sub = sub.substring(0, r);
+      return sub;
+    }
   }
   return null;
 }
 let baseJs = '';
 function getWholeCode(code) {
-  const email = extract(loginData(), '/email=');
-  const password = extract(loginData(), '/password=');
-  const region = extract(loginData(), '/region=');
+  const user = getUserData();
+  const email = extract(user, '/email=');
+  const password = extract(user, '/password=');
+  const region = extract(user, '/region=');
   let pre = baseJs.replace('useremail', email);
   pre = pre.replace('userpassword', password);
   pre = pre.replace('userregion', region);
@@ -86,36 +107,58 @@ let workspace = null;
 export function assignProject(text) {
   Blockly.Xml.clearWorkspaceAndLoadFromXml(Blockly.Xml.textToDom(text), workspace);
 }
+export function updateCode() {
+  if (workspace) {
+    const code = Blockly.JavaScript.workspaceToCode(workspace);
+    if (!helpShown) {
+      const wholecode = getWholeCode(code);
+      w2ui.layout.el('main').textContent = wholecode;
+      hljs.highlightBlock(w2ui.layout.el('main'));
+      w2ui.layout.el('main').innerHTML = `<span class="notranslate">${w2ui.layout.el('main').innerHTML}`;
+    }
+  }
+}
 export function injectBlockly() {
-  const ioturl = `${loginData()}/devices/`;
-  multiDownload(['base.js', ioturl], response => {
+  let ioturl = '';
+  const dlist = ['base.js'];
+  const user = getUserData();
+  if (user) {
+    const sdata = `${user}/devices/`;
+    const hv = Date.now().toString().slice(-6);
+    console.log(hv);
+    ioturl = `/xRet78uz${encodeURI(encStr(hv + sdata))}`;
+    console.log(ioturl);
+    dlist.push(ioturl);
+  }
+  multiDownload(dlist, response => {
     const blocklyDiv = w2ui.layout.el('top');
     blocklyDiv.innerHTML = '';
     blocklyDiv.style.padding = '0px';
-    w2ui.layout.el('left').style['white-space'] = 'pre';
     w2ui.layout.el('main').style['white-space'] = 'pre';
+    w2ui.layout.el('right').style['white-space'] = 'pre';
     baseJs = response['base.js'];
 
-    const devices = JSON.parse(response[ioturl]);
-
-    // options.toolbox = response[tools];
+    let devices = {};
+    if (ioturl.length) devices = JSON.parse(response[ioturl]);
 
     customBlocks[0].args0[0].options = [];
-    w2ui.devGrid.clear();
-    let i = 1;
-    Object.entries(devices).forEach(element => {
-      customBlocks[0].args0[0].options.push([element[1].name, element[1].deviceid]);
-      w2ui.devGrid.add({
-        recid: i,
-        deviceid: element[1].deviceid,
-        deviceName: element[1].name,
-        temperature: element[1].currentTemperature,
-        humidity: element[1].currentHumidity,
-        online: element[1].online ? 'YES' : 'NO',
-        state: element[1].switch === 'on' ? 'YES' : 'NO',
+    if (Object.keys(devices).length) {
+      w2ui.devGrid.clear();
+      let i = 1;
+      Object.entries(devices).forEach(element => {
+        customBlocks[0].args0[0].options.push([element[1].name, element[1].deviceid]);
+        w2ui.devGrid.add({
+          recid: i,
+          deviceid: element[1].deviceid,
+          deviceName: element[1].name,
+          temperature: element[1].currentTemperature,
+          humidity: element[1].currentHumidity,
+          online: element[1].online ? 'YES' : 'NO',
+          state: element[1].switch === 'on' ? 'YES' : 'NO',
+        });
+        i++;
       });
-      i++;
-    });
+    }
     // w2ui.devGrid.innerHTML = `<span class="notranslate">${w2ui.devGrid.innerHTML}`;
     if (customBlocks[0].args0[0].options.length === 0) {
       customBlocks[0].args0[0].options.push(['You need to login', 'You need to login']);
@@ -127,16 +170,7 @@ export function injectBlockly() {
     Blockly.defineBlocksWithJsonArray(customBlocks);
 
     function myUpdateFunction(event) {
-      const code = Blockly.JavaScript.workspaceToCode(workspace);
-      if (!helpTriggered) {
-        const wholecode = getWholeCode(code);
-        w2ui.layout.el('left').textContent = wholecode;
-
-        hljs.highlightBlock(w2ui.layout.el('left'));
-        w2ui.layout.el('left').innerHTML = `<span class="notranslate">${w2ui.layout.el('left').innerHTML}`;
-      }
-      // const comm = `${loginData()}/runjscode/${encodeURI(code)}`;
-      // download(comm, response => { w2ui.layout.el('main').textContent = response; });
+      updateCode();
       const xml = Blockly.Xml.workspaceToDom(workspace);
       const xmlText = Blockly.Xml.domToText(xml);
       window.localStorage.setItem(currentTabContentTag(), xmlText);
@@ -151,15 +185,4 @@ export function injectBlockly() {
     }
     Blockly.svgResize(workspace);
   });
-}
-if (loginData()) {
-  injectBlockly();
-} else {
-  setTimeout(() => {
-    w2alert('You may operate devices only after login. You need to provide email and password to your eWeLink account to access the devices.')
-      .ok(() => {
-        setTimeout(() => openLoginPopup(), 2000);
-      });
-  }, 2000);
-  injectBlockly();
 }

@@ -1,6 +1,6 @@
 /// The script generated using the iot-proxy.com
 function myFunction() {
-  ew.setup('useremail', 'userpassword', 'userregion');
+  ew.setup('useremail', 'userpassword', 'userregion', SpreadsheetApp.getActiveSheet());
   '...functionBodyThere...';
 }
 

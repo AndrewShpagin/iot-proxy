@@ -10,7 +10,7 @@ class ewSimple {
     this.password = password;
     this.region = region;
     this.auth = null;
-    this.base = ``;//https://${region}-api.coolkit.cc:8080/api/user`;
+    this.base = '';// https://${region}-api.coolkit.cc:8080/api/user`;
     this.ts = Math.floor(Date.now());
   }
 

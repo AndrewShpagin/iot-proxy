@@ -1,10 +1,15 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
-import Cookies from 'js-cookie';
-import { injectBlockly, assignProject } from './workspace';
 
-export let helpTriggered = false;
+import { injectBlockly, assignProject, getUserData, updateCode, storeUser } from './workspace';
+
+let helpTriggered = false;
+
+export function helpShown() {
+  return helpTriggered;
+}
 
 export function downloadScript() {
   const element = document.createElement('a');
@@ -78,7 +83,6 @@ export function uploadScript() {
     style: 'padding: 15px 0px 0px 0px',
     width: 480,
     height: 190,
-    showMax: true,
     onToggle(event) {
       $(w2ui.upload.box).hide();
       event.onComplete = function () {
@@ -117,13 +121,15 @@ export function openLoginPopup() {
       ],
       actions: {
         Login() {
-          Cookies.set('userlogindata',
-            `/email=${w2ui.foo.get('Email').$el[0].value}/password=${w2ui.foo.get('Password').$el[0].value}/region=${w2ui.foo.get('Server').$el[0].value}`,
-            { expires: 365 });
+          storeUser(`/email=${w2ui.foo.get('Email').$el[0].value}/password=${w2ui.foo.get('Password').$el[0].value}/region=${w2ui.foo.get('Server').$el[0].value}`);
           w2popup.close();
           injectBlockly();
         },
-        Cancel() { w2popup.close(); },
+        Cancel() {
+          window.localStorage.removeItem('userlogindata');
+          w2popup.close();
+          injectBlockly();
+        },
       },
     });
   }
@@ -151,11 +157,12 @@ export function openLoginPopup() {
 
 let currentContentTab = 0;
 function getEmptyIndex() {
-  for (let i = 1; i < 1000; i++) {
+  for (let i = 1; i < 10000; i++) {
     const ws = `workspace_${i}`;
     const el = window.localStorage.getItem(ws);
     if (!el) return i;
   }
+  return 10000;
 }
 export function currentTabContentTagName() {
   const name = window.localStorage.getItem(`name_${currentContentTab}`);
@@ -179,9 +186,7 @@ export function switchToTabContent(tabName) {
   }
 }
 function askNewTabName() {
-  const empty = getEmptyIndex();
-  const newName = `Project ${empty}`;
-
+  const newName = `Project ${getEmptyIndex()}`;
   if (!w2ui.newTab) {
     $().w2form({
       name: 'newTab',
@@ -224,7 +229,6 @@ function askNewTabName() {
     },
     onOpen(event) {
       w2ui.newTab.record.Project = newName;
-      // w2ui.newTab.get('Project').$el[0] = newName;
       event.onComplete = function () {
         $('#w2ui-popup #form').w2render('newTab');
       };
@@ -330,11 +334,10 @@ function closeTab(tabId) {
   checkClosable();
   // w2ui.layout_top_tabs.click(`workspace_${i}`);
   if (w2ui.layout_top_tabs.active === tabId) {
-    const tab = w2ui.layout_top_tabs.tabs.find(tab => tab.id !== tabId);
+    const tab = w2ui.layout_top_tabs.tabs.find(t => t.id !== tabId);
     w2ui.layout_top_tabs.click(tab.id);
   }
   const idx = tabId.substring(10);
-  const name = `name_${idx}`;
   const content = window.localStorage.getItem(tabId);
   if (content.length > 100) {
     $().w2popup('open', {
@@ -371,11 +374,11 @@ function addNewLayoutTab() {
   askNewTabName();
 }
 function restoreToolbar() {
-  const item = w2ui.layout_left_toolbar.items[0];
+  const item = w2ui.layout_main_toolbar.items[0];
   item.text = 'Copy GS code to clipboard';
   item.hint = 'Copy gs (Google Sheets) code to clipboard.';
   item.img = 'icon-page';
-  w2ui.layout_left_toolbar.refresh();
+  w2ui.layout_main_toolbar.refresh();
 }
 $(() => {
   const pstyle = 'padding: 0px;';
@@ -408,7 +411,7 @@ $(() => {
           },
         },
       },
-      { type: 'left',
+      { type: 'main',
         size: '70%',
         resizable: true,
         style: pstyle,
@@ -421,7 +424,7 @@ $(() => {
               if (helpTriggered)removeHelp();
               else {
                 const r = document.createRange();
-                r.selectNode(w2ui.layout.el('left'));
+                r.selectNode(w2ui.layout.el('main'));
                 window.getSelection().removeAllRanges();
                 window.getSelection().addRange(r);
                 document.execCommand('copy');
@@ -431,9 +434,17 @@ $(() => {
           },
         },
       },
-      { type: 'main', size: '30%', resizable: true, style: pstyle, name: 'devices', title: 'Devices:' },
+      { type: 'right', size: '30%', resizable: true, style: pstyle, name: 'devices', title: 'Devices:' },
     ],
   });
+  const uData = getUserData();
+  console.log('uData', uData);
+  if (uData) {
+    injectBlockly();
+  } else {
+    injectBlockly();
+    setTimeout(scriptInfo(), 1000);
+  }
   let nn = 0;
   for (let i = 1; i < 1000; i++) {
     const ws = `workspace_${i}`;
@@ -468,25 +479,37 @@ const grid1 = {
 };
 $(() => {
   // initialization
-  w2ui.layout.content('main', $().w2grid(grid1));
+  w2ui.layout.content('right', $().w2grid(grid1));
 });
 function removeHelp() {
   if (helpTriggered) {
+    if (!getUserData()) {
+      setTimeout(() => {
+        w2alert('You may operate devices only after getting access to eWeLink devices. You need to provide email, password and region. This App never stores the data outside your computer. The provided information used only to get list of devices within this application.')
+          .ok(() => {
+            setTimeout(() => openLoginPopup(), 2000);
+          });
+      }, 2000);
+      injectBlockly();
+    }
     helpTriggered = false;
     restoreToolbar();
+    updateCode();
+    w2ui.layout.show('right');
     w2ui.layout.show('top');
   }
 }
 function scriptInfo() {
-  const item = w2ui.layout_left_toolbar.items[0];
+  const item = w2ui.layout_main_toolbar.items[0];
   item.text = '<< Back to projects';
   item.tooltip = '';
   item.img = '';
-  w2ui.layout_left_toolbar.refresh();
+  w2ui.layout_main_toolbar.refresh();
   if (!helpTriggered) {
     helpTriggered = true;
+    w2ui.layout.hide('right');
     w2ui.layout.hide('top');
-    w2ui.layout.load('left', 'howitworks.html');
+    w2ui.layout.load('main', 'howitworks.html');
   }
 }
 
@@ -494,3 +517,4 @@ window.openLoginPopup = openLoginPopup;
 window.downloadScript = downloadScript;
 window.uploadScript = uploadScript;
 window.scriptInfo = scriptInfo;
+window.removeHelp = removeHelp;
