@@ -29,4 +29,6 @@ if (process.env.NODE_ENV === 'development') {
 if (process.env.NODE_ENV === 'production') {
   const compiler = webpack(prod);
   app.use(webpackDevMiddleware(compiler));
+} else {
+  app.use(express.static('dist'));
 }
