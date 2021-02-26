@@ -40,21 +40,27 @@ export function uploadScript() {
       actions: {
         open() {
           $('#file').w2field('file', {});
-          const xml = atob($('#ProjectFile').data('selected')[0].content);
-          console.log('project:', $('#ProjectFile').data('selected')[0]);
-          const empty = getEmptyIndex();
-          let prjName = $('#ProjectFile').data('selected')[0].name;
-          const end = prjName.indexOf('.ewelink.');
-          if (end !== -1)prjName = prjName.substring(0, end);
-          w2ui.layout_top_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
-          window.localStorage.setItem(`name_${empty}`, prjName);
-          setTimeout(() => {
-            w2ui.layout_top_tabs.click(`workspace_${empty}`);
-            setTimeout(() => {
-              assignProject(xml);
-              checkClosable();
-            }, 200);
-          }, 600);
+          try {
+            if ($('#ProjectFile').data('selected').length) {
+              const xml = atob($('#ProjectFile').data('selected')[0].content);
+              const empty = getEmptyIndex();
+              let prjName = $('#ProjectFile').data('selected')[0].name;
+              let end = prjName.indexOf('.ewelink (');
+              if (end === -1)end = prjName.indexOf('.ewelink.');
+              if (end !== -1)prjName = prjName.substring(0, end);
+              w2ui.layout_top_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
+              window.localStorage.setItem(`name_${empty}`, prjName);
+              setTimeout(() => {
+                w2ui.layout_top_tabs.click(`workspace_${empty}`);
+                setTimeout(() => {
+                  assignProject(xml);
+                  checkClosable();
+                }, 200);
+              }, 600);
+            }
+          } catch (error) {
+            console.log(error);
+          }
           w2popup.close();
         },
         close() {
@@ -262,7 +268,6 @@ function renameCurrentTab() {
     },
     onOpen(event) {
       w2ui.renameTab.record['New name'] = currentTabContentTagName();
-      console.log(w2ui.layout_top_tabs);
       event.onComplete = function () {
         $('#w2ui-popup #form').w2render('renameTab');
       };
@@ -273,7 +278,6 @@ function downloadTab(i) {
   let name = window.localStorage.getItem(`name_${i}`);
   if (!name)name = 'Project';
   const content = window.localStorage.getItem(`workspace_${i}`);
-  console.log('download', name, content);
   const element = document.createElement('a');
   element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(content)}`);
   element.setAttribute('download', `${name}.ewelink.xml`);
@@ -297,7 +301,6 @@ function checkClosableImmediately() {
   if (w2ui.layout_top_tabs.tabs.length < 3) {
     w2ui.layout_top_tabs.tabs.forEach(element => {
       if (element.closable) {
-        console.log('unclose', element);
         element.closable = false;
         w2ui.layout_top_tabs.refresh(element.id);
       }
@@ -305,7 +308,6 @@ function checkClosableImmediately() {
   } else {
     w2ui.layout_top_tabs.tabs.forEach(element => {
       if (element.id !== 'new' && !element.closable) {
-        console.log('enclose', element);
         element.closable = true;
         w2ui.layout_top_tabs.refresh(element.id);
       }
@@ -327,7 +329,6 @@ function checkClosable() {
 }
 function closeTab(tabId) {
   checkClosable();
-  console.log('tabId', tabId, 'w2ui.layout_top_tabs', w2ui.layout_top_tabs);
   // w2ui.layout_top_tabs.click(`workspace_${i}`);
   if (w2ui.layout_top_tabs.active === tabId) {
     const tab = w2ui.layout_top_tabs.tabs.find(tab => tab.id !== tabId);
@@ -403,7 +404,6 @@ $(() => {
             }
           },
           onClose(event) {
-            console.log('closed', event);
             closeTab(event.target);
             return true;
           },
@@ -479,7 +479,6 @@ function removeHelp() {
   }
 }
 function scriptInfo() {
-  console.log(w2ui.layout_left_toolbar.items[0]);
   const item = w2ui.layout_left_toolbar.items[0];
   item.text = '<< Back to projects';
   item.tooltip = '';
