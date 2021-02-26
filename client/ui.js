@@ -8,7 +8,7 @@ export let helpTriggered = false;
 
 export function downloadScript() {
   const element = document.createElement('a');
-  element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(window.localStorage.getItem('Blockly_workspace'))}`);
+  element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(window.localStorage.getItem(currentTabContentTag()))}`);
   element.setAttribute('download', `${currentTabContentTagName()}.ewelink.xml`);
   element.style.display = 'none';
   document.body.appendChild(element);
@@ -40,9 +40,21 @@ export function uploadScript() {
       actions: {
         open() {
           $('#file').w2field('file', {});
-          // if you need to get to the selected items, use:
           const xml = atob($('#ProjectFile').data('selected')[0].content);
-          assignProject(xml);
+          console.log('project:', $('#ProjectFile').data('selected')[0]);
+          const empty = getEmptyIndex();
+          let prjName = $('#ProjectFile').data('selected')[0].name;
+          const end = prjName.indexOf('.ewelink.');
+          if (end !== -1)prjName = prjName.substring(0, end);
+          w2ui.layout_top_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
+          window.localStorage.setItem(`name_${empty}`, prjName);
+          setTimeout(() => {
+            w2ui.layout_top_tabs.click(`workspace_${empty}`);
+            setTimeout(() => {
+              assignProject(xml);
+              checkClosable();
+            }, 200);
+          }, 600);
           w2popup.close();
         },
         close() {

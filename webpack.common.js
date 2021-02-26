@@ -1,4 +1,3 @@
-const WriteFilePlugin = require('write-file-webpack-plugin');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -49,6 +48,5 @@ module.exports = {
       filename: 'index.html',
       template: 'client/html/index.html',
     }),
-    new WriteFilePlugin(),
   ],
 };
