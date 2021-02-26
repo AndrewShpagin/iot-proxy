@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "develop": "cross-env NODE_ENV=development node server/server.js"
+    "develop": "cross-env NODE_ENV=development node server/server.js",
+    "prod": "cross-env NODE_ENV=production node server/server.js",
+    "build": "webpack --config=webpack.prod.js",
+    "static": "node server/server.js"
   },
   "author": "Andrew Shpagin",
   "license": "ISC",
@@ -34,6 +37,7 @@
     "js-interpreter": "^2.2.0",
     "jsdoc": "^3.6.6",
     "mini-css-extract-plugin": "^1.3.6",
+    "optimize-css-assets-webpack-plugin": "^5.0.4",
     "path": "^0.12.7",
     "process": "^0.11.10",
     "random": "^2.2.0",
@@ -52,6 +56,7 @@
     "babel-loader": "^8.2.2",
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1"
+    "babel-preset-stage-0": "^6.24.1",
+    "write-file-webpack-plugin": "^4.5.1"
   }
 }

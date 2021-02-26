@@ -1,1 +1,1 @@
-jsdoc src gscript.js -r -c conf.json -d docs
+jsdoc gscript.js -r -c conf.json -d docs

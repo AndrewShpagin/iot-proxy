@@ -1,3 +1,4 @@
+const WriteFilePlugin = require('write-file-webpack-plugin');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -6,7 +7,7 @@ module.exports = {
   entry: ['babel-polyfill', './client/index.js'],
   output: {
     filename: '[name].[contenthash].js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, './public'),
   },
   resolve: {
     fallback: {
@@ -48,5 +49,6 @@ module.exports = {
       filename: 'index.html',
       template: 'client/html/index.html',
     }),
+    new WriteFilePlugin(),
   ],
 };

@@ -7,21 +7,26 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const fs = require('fs');
 const custom = require('../client/custom-blocks').customBlocks;
 const { handle_ew } = require('./serverless');
-
-const webpackConfig = require('../webpack.dev.js');
+const dev = require('../webpack.dev.js');
+const prod = require('../webpack.prod.js');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3002;
 app.listen(port);
 console.log(`Server listening on port ${port}`);
 
 app.use(async (req, res, next) => {
   console.log('path:', req.path);
-  console.log('options:', req.params);
   await handle_ew(req, res, next);
 });
 
 app.use(express.static('public'));
 
-const compiler = webpack(webpackConfig);
-app.use(webpackDevMiddleware(compiler));
+if (process.env.NODE_ENV === 'development') {
+  const compiler = webpack(dev);
+  app.use(webpackDevMiddleware(compiler));
+} else
+if (process.env.NODE_ENV === 'production') {
+  const compiler = webpack(prod);
+  app.use(webpackDevMiddleware(compiler));
+}

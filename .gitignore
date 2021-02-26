@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+backup
+fonts
+/client/api/docs/scripts
+styles
+/client/api/docs/global.html
+/client/api/docs/index.html
