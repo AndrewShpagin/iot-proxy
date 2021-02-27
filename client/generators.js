@@ -169,14 +169,14 @@ Blockly.JavaScript.clearrange = function (block) {
 Blockly.JavaScript.removerow = function (block) {
   const value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  const code = `ew.removeRow(${value_name});\n`;
+  const code = `ew.deleteRow(${value_name});\n`;
   return code;
 };
 
 Blockly.JavaScript.removecolumn = function (block) {
   const value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  const code = `ew.removeColumn(${value_name});\n`;
+  const code = `ew.deleteColumn(${value_name});\n`;
   return code;
 };
 
