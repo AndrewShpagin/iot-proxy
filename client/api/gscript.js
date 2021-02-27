@@ -1,8 +1,3 @@
-/* eslint-disable no-prototype-builtins */
-/* eslint-disable no-undef */
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-
 let email = '';
 let password = '';
 let region = '';
@@ -143,7 +138,9 @@ function deviceSet(device, value) {
    * @ignore
    * @param {string} str - the value to check
    */
-const validate = str => (str === 'undefined' || str.length > 40 ? '' : str);
+function validate(str) {
+  return str === 'undefined' || str.length > 40 ? '' : str;
+}
 
 /**
    * Get the device state related to the given field.
@@ -151,7 +148,9 @@ const validate = str => (str === 'undefined' || str.length > 40 ? '' : str);
    * @param {string} device - the device identifier, in ''
    * @param {string} field - the value to get state, usually it are 'switch', 'currentTemperature', 'currentHumidity'.
    */
-const deviceGet = (id, field) => ewGetDeviceState(id, field);
+function deviceGet(id, field) {
+  return ewGetDeviceState(id, field);
+}
 
 /// simplest math
 
@@ -159,19 +158,25 @@ const deviceGet = (id, field) => ewGetDeviceState(id, field);
    * Returns x^2
    * @ignore
    */
-const sqr = x => x * x;
+function sqr(x) {
+  return x * x;
+}
 
 /**
    * Returns sqrt(x)
    * @ignore
    */
-const sqrt = x => Math.sqrt(x, 0.5);
+function sqrt(x) {
+  return Math.sqrt(x, 0.5);
+}
 
 /**
    * Returns 0 if value is invalid or value itself
    * @ignore
    */
-const valid = x => (x < 10000000000 && x > -10000000000 ? x : 0);
+function valid(x) {
+  return x < 10000000000 && x > -10000000000 ? x : 0;
+}
 
 /// Google Sheets cells access
 
@@ -181,7 +186,9 @@ const valid = x => (x < 10000000000 && x > -10000000000 ? x : 0);
    * @param {number} r - the row
    * @param {number} c - the column
    */
-const getCell = (r, c) => mySheet.getRange(r, c).getValue(); // Get the cell from the sheet
+function getCell(r, c) {
+  return mySheet.getRange(r, c).getValue(); // Get the cell from the sheet
+}
 
 /**
    * Set the cell value
@@ -190,7 +197,9 @@ const getCell = (r, c) => mySheet.getRange(r, c).getValue(); // Get the cell fro
    * @param {number} c - the column
    * @param {number} value - the value to write in the cell
    */
-const setCell = (r, c, value) => mySheet.getRange(r, c).setValue(value);// set the cell value
+function setCell(r, c, value) {
+  mySheet.getRange(r, c).setValue(value);// set the cell value
+}
 
 /**
    * Increment the cell on the given value
@@ -199,21 +208,29 @@ const setCell = (r, c, value) => mySheet.getRange(r, c).setValue(value);// set t
    * @param {number} c - the column
    * @param {number} value - the increment value
    */
-const incrementCell = (r, c, value) => setCell(r, c, getCell(r, c) + value); // add some value to the cell
+function incrementCell(r, c, value) {
+  const newval = getCell(r, c) + value;
+  setCell(r, c, newval); // add some value to the cell
+  return newval;
+}
 
 /**
    * Delete the whole column
    *
    * @param {number} c - the column to delete
    */
-const deleteColumn = c => mySheet.deleteColumn(c);
+function deleteColumn(c) {
+  mySheet.deleteColumn(c);
+}
 
 /**
    * Delete the whole row
    *
    * @param {number} c - the row to delete
    */
-const deleteRow = c => mySheet.deleteRow(c);
+function deleteRow(c) {
+  mySheet.deleteRow(c);
+}
 
 /**
    * Clear cells in range
@@ -222,7 +239,9 @@ const deleteRow = c => mySheet.deleteRow(c);
    * @param {number} r1 - end row
    * @param {number} c1 - end column
    */
-const clearCells = (r0, c0, r1, c1) => mySheet.getRange(r0, c0, r1, c1).clear();
+function clearCells(r0, c0, r1, c1) {
+  mySheet.getRange(r0, c0, r1, c1).clear();
+}
 
 /**
    * Operate over the cells in square region
@@ -235,13 +254,13 @@ const clearCells = (r0, c0, r1, c1) => mySheet.getRange(r0, c0, r1, c1).clear();
    * @param {function} func - the function to operate, example of usage:
    * const summCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 0, (summ, value) => summ + Number(value));
    */
-const cellsOperate = (r0, c0, r1, c1, init, func) => {
+function cellsOperate(r0, c0, r1, c1, init, func) {
   let initial = init;
   for (let r = r0; r <= r1; r++) {
     for (let c = c0; c <= c1; c++) { initial = func(initial, getCell(r, c)); }
   }
   return valid(initial);
-};
+}
 
 /**
    * Summ cells values in range (as numerical values)
@@ -251,7 +270,9 @@ const cellsOperate = (r0, c0, r1, c1, init, func) => {
    * @param {number} r1 - end row
    * @param {number} c1 - end column
    */
-const summCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 0, (summ, value) => summ + Number(value));
+function summCells(r0, c0, r1, c1) {
+  return cellsOperate(r0, c0, r1, c1, 0, (summ, value) => summ + Number(value));
+}
 
 /**
    * Concatenate cells in range (as strings)
@@ -260,7 +281,9 @@ const summCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 0, (summ, val
    * @param {number} r1 - end row
    * @param {number} c1 - end column
    */
-const concatenateCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, '', (summ, value) => summ + value);
+function concatenateCells(r0, c0, r1, c1) {
+  return cellsOperate(r0, c0, r1, c1, '', (summ, value) => summ + value);
+}
 
 /**
    * Multiply cells values in range (as numerical values)
@@ -270,7 +293,9 @@ const concatenateCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, '', (s
    * @param {number} r1 - end row
    * @param {number} c1 - end column
    */
-const productCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 1.0, (summ, value) => summ * Number(value));
+function productCells(r0, c0, r1, c1) {
+  return cellsOperate(r0, c0, r1, c1, 1.0, (summ, value) => summ * Number(value));
+}
 
 /**
    * Find maximim value in cells (as numerical values)
@@ -280,7 +305,9 @@ const productCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 1.0, (summ
    * @param {number} r1 - end row
    * @param {number} c1 - end column
    */
-const maxInCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, -20000000000, (summ, value) => Math.max(summ, Number(value)));
+function maxInCells(r0, c0, r1, c1) {
+  return cellsOperate(r0, c0, r1, c1, -20000000000, (summ, value) => Math.max(summ, Number(value)));
+}
 
 /**
    * Find minimum value in cells (as numerical values)
@@ -290,7 +317,9 @@ const maxInCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, -20000000000
    * @param {number} r1 - end row
    * @param {number} c1 - end column
    */
-const minInCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 20000000000, (summ, value) => Math.min(summ, Number(value)));
+function minInCells(r0, c0, r1, c1) {
+  return cellsOperate(r0, c0, r1, c1, 20000000000, (summ, value) => Math.min(summ, Number(value)));
+}
 
 /**
    * Get amount of non-empty cells in range
@@ -300,7 +329,9 @@ const minInCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 20000000000,
    * @param {number} r1 - end row
    * @param {number} c1 - end column
    */
-const countFilledCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 0.0, (summ, value) => (value === '' ? summ : summ + 1));
+function countFilledCells(r0, c0, r1, c1) {
+  return cellsOperate(r0, c0, r1, c1, 0.0, (summ, value) => (value === '' ? summ : summ + 1));
+}
 
 /**
    * Get average value of cells in range
@@ -310,7 +341,9 @@ const countFilledCells = (r0, c0, r1, c1) => cellsOperate(r0, c0, r1, c1, 0.0, (
    * @param {number} r1 - end row
    * @param {number} c1 - end column
    */
-const averageInCells = (r0, c0, r1, c1) => summCells(r0, c0, r1, c1) / countFilledCells(r0, c0, r1, c1);
+function averageInCells(r0, c0, r1, c1) {
+  return summCells(r0, c0, r1, c1) / countFilledCells(r0, c0, r1, c1);
+}
 
 /**
    * Get standart deviation of the values in range
@@ -320,19 +353,23 @@ const averageInCells = (r0, c0, r1, c1) => summCells(r0, c0, r1, c1) / countFill
    * @param {number} r1 - end row
    * @param {number} c1 - end column
    */
-const deviationInCells = (r0, c0, r1, c1) => {
+function deviationInCells(r0, c0, r1, c1) {
   const av = averageInCells(r0, c0, r1, c1);
   return valid(sqrt(cellsOperate(r0, c0, r1, c1, 0.0, (summ, value) => summ + sqr(Number(value) - av)) / countFilledCells(r0, c0, r1, c1)));
-};
+}
 
 /// Date and time
 
 /**
    * Get current date/time
    */
-const now = () => new Date(); // current date & time
+function now() {
+  return new Date();
+}
 
 /**
    * Convert value to date format
    */
-const toDate = x => new Date(x); // convert to date & time format
+function toDate(x) {
+  return new Date(x); // convert to date & time format
+}
