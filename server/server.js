@@ -3,6 +3,7 @@
 /* eslint-disable no-unused-vars */
 const express = require('express');
 const webpack = require('webpack');
+const https = require('https');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const fs = require('fs');
 const custom = require('../client/custom-blocks').customBlocks;
@@ -10,10 +11,22 @@ const { ewRequest } = require('./serverless');
 const dev = require('../webpack.dev.js');
 const prod = require('../webpack.prod.js');
 
+const https_options = {
+  key: fs.readFileSync('./cert/key.pem'),
+  cert: fs.readFileSync('./cert/cert.pem'),
+};
+
 const app = express();
 const port = process.env.PORT || 3002;
-app.listen(port);
-console.log(`Server listening on port ${port}`);
+
+const server = https.createServer(https_options, app);
+
+server.listen(port, () => {
+  console.log(`server starting on port : ${port}`);
+});
+
+// app.listen(port);
+// console.log(`Server listening on port ${port}`);
 
 app.use(async (req, res, next) => {
   console.log('path:', req.path);
