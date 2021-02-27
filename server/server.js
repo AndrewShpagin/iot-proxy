@@ -17,7 +17,7 @@ const https_options = {
 };
 
 const app = express();
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 443;
 
 const server = https.createServer(https_options, app);
 
