@@ -12,8 +12,8 @@ const dev = require('../webpack.dev.js');
 const prod = require('../webpack.prod.js');
 
 const https_options = {
-  key: fs.readFileSync('./cert/key.pem'),
-  cert: fs.readFileSync('./cert/cert.pem'),
+  key: fs.readFileSync('./cert/iot-proxy.key'),
+  cert: fs.readFileSync('./cert/iot-proxy_com.crt'),
 };
 
 const app = express();
