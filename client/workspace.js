@@ -110,7 +110,7 @@ export function assignProject(text) {
 export function updateCode() {
   if (workspace) {
     const code = Blockly.JavaScript.workspaceToCode(workspace);
-    if (!helpShown) {
+    if (!helpShown()) {
       const wholecode = getWholeCode(code);
       w2ui.layout.el('main').textContent = wholecode;
       hljs.highlightBlock(w2ui.layout.el('main'));

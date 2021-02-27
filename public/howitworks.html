@@ -7,8 +7,8 @@
         cursor: pointer;
         color: #ffffff;
         font-family: Arial;
-        font-size: 14px;
-        padding: 3px 6px;
+        font-size: 120%;
+        padding: 2px 10px;
         text-decoration: none;
         text-shadow: 0px 1px 0px #2f6627;
     }
@@ -35,8 +35,6 @@
 </a>
 <script>
     function copygCode() {
-        summWidth();
-
         const r = document.createRange();
         r.selectNode(document.getElementById("gslibcode"));
         window.getSelection().removeAllRanges();
@@ -61,7 +59,7 @@
         <div class="myButton" style="text-align: center;vertical-align: center; font-weight: bold; font-size: 20px;">Execute<br>on Google servers<br>every 1,5 or 10 min.</div>
     </div>
     <script>
-        $(".promo").css('transform', `translate(${(960 - summWidth('.promo'))/2}pt)`);
+        $(".promo").css('transform', `translate(${(960 - summWidth('.promo'))/2}px)`);
     </script>
     <br>
     <div style="font-weight: bold; font-size: 18px; text-align: center; max-width: 960px; padding: 0px; margin: 0 auto;">No need custom firmware! No programming skills! No any additional devices!   </div>
@@ -84,8 +82,8 @@
     <img style="width: 97%" src="step4.jpg" />
     <li><span>Copy and paste the code, press <a class="notranslate">Look up</a>, and then
             <a class="notranslate">Add</a></span><br>
-        <strong id="gslibcode">1xywPDL7eF7XlwT0EXVrN0Z2nfkUGibVWEa8iyrZ-1qAkxnMCuERSJdkD </strong><a href="#"
-            class="myButton" onclick="copygCode()">Copy text</a>
+        <strong id="gslibcode">1xywPDL7eF7XlwT0EXVrN0Z2nfkUGibVWEa8iyrZ-1qAkxnMCuERSJdkD </strong>
+        <button class="myButton" onclick="copygCode()"><i class="fa fa-copy"></i></button><br>
     </li>
     <img style="width: 65%" src="step5.jpg" />
     <li><span>Now run the script with |&gt; icon. Check if all works
@@ -104,7 +102,7 @@
         then just write a code using the API.</span></li>
         <div style="text-align: center; max-width: 960px; margin: 0 auto;">
             <p></p>
-        <a class="myButton" style="padding: 0px 10px;font-weight: bold; font-size: 24px; text-align: center;" onclick="removeHelp()">
+        <a class="myButton" style="padding: 0px 10px;font-weight: bold; font-size: 200%; text-align: center;" onclick="removeHelp()">
             Got it! Let us start!!!</a>
         </div>
 </ol>
