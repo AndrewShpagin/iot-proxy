@@ -3,7 +3,11 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
-import Blockly from 'blockly';
+// import 'pxt-blockly/blockly_compressed';
+// import 'pxt-blockly/blocks_compressed';
+// import 'pxt-blockly/msg/messages';
+// import 'pxt-blockly/msg/js/en';
+// import 'google-closure-library';
 import './generators';
 
 import hljs from 'highlight.js/lib/core';
@@ -39,32 +43,48 @@ eTest.getDevice().then(res => {
 */
 
 hljs.registerLanguage('javascript', javascript);
-
+const side = 'start';
+const rtl = false;
 const options = {
-  collapse: true,
   comments: true,
+  collapse: true,
   disable: true,
+  grid:
+    {
+      spacing: 25,
+      length: 3,
+      colour: '#ccc',
+      snap: true,
+    },
+  horizontalLayout: side == 'top' || side == 'bottom',
   maxBlocks: Infinity,
-  trashcan: true,
-  horizontalLayout: false,
-  toolboxPosition: 'start',
-  css: true,
-  media: 'https://blockly-demo.appspot.com/static/media/',
-  rtl: false,
-  scrollbars: true,
-  sounds: true,
-  renderer: 'custom_renderer',
-  zoom: {
-    controls: true,
-    wheel: true,
-    startScale: 1.0,
-    maxScale: 3,
-    minScale: 0.3,
-    scaleSpeed: 1.2,
-    pinch: true,
+  maxInstances: { test_basic_limit_instances: 3 },
+  media: 'media/',
+  oneBasedIndex: true,
+  readOnly: false,
+  rtl,
+  move: {
+    scrollbars: true,
+    drag: true,
+    wheel: false,
   },
-  oneBasedIndex: false,
   toolbox: customToolbox,
+  toolboxPosition: side == 'top' || side == 'start' ? 'start' : 'end',
+  toolboxOptions:
+    {
+      color: true,
+      inverted: true,
+    },
+  zoom:
+    {
+      controls: true,
+      wheel: true,
+      startScale: 1.0,
+      maxScale: 4,
+      minScale: 0.25,
+      scaleSpeed: 1.1,
+    },
+  renderer: 'pxt',
 };
 
 export function getUserData() {
@@ -118,6 +138,7 @@ export function updateCode() {
     }
   }
 }
+
 export function injectBlockly() {
   let ioturl = '';
   const dlist = ['base.js'];

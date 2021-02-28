@@ -3,7 +3,7 @@
 /* eslint-disable func-names */
 /* eslint-disable no-extend-native */
 /* eslint-disable camelcase */
-import Blockly from 'blockly';
+//import Blockly from 'blockly';
 
 Blockly.JavaScript.switchedOn = function (block) {
   const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);

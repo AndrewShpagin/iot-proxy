@@ -2,11 +2,20 @@
 <html>
 
 <head>
+
   <link rel="stylesheet" type="text/css" href="w2ui-1.5.rc1.min.css" />
   <script src="jquery.min.js"></script>
   <script type="text/javascript" src="w2ui-1.5.rc1.min.js"></script>
-  <!-- Add icon library -->
-  <link rel="stylesheet" href="font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
+
+  <script src="blockly_compressed.js"></script>
+  <script src="javascript_compressed.js"></script>
+  <script src="blocks_compressed.js"></script>
+  <script src="messages.js"></script>
+
+  <script>
+    'use strict';
+  </script>
 
   <meta charset="utf-8">
   <title>Blockly Demo: Toolbox</title>
@@ -54,6 +63,43 @@
       color: white;
       font-weight: bold;
     }
+
+    .ioLabel>.blocklyFlyoutLabelText {
+  font-style: italic;
+}
+
+.blocklyFlyoutLabelText {
+  fill: white !important;
+  font-family: 'Font Awesome\ 5 Free';
+}
+.blocklyFlyoutHeading>.blocklyFlyoutLabelText {
+  font-family: 'Font Awesome\ 5 Free';
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+line.blocklyFlyoutLine {
+  stroke: white;
+}
+.blocklyFlyoutLabelIcon {
+  font-family: 'Font Awesome\ 5 Free';
+  font-size: 1.5rem;
+  font-weight: 200;
+  fill: white;
+}
+
+.blocklyTreeRow {
+  font-family: 'Font Awesome\ 5 Free';
+  height: 45px;
+  font-weight: 600;
+  padding-top: 8pt;
+}
+
+.blocklyTreeLabel {
+  font-family: 'Font Awesome\ 5 Free';
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
   </style>
 </head>
 

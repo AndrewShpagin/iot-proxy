@@ -377,4 +377,4 @@ class CustomRenderer extends Blockly.zelos.Renderer {
   }
 }
 
-Blockly.blockRendering.register('custom_renderer', CustomRenderer);
+//Blockly.blockRendering.register('custom_renderer', CustomRenderer);
