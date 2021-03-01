@@ -373,3 +373,54 @@ function now() {
 function toDate(x) {
   return new Date(x); // convert to date & time format
 }
+
+/**
+ * Returns minutes since 0:00 today
+ */
+
+function thisDayTime() {
+  const tm = new Date();
+  return tm.getHours() * 60 + tm.getMinutes();
+}
+
+/**
+ * Returns minutes since 0:00 for the given hour and minute
+ *
+ * @param {number} hour - the hour
+ * @param {number} minute - the minute
+ */
+
+function dayTime(hour, minute) {
+  return hour * 60 + minute;
+}
+/**
+ * Returns day of the week, 0- Sunday, 1-Monday,...
+ */
+
+function thisWeekDay() {
+  return (new Date()).getDay();
+}
+
+/**
+ * Scans all unread mails for the last day
+ *
+ * @param {string} from - if not empty, only messages from this email will be taken into account.
+ * @param {string} subject - if not empty, only messages with this substring will be taken.
+ * @param {string} body - if not empty, only messages with the substring in the body will be taken.
+ * @param {function} todo - the callback, will be called for each message as todo(message)
+ */
+
+function forAllRecentUnreadMails(from, subject, body, todo) {
+  let query = 'is:unread newer_than:1d';
+  if (from && from.length) query += ` from: ${from}`;
+  if (subject && subject.length) query += ` from: ${subject}`;
+  if (body && body.length) query += ` "${body}"`;
+  const threads = GmailApp.search(query);
+  for (let i = 0; i < threads.length; i++) {
+    const messages = threads[i].getMessages();
+    for (let j = 0; j < messages.length; j++) {
+      const message = messages[j];
+      todo(message);
+    }
+  }
+}

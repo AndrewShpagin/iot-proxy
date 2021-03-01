@@ -3,16 +3,16 @@
 /* eslint-disable func-names */
 /* eslint-disable no-extend-native */
 /* eslint-disable camelcase */
-//import Blockly from 'blockly';
+// import Blockly from 'blockly';
 
 Blockly.JavaScript.switchedOn = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_DEVICE');
   const code = `ew.deviceGet(${value_device}, 'switch') === 'on'`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.switchedOff = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_DEVICE');
   const code = `ew.deviceGet(${value_device}, 'switch') === 'off'`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
@@ -31,7 +31,7 @@ Blockly.JavaScript.console = function (block) {
 };
 
 Blockly.JavaScript.device_state = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_DEVICE');
   const value_state = Blockly.JavaScript.valueToCode(block, 'State', Blockly.JavaScript.ORDER_ATOMIC);
   const code = `ew.deviceGet(${value_device}, '${value_state}')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
@@ -44,12 +44,12 @@ Blockly.JavaScript.pause = function (block) {
 };
 
 Blockly.JavaScript.turnon = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_DEVICE');
   return `ew.deviceSet(${value_device}, {switch: 'on', pulse: 'off'});\n`;
 };
 
 Blockly.JavaScript.turnoff = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_DEVICE');
   return `ew.deviceSet(${value_device}, {switch: 'off', pulse: 'off'});\n`;
 };
 
@@ -63,19 +63,19 @@ Blockly.JavaScript.ewelink_devices_access = function (block) {
 };
 
 Blockly.JavaScript.temperature = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_TEMPERATURE');
   const code = `ew.deviceGet(${value_device}, 'currentTemperature')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.humidity = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_HUMIDITY');
   const code = `ew.deviceGet(${value_device}, 'currentHumidity')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.power = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'Device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_POWER');
   const code = `ew.deviceGet(${value_device}, 'power')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
@@ -191,21 +191,104 @@ Blockly.JavaScript.operaterange = function (block) {
 };
 
 Blockly.JavaScript.turnontemporary = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_DEVICE');
   const value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
   const code = `ew.deviceSet(${value_device}, {switch: 'on', pulse: 'on', pulseWidth: ${value_time}*1000});\n`;
   return code;
 };
 
 Blockly.JavaScript.turnonpulsemode = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_DEVICE');
   const value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
   const code = `ew.deviceSet(${value_device}, {pulse: 'on', pulseWidth: ${value_time}*1000});\n`;
   return code;
 };
 
 Blockly.JavaScript.turnoffpulsemode = function (block) {
-  const value_device = Blockly.JavaScript.valueToCode(block, 'device', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_device = block.getFieldValue('EW_DEVICE');
   const code = `ew.deviceSet(${value_device}, {pulse: 'off'});\n`;
   return code;
+};
+
+Blockly.JavaScript.doininterval = function (block) {
+  const value_hour1 = Blockly.JavaScript.valueToCode(block, 'HOUR1', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_min1 = Blockly.JavaScript.valueToCode(block, 'MIN1', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_hour2 = Blockly.JavaScript.valueToCode(block, 'HOUR2', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_min2 = Blockly.JavaScript.valueToCode(block, 'MIN2', Blockly.JavaScript.ORDER_ATOMIC);
+  const dropdown_day = block.getFieldValue('DAY');
+  const statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+  let code = '';
+  if (dropdown_day === '-1') {
+    code = `if( ew.thisDayTime() >= ew.dayTime(${value_hour1}, ${value_min1})  && ew.thisDayTime() <= ew.dayTime(${value_hour2}, ${value_min2})) {\n` +
+           `${statements_name}` +
+           '}\n';
+  } else {
+    code = `if( ew.thisDayTime() >= ew.dayTime(${value_hour1}, ${value_min1}) && ew.thisDayTime() <= ew.dayTime(${value_hour2}, ${value_min2}) && ew.thisWeekDay() === ${dropdown_day}) {\n` +
+           `${statements_name}` +
+           '}\n';
+  }
+  return code;
+};
+
+Blockly.JavaScript.hoursinterval = function (block) {
+  const value_hour1 = Blockly.JavaScript.valueToCode(block, 'HOUR1', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_min1 = Blockly.JavaScript.valueToCode(block, 'MIN1', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_hour2 = Blockly.JavaScript.valueToCode(block, 'HOUR2', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_min2 = Blockly.JavaScript.valueToCode(block, 'MIN2', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `ew.thisDayTime() >= ew.dayTime(${value_hour1}, ${value_min1}) && ew.thisDayTime() <= dayTime(${value_hour2}, ${value_min2})`;
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript.aftertime = function (block) {
+  const value_hour = Blockly.JavaScript.valueToCode(block, 'HOUR', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_min = Blockly.JavaScript.valueToCode(block, 'MIN', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `ew.thisDayTime() >= ew.dayTime(${value_hour}, ${value_min})`;
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript.beforetime = function (block) {
+  const value_hour = Blockly.JavaScript.valueToCode(block, 'HOUR', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_min = Blockly.JavaScript.valueToCode(block, 'MIN', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `ew.thisDayTime() <= ew.dayTime(${value_hour}, ${value_min})`;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.dayoftheweek = function (block) {
+  const dropdown_day = block.getFieldValue('DAY');
+  const code = `ew.thisDayTime() === ${dropdown_day}`;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.sendmail = function (block) {
+  const value_email = Blockly.JavaScript.valueToCode(block, 'EMAIL', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_subject = Blockly.JavaScript.valueToCode(block, 'SUBJECT', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_body = Blockly.JavaScript.valueToCode(block, 'BODY', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  if (value_email === 'me') {
+    return `MailApp.sendEmail(Session.getActiveUser().getEmail(), ${value_subject}, ${value_body});\n`;
+  } else {
+    return `MailApp.sendEmail(${value_email}, ${value_subject}, ${value_body});\n`;
+  }
+};
+
+Blockly.JavaScript.gotnewmessage = function (block) {
+  const value_from = Blockly.JavaScript.valueToCode(block, 'FROM', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_subject = Blockly.JavaScript.valueToCode(block, 'SUBJECT', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_body = Blockly.JavaScript.valueToCode(block, 'BODY', Blockly.JavaScript.ORDER_ATOMIC);
+  const statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+  const checkbox_markasread = block.getFieldValue('MARKASREAD') === 'TRUE';
+  const checkbox_delete = block.getFieldValue('DELETE') === 'TRUE';
+  let code = `ew.forAllRecentUnreadMails(${value_from}, ${value_subject}, ${value_body}, message => {\n`;
+  if (checkbox_markasread) code += '  GmailApp.markMessageRead(message);\n';
+  if (checkbox_delete) code += '  GmailApp.moveMessageToTrash(message);\n';
+  code += statements_name;
+  code += '});\n';
+  return code;
+};
+
+Blockly.JavaScript.getfrom = function (block) {
+  // TODO: Assemble JavaScript into code variable.
+  const code = 'message.getFrom()';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };

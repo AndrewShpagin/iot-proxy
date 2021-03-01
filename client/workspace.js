@@ -1,25 +1,24 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
-// import 'pxt-blockly/blockly_compressed';
-// import 'pxt-blockly/blocks_compressed';
-// import 'pxt-blockly/msg/messages';
-// import 'pxt-blockly/msg/js/en';
-// import 'google-closure-library';
-import './generators';
 
+import './generators';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import 'highlight.js/styles/github.css';
-
-import { randomBytes, randomInt } from 'crypto';
-import { multiDownload } from './assets';
+import { Blocks } from 'blockly';
+import { download, multiDownload } from './assets';
 import { currentTabContentTag, helpShown } from './ui';
-import { customBlocks } from './custom-blocks';
+import { customBlocks, defDevs } from './custom-blocks';
 import customToolbox from './toolbox.xml';
-import './custom_render';
+
+import defEn from '../public/translations/en.json';
+import customEn from '../public/translations/custom_en.json';
+import defRu from '../public/translations/ru.json';
+import customRu from '../public/translations/custom_ru.json';
 
 const CryptoJS = require('crypto-js');
 
@@ -32,15 +31,6 @@ function encStr(str) {
 function decStr(str) {
   return CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(str, seqPp));
 }
-
-/*
-console.log('eTest');
-const eTest = new ewSimple('andrewshpagin@gmail.com', 'Andrew75', 'eu');
-console.log('eTest1');
-eTest.getDevice().then(res => {
-  console.log(res);
-});
-*/
 
 hljs.registerLanguage('javascript', javascript);
 const side = 'start';
@@ -56,7 +46,7 @@ const options = {
       colour: '#ccc',
       snap: true,
     },
-  horizontalLayout: side == 'top' || side == 'bottom',
+  horizontalLayout: false,
   maxBlocks: Infinity,
   maxInstances: { test_basic_limit_instances: 3 },
   media: 'media/',
@@ -69,7 +59,7 @@ const options = {
     wheel: false,
   },
   toolbox: customToolbox,
-  toolboxPosition: side == 'top' || side == 'start' ? 'start' : 'end',
+  toolboxPosition: 'start',
   toolboxOptions:
     {
       color: true,
@@ -79,7 +69,7 @@ const options = {
     {
       controls: true,
       wheel: true,
-      startScale: 1.0,
+      startScale: 0.75,
       maxScale: 4,
       minScale: 0.25,
       scaleSpeed: 1.1,
@@ -138,6 +128,96 @@ export function updateCode() {
     }
   }
 }
+const localesList = {};
+function applyLocaleNow(locObject) {
+  Object.keys(locObject).forEach(key => {
+    Blockly.Msg[key] = locObject[key];
+  });
+  if (workspace) Blockly.svgResize(workspace);
+}
+function preloadLocale(dst, src) {
+  const add = src;
+  Object.keys(add).forEach(key => {
+    dst[key] = src[key];
+  });
+  return dst;
+}
+
+localesList.en = preloadLocale(defEn, customEn);
+localesList.ru = preloadLocale(defRu, customRu);
+
+function setupDroplists(devices) {
+  console.log(devices);
+  const enc = {
+    EW_POWER: 'power',
+    EW_TEMPERATURE: 'currentTemperature',
+    EW_HUMIDITY: 'currentHumidity',
+    EW_DEVICE: 'deviceid',
+  };
+  if (Object.keys(devices).length) {
+    customBlocks.forEach(block => {
+      if (block.hasOwnProperty('args0')) {
+        block.args0.forEach(arg => {
+          if (arg.type === 'field_dropdown' && arg.name.substring(0, 3) === 'EW_') {
+            arg.options = [];
+            const check = enc[arg.name];
+            Object.entries(devices).forEach(el => {
+              const device = el[1];
+              if (device.hasOwnProperty(check)) {
+                arg.options.push([device.name, `'${device.deviceid}'/*${device.name}*/`]);
+              }
+            });
+            if (arg.options.length === 0) {
+              arg.options.push(['%{BKY_NODEVICES}', '0']);
+            }
+            console.log(block.type, arg.options);
+          }
+        });
+      }
+    });
+    w2ui.devGrid.clear();
+    let i = 1;
+    Object.entries(devices).forEach(element => {
+      w2ui.devGrid.add({
+        recid: i,
+        deviceid: element[1].deviceid,
+        deviceName: element[1].name,
+        temperature: element[1].currentTemperature,
+        humidity: element[1].currentHumidity,
+        online: element[1].online ? 'YES' : 'NO',
+        state: element[1].switch === 'on' ? 'YES' : 'NO',
+      });
+      i++;
+    });
+  } else {
+    customBlocks.forEach(block => {
+      if (block.hasOwnProperty('args0')) {
+        block.args0.forEach(arg => {
+          if (arg.type === 'field_dropdown' && arg.name.substring(0, 3) === 'EW_') {
+            arg.options = [[defDevs, '0']];
+          }
+        });
+      }
+    });
+  }
+}
+
+function applyLocale(locName) {
+  const loc = localesList[locName];
+  if (!loc) {
+    const list = [`translations/${locName}.json`, `translations/custom_${locName}.json`];
+    download(list, response => {
+      localesList[locName] = preloadLocale(response[list[0]], response[list[1]]);
+      applyLocaleNow(localesList[locName]);
+      if (workspace) Blockly.svgResize(workspace);
+    });
+  } else {
+    applyLocaleNow(loc);
+    if (workspace) Blockly.svgResize(workspace);
+  }
+}
+
+applyLocale('ru');
 
 export function injectBlockly() {
   let ioturl = '';
@@ -146,9 +226,7 @@ export function injectBlockly() {
   if (user) {
     const sdata = `${user}/devices/`;
     const hv = Date.now().toString().slice(-6);
-    console.log(hv);
     ioturl = `/xRet78uz${encodeURI(encStr(hv + sdata))}`;
-    console.log(ioturl);
     dlist.push(ioturl);
   }
   multiDownload(dlist, response => {
@@ -162,30 +240,8 @@ export function injectBlockly() {
     let devices = {};
     if (ioturl.length) devices = JSON.parse(response[ioturl]);
 
-    customBlocks[0].args0[0].options = [];
-    if (Object.keys(devices).length) {
-      w2ui.devGrid.clear();
-      let i = 1;
-      Object.entries(devices).forEach(element => {
-        customBlocks[0].args0[0].options.push([element[1].name, element[1].deviceid]);
-        w2ui.devGrid.add({
-          recid: i,
-          deviceid: element[1].deviceid,
-          deviceName: element[1].name,
-          temperature: element[1].currentTemperature,
-          humidity: element[1].currentHumidity,
-          online: element[1].online ? 'YES' : 'NO',
-          state: element[1].switch === 'on' ? 'YES' : 'NO',
-        });
-        i++;
-      });
-    }
-    // w2ui.devGrid.innerHTML = `<span class="notranslate">${w2ui.devGrid.innerHTML}`;
-    if (customBlocks[0].args0[0].options.length === 0) {
-      customBlocks[0].args0[0].options.push(['You need to login', 'You need to login']);
-    }
-    // w2ui.layout.html('main').html = '';
-    // w2ui.layout.html('main', $().w2grid(grid1));
+    setupDroplists(devices);
+    // apply localisation
 
     workspace = Blockly.inject(blocklyDiv, options);
     Blockly.defineBlocksWithJsonArray(customBlocks);

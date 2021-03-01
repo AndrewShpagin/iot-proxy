@@ -1,8 +1,10 @@
+const defDevs = '%{BKY_LOGIN}';
 const customBlocks =
 [
+  /*
   {
     type: 'device',
-    message0: 'Device %1',
+    message0: '%{BKY_DEVICE1}',
     args0: [
       {
         type: 'field_dropdown',
@@ -17,45 +19,40 @@ const customBlocks =
     ],
     output: 'deviceID',
     colour: 60,
-    tooltip: 'The device to operate with',
+    tooltip: '%{BKY_DEVTOOPERATE}',
     helpUrl: '',
   },
+  */
   {
     type: 'switchedOn',
-    message0: 'Turned ON? %1 %2',
+    message0: '%{BKY_DEVSWITCHEDON}',
     args0: [
       {
-        type: 'input_dummy',
-      },
-      {
-        type: 'input_value',
-        name: 'Device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_DEVICE',
+        options: [[defDevs, '0']],
       },
     ],
     inputsInline: true,
     output: 'Boolean',
     colour: 210,
-    tooltip: 'Check if the device turned ON',
+    tooltip: '%{BKY_DEVSWITCHEDON_HINT}',
     helpUrl: '',
   },
   {
     type: 'switchedOff',
-    message0: 'Turned OFF? %1 %2',
+    message0: '%{BKY_DEVSWITCHEDOFF}',
     args0: [
       {
-        type: 'input_dummy',
-      },
-      {
-        type: 'input_value',
-        name: 'Device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_DEVICE',
+        options: [[defDevs, '0']],
       },
     ],
     inputsInline: true,
     output: 'Boolean',
     colour: 210,
-    tooltip: 'Check if the device turned OFF',
+    tooltip: '%{BKY_DEVSWITCHEDOFF_HINT}',
     helpUrl: '',
   },
   {
@@ -76,12 +73,12 @@ const customBlocks =
   },
   {
     type: 'device_state',
-    message0: 'device: %1 state: %2',
+    message0: '%{BKY_DEVSTATE12}',
     args0: [
       {
-        type: 'input_value',
-        name: 'Device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_DEVICE',
+        options: [[defDevs, '0']],
       },
       {
         type: 'input_value',
@@ -97,7 +94,7 @@ const customBlocks =
   },
   {
     type: 'pause',
-    message0: 'Pause, sec %1',
+    message0: '%{BKY_PAUSESEC1}',
     args0: [
       {
         type: 'input_value',
@@ -105,7 +102,7 @@ const customBlocks =
         check: 'Number',
       },
     ],
-    colour: 230,
+    colour: '#60AA40',
     previousStatement: null,
     nextStatement: null,
     tooltip: '',
@@ -113,12 +110,12 @@ const customBlocks =
   },
   {
     type: 'turnon',
-    message0: 'Turn ON %1',
+    message0: '%{BKY_TURNON1}',
     args0: [
       {
-        type: 'input_value',
-        name: 'device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_DEVICE',
+        options: [[defDevs, '0']],
       },
     ],
     inputsInline: true,
@@ -130,12 +127,12 @@ const customBlocks =
   },
   {
     type: 'turnoff',
-    message0: 'Turn OFF %1',
+    message0: '%{BKY_TURNOFF1}',
     args0: [
       {
-        type: 'input_value',
-        name: 'device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_DEVICE',
+        options: [[defDevs, '0']],
       },
     ],
     inputsInline: true,
@@ -147,55 +144,55 @@ const customBlocks =
   },
   {
     type: 'temperature',
-    message0: 'Temperature %1',
+    message0: '%{BKY_TEMPERATURE1}',
     args0: [
       {
-        type: 'input_value',
-        name: 'Device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_TEMPERATURE',
+        options: [[defDevs, '0']],
       },
     ],
     inputsInline: true,
     output: 'Number',
     colour: 240,
-    tooltip: 'Returns the temperature reported by the device.',
+    tooltip: '%{BKY_REPORTT}',
     helpUrl: '',
   },
   {
     type: 'humidity',
-    message0: 'Humidity %1',
+    message0: '%{BKY_HUMIDITY1}',
     args0: [
       {
-        type: 'input_value',
-        name: 'Device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_HUMIDITY',
+        options: [[defDevs, '0']],
       },
     ],
     inputsInline: true,
     output: 'Number',
     colour: 240,
-    tooltip: 'Returns the temperature reported by the device.',
+    tooltip: '%{BKY_REPORTH}',
     helpUrl: '',
   },
   {
     type: 'power',
-    message0: 'Power %1',
+    message0: '%{BKY_POWER1}',
     args0: [
       {
-        type: 'input_value',
-        name: 'Device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_POWER',
+        options: [[defDevs, '0']],
       },
     ],
     inputsInline: true,
     output: 'Number',
     colour: 240,
-    tooltip: 'Returns the temperature reported by the device.',
+    tooltip: '%{BKY_REPORTP}',
     helpUrl: '',
   },
   {
     type: 'getcellvalue',
-    message0: 'Get cell,  %1 Row %2 Column %3',
+    message0: '%{BKY_GETCELL123}',
     args0: [
       {
         type: 'input_dummy',
@@ -221,7 +218,7 @@ const customBlocks =
   },
   {
     type: 'setcellvalue',
-    message0: 'Set cell value,  %1 Row %2 Column %3 Value %4',
+    message0: '%{BKY_SETCELL123}',
     args0: [
       {
         type: 'input_dummy',
@@ -250,7 +247,7 @@ const customBlocks =
   },
   {
     type: 'accamulatecell',
-    message0: 'Increment the cell, %1 Row %2 Column %3 Increment %4',
+    message0: '%{BKY_INCCELL1234}',
     args0: [
       {
         type: 'input_dummy',
@@ -280,7 +277,7 @@ const customBlocks =
   },
   {
     type: 'getlastrow',
-    message0: 'Get unused row in the Sheet %1',
+    message0: '%{BKY_UNUSEDROW1}',
     args0: [
       {
         type: 'input_dummy',
@@ -289,12 +286,12 @@ const customBlocks =
     inputsInline: true,
     output: 'Number',
     colour: 230,
-    tooltip: 'Get the last row in the Google Sheet',
+    tooltip: '%{BKY_GETLASTROWGS}',
     helpUrl: '',
   },
   {
     type: 'namedsheet',
-    message0: 'Set current sheet: %1',
+    message0: '%{BKY_SETSHEET}',
     args0: [
       {
         type: 'input_value',
@@ -309,15 +306,15 @@ const customBlocks =
   },
   {
     type: 'currenttime',
-    message0: 'Current time',
+    message0: '%{BKY_DATENOW}',
     output: 'Time',
-    colour: 90,
+    colour: '#60AA40',
     tooltip: '',
     helpUrl: '',
   },
   {
     type: 'passedsince',
-    message0: 'Time passed since, sec %1',
+    message0: '%{BKY_PASSEDSINCE}',
     args0: [
       {
         type: 'input_value',
@@ -325,13 +322,13 @@ const customBlocks =
       },
     ],
     output: 'Number',
-    colour: 90,
+    colour: '#60AA40',
     tooltip: '',
     helpUrl: '',
   },
   {
     type: 'addsectodate',
-    message0: 'Add to date, sec. Date: %1 Interval, sec %2',
+    message0: '%{BKY_ADDSEC12}',
     args0: [
       {
         type: 'input_value',
@@ -345,13 +342,13 @@ const customBlocks =
     ],
     inputsInline: true,
     output: 'Time',
-    colour: 90,
+    colour: '#60AA40',
     tooltip: '',
     helpUrl: '',
   },
   {
     type: 'addmintodate',
-    message0: 'Add to date, min. Date: %1 Interval, min %2',
+    message0: '%{BKY_ADDMIN12}',
     args0: [
       {
         type: 'input_value',
@@ -365,13 +362,13 @@ const customBlocks =
     ],
     inputsInline: true,
     output: 'Time',
-    colour: 90,
+    colour: '#60AA40',
     tooltip: '',
     helpUrl: '',
   },
   {
     type: 'addhourstodate',
-    message0: 'Add to date, hours. Date: %1 Interval, hours %2',
+    message0: '%{BKY_ADDHOUR12}',
     args0: [
       {
         type: 'input_value',
@@ -385,18 +382,18 @@ const customBlocks =
     ],
     inputsInline: true,
     output: 'Time',
-    colour: 90,
+    colour: '#60AA40',
     tooltip: '',
     helpUrl: '',
   },
   {
     type: 'comment',
-    message0: '/* %1 %2 */',
+    message0: '%{BKY_COMMENT12}',
     args0: [
       {
         type: 'field_input',
         name: 'NAME',
-        text: 'Enter the comment there',
+        text: '%{BKY_ENTERCOMMENT}',
       },
       {
         type: 'input_dummy',
@@ -411,7 +408,7 @@ const customBlocks =
   },
   {
     type: 'removerow',
-    message0: 'Remove the row %1',
+    message0: '%{BKY_REMOVEROW1}',
     args0: [
       {
         type: 'input_value',
@@ -428,7 +425,7 @@ const customBlocks =
   },
   {
     type: 'removecolumn',
-    message0: 'Remove the column %1',
+    message0: '%{BKY_REMOVECOLUMN1}',
     args0: [
       {
         type: 'input_value',
@@ -445,7 +442,7 @@ const customBlocks =
   },
   {
     type: 'clearrange',
-    message0: 'Clear range, from %1 row %2 column %3 to row %4 column %5',
+    message0: '%{BKY_CLEARRANE12345}',
     args0: [
       {
         type: 'input_dummy',
@@ -480,42 +477,42 @@ const customBlocks =
   },
   {
     type: 'operaterange',
-    message0: 'do %1 , from %2 row %3 column %4 to row %5 column %6',
+    message0: '%{BKY_DOINRANE16}',
     args0: [
       {
         type: 'field_dropdown',
         name: 'NAME',
         options: [
           [
-            'summ',
+            '%{BKY_CLSUMM}',
             'summCells',
           ],
           [
-            'multiply',
+            '%{BKY_CLMUL}',
             'multiplyCells',
           ],
           [
-            'max',
+            '%{BKY_CLMAX}',
             'maxInCells',
           ],
           [
-            'min',
+            '%{BKY_CLMIN}',
             'minInCells',
           ],
           [
-            'average',
+            '%{BKY_CLAVG}',
             'averageInCells',
           ],
           [
-            'deviation',
+            '%{BKY_CLDEVI}',
             'deviationInCells',
           ],
           [
-            'concatenate',
+            '%{BKY_CLCONC}',
             'concatenateCells',
           ],
           [
-            'count filled',
+            '%{BKY_CLCOUNT}',
             'countFilledCells',
           ],
         ],
@@ -552,12 +549,12 @@ const customBlocks =
   },
   {
     type: 'turnontemporary',
-    message0: 'Turn ON the device %1 and turn off after  %2 sec',
+    message0: '%{BKY_TURNONTEMP}',
     args0: [
       {
-        type: 'input_value',
-        name: 'device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_DEVICE',
+        options: [[defDevs, '0']],
       },
       {
         type: 'input_value',
@@ -568,34 +565,34 @@ const customBlocks =
     previousStatement: null,
     nextStatement: null,
     colour: 120,
-    tooltip: 'The device will be turned on and then turned off after the  period of time even if script will finish.  Pay attention that auto-turning off mode will be enabled on the device till the next tun on/off command from the script.',
+    tooltip: '%{BKY_TURNONTEMP_HINT}',
     helpUrl: '',
   },
   {
     type: 'turnoffpulsemode',
-    message0: 'Turn off pulse mode %1',
+    message0: '%{BKY_TURNOFFPULSE1}',
     args0: [
       {
-        type: 'input_value',
-        name: 'device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_DEVICE',
+        options: [[defDevs, '0']],
       },
     ],
     inputsInline: true,
     previousStatement: null,
     nextStatement: null,
     colour: 0,
-    tooltip: 'The pulse mode allows to turn off the device after the period of time after it will be turned ON.',
+    tooltip: '%{BKY_TURNOFFPULSE1_HINT}',
     helpUrl: '',
   },
   {
     type: 'turnonpulsemode',
-    message0: 'Turn on pulse mode %1 , the delay is %2 sec',
+    message0: '%{BKY_TURNONPULSE12}',
     args0: [
       {
-        type: 'input_value',
-        name: 'device',
-        check: 'deviceID',
+        type: 'field_dropdown',
+        name: 'EW_DEVICE',
+        options: [[defDevs, '0']],
       },
       {
         type: 'input_value',
@@ -607,7 +604,283 @@ const customBlocks =
     previousStatement: null,
     nextStatement: null,
     colour: 120,
-    tooltip: 'The pulse mode allows to turn off the device after the period of time after it will be turned ON.',
+    tooltip: '%{BKY_TURNONPULSE12_HINT}',
+    helpUrl: '',
+  },
+  {
+    type: 'doininterval',
+    message0: '%{BKY_DOININTERVAL17}',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'HOUR1',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'MIN1',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'HOUR2',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'MIN2',
+        check: 'Number',
+      },
+      {
+        type: 'field_dropdown',
+        name: 'DAY',
+        options: [
+          [
+            '%{BKY_ANYDAY}',
+            '-1',
+          ],
+          [
+            '%{BKY_SUNDAY}',
+            '0',
+          ],
+          [
+            '%{BKY_MONDAY}',
+            '1',
+          ],
+          [
+            '%{BKY_TUESDAY}',
+            '2',
+          ],
+          [
+            '%{BKY_WEDNESDAY}',
+            '3',
+          ],
+          [
+            '%{BKY_THURSDAY}',
+            '4',
+          ],
+          [
+            '%{BKY_FRIDAY}',
+            '5',
+          ],
+          [
+            '%{BKY_SATURDAY}',
+            '6',
+          ],
+        ],
+      },
+      {
+        type: 'input_dummy',
+      },
+      {
+        type: 'input_statement',
+        name: 'NAME',
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: '#60AA40',
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'hoursinterval',
+    message0: '%{BKY_FROM1234}',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'HOUR1',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'MIN1',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'HOUR2',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'MIN2',
+        check: 'Number',
+      },
+    ],
+    inputsInline: true,
+    output: 'Boolean',
+    colour: '#60AA40',
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'aftertime',
+    message0: '%{BKY_AFTER12}',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'HOUR',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'MIN',
+        check: 'Number',
+      },
+    ],
+    inputsInline: true,
+    output: 'Boolean',
+    colour: '#60AA40',
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'beforetime',
+    message0: '%{BKY_BEFORE12}',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'HOUR',
+        check: 'Number',
+      },
+      {
+        type: 'input_value',
+        name: 'MIN',
+        check: 'Number',
+      },
+    ],
+    inputsInline: true,
+    output: 'Boolean',
+    colour: '#60AA40',
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'dayoftheweek',
+    message0: '%{BKY_ISTODAY}',
+    args0: [
+      {
+        type: 'field_dropdown',
+        name: 'DAY',
+        options: [
+          [
+            '%{BKY_SUNDAY}',
+            '0',
+          ],
+          [
+            '%{BKY_MONDAY}',
+            '1',
+          ],
+          [
+            '%{BKY_TUESDAY}',
+            '2',
+          ],
+          [
+            '%{BKY_WEDNESDAY}',
+            '3',
+          ],
+          [
+            '%{BKY_THURSDAY}',
+            '4',
+          ],
+          [
+            '%{BKY_FRIDAY}',
+            '5',
+          ],
+          [
+            '%{BKY_SATURDAY}',
+            '6',
+          ],
+        ],
+      },
+    ],
+    output: 'Boolean',
+    colour: '#60AA40',
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'sendmail',
+    message0: '%{BKY_SENDEMAIL123}',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'EMAIL',
+        align: 'RIGHT',
+      },
+      {
+        type: 'input_value',
+        name: 'SUBJECT',
+        align: 'RIGHT',
+      },
+      {
+        type: 'input_value',
+        name: 'BODY',
+        align: 'RIGHT',
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 230,
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'gotnewmessage',
+    message0: '%{BKY_LISTEMAILS17}',
+    args0: [
+      {
+        type: 'input_dummy',
+      },
+      {
+        type: 'input_value',
+        name: 'FROM',
+        check: 'String',
+        align: 'RIGHT',
+      },
+      {
+        type: 'input_value',
+        name: 'SUBJECT',
+        check: 'String',
+        align: 'RIGHT',
+      },
+      {
+        type: 'input_value',
+        name: 'BODY',
+        check: 'String',
+        align: 'RIGHT',
+      },
+      {
+        type: 'input_statement',
+        name: 'NAME',
+      },
+      {
+        type: 'field_checkbox',
+        name: 'MARKASREAD',
+        checked: true,
+      },
+      {
+        type: 'field_checkbox',
+        name: 'DELETE',
+        checked: false,
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 230,
+    tooltip: '',
+    helpUrl: '',
+  },
+  {
+    type: 'getfrom',
+    message0: '%{BKY_WHOSENT}',
+    output: 'String',
+    colour: 230,
+    tooltip: '',
     helpUrl: '',
   },
   {
@@ -654,4 +927,4 @@ const customBlocks =
   },
 ];
 
-module.exports = { customBlocks };
+module.exports = { customBlocks, defDevs };

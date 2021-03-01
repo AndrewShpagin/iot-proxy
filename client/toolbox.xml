@@ -1,13 +1,13 @@
 <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
   <category name="" colour="#5ba58c">
   <label text=" Devices" web-class="blocklyFlyoutHeading"></label>
-    <block type="device"></block>
+    <!--block type="device"></block-->
     <block type="switchedOn"></block>
     <block type="switchedOff"></block>
     <block type="temperature"></block>
     <block type="humidity"></block>
     <block type="power"></block>
-    <block type="device_state"></block>
+    <!--block type="device_state"></block-->
     <block type="turnon"></block>
     <block type="turnontemporary">
       <value name="time">
@@ -26,9 +26,116 @@
     <block type="turnoff"></block>
     <block type="turnoffpulsemode"></block>
   </category>
-    <category name="" colour="#5ba58c"> 
+  <category name="" colour="#5ba58c"> 
+    <label text=" Messages" web-class="blocklyFlyoutHeading"></label>
+    <block type="sendmail">
+      <value name="EMAIL">
+        <shadow type="text">
+          <field name="TEXT">me</field>
+        </shadow>
+      </value>   
+      <value name="SUBJECT">
+        <shadow type="text">
+          <field name="TEXT">Subject</field>
+        </shadow>
+      </value>     
+      <value name="BODY">
+        <shadow type="text">
+          <field name="TEXT">...</field>
+        </shadow>
+      </value>   
+    </block>
+    <block type="gotnewmessage">
+      <value name="FROM">
+        <shadow type="text">
+          <field name="TEXT"></field>
+        </shadow>
+      </value>   
+      <value name="SUBJECT">
+        <shadow type="text">
+          <field name="TEXT"></field>
+        </shadow>
+      </value>     
+      <value name="BODY">
+        <shadow type="text">
+          <field name="TEXT"></field>
+        </shadow>
+      </value>  
+    </block>
+    <block type="getfrom"></block>
+  </category>
+  <category name="" colour="#60AA40"> 
     <label text=" Time" web-class="blocklyFlyoutHeading"></label>
     <block type="pause"></block>
+    <block type="doininterval">
+      <value name="HOUR1">
+        <shadow type="math_number">
+          <field name="NUM">0</field>
+        </shadow>
+      </value>
+      <value name="HOUR2">
+        <shadow type="math_number">
+          <field name="NUM">23</field>
+        </shadow>
+      </value>
+      <value name="MIN1">
+        <shadow type="math_number">
+          <field name="NUM">00</field>
+        </shadow>
+      </value>
+      <value name="MIN2">
+        <shadow type="math_number">
+          <field name="NUM">59</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="hoursinterval">
+      <value name="HOUR1">
+        <shadow type="math_number">
+          <field name="NUM">0</field>
+        </shadow>
+      </value>
+      <value name="HOUR2">
+        <shadow type="math_number">
+          <field name="NUM">23</field>
+        </shadow>
+      </value>
+      <value name="MIN1">
+        <shadow type="math_number">
+          <field name="NUM">00</field>
+        </shadow>
+      </value>
+      <value name="MIN2">
+        <shadow type="math_number">
+          <field name="NUM">59</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="aftertime">
+      <value name="HOUR">
+        <shadow type="math_number">
+          <field name="NUM">12</field>
+        </shadow>
+      </value>
+      <value name="MIN">
+        <shadow type="math_number">
+          <field name="NUM">00</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="beforetime">
+      <value name="HOUR">
+        <shadow type="math_number">
+          <field name="NUM">12</field>
+        </shadow>
+      </value>
+      <value name="MIN">
+        <shadow type="math_number">
+          <field name="NUM">00</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="dayoftheweek"></block>
     <block type="currenttime"></block>
     <block type="passedsince"></block>
     <block type="addsectodate">
