@@ -117,6 +117,16 @@ let workspace = null;
 export function assignProject(text) {
   Blockly.Xml.clearWorkspaceAndLoadFromXml(Blockly.Xml.textToDom(text), workspace);
 }
+let gscript = '';
+download('gscript.js', res => {
+  gscript = res;
+});
+export function updateCodeCompletely() {
+  const code = Blockly.JavaScript.workspaceToCode(workspace);
+  let wholecode = getWholeCode(code);
+  wholecode += `\n\n\n\n\n\n\n\n\n\n\n\n${gscript}`;
+  w2ui.layout.el('main').textContent = wholecode;
+}
 export function updateCode() {
   if (workspace) {
     const code = Blockly.JavaScript.workspaceToCode(workspace);
@@ -232,7 +242,7 @@ export function injectBlockly() {
     const blocklyDiv = w2ui.layout.el('top');
     blocklyDiv.innerHTML = '';
     blocklyDiv.style.padding = '0px';
-    w2ui.layout.el('main').style['white-space'] = 'pre';
+    if (!helpShown())w2ui.layout.el('main').style['white-space'] = 'pre';
     w2ui.layout.el('right').style['white-space'] = 'pre';
     baseJs = response['base.js'];
 

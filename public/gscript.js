@@ -1,8 +1,17 @@
+/// This script intended to be used with Google Script. Look the usage instructions at
+/// http://iot-proxy.com/howitworks.html
+/// Script functions documentation -
+/// http://iot-proxy.com/global.html
+/// The code below is the library used to manage all requests of you program.
+/// We are completely open, you may review that we do nothing except we announced.
+/// The code below may be used witout any restrictions.
+/// We will be thankful if you will refer the iot-proxy.com
+
 let email = '';
 let password = '';
 let region = '';
 let devices = null;
-let mySheet = SpreadsheetApp.getActiveSheet();
+const mySheet = SpreadsheetApp.getActiveSheet();
 
 /**
  * Provide email, password and region to control the eWeLink devices through the script.
@@ -13,11 +22,10 @@ let mySheet = SpreadsheetApp.getActiveSheet();
  * @param {sheet} sheet - the sheet to operate, usually it is SpreadsheetApp.getActiveSheet()
  *
  */
-function setup(mail, pass, reg, sheet) {
+function setup(mail, pass, reg) {
   email = mail;
   password = pass;
   region = reg;
-  mySheet = sheet;
 }
 
 const APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';

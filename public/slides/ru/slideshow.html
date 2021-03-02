@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Verdana, sans-serif;
+      margin: 0
+    }
+
+    .mySlides {
+      display: none
+    }
+
+    img {
+      vertical-align: middle;
+    }
+
+    /* Slideshow container */
+    .slideshow-container {
+      max-width: 100%;
+      white-space: normal;
+      position: relative;
+      margin: auto;
+    }
+
+    /* Next & previous buttons */
+    .prev,
+    .next {
+      white-space: normal;
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      padding: 16px;
+      margin-top: -22px;
+      color: #4caf50;
+      opacity: 50%;
+      font-weight: bold;
+      font-size: 98px;
+      transition: 0.6s ease;
+      border-radius: 0 3px 3px 0;
+      user-select: none;
+    }
+
+    /* Position the "next button" to the right */
+    .next {
+      right: 0;
+      border-radius: 3px 0 0 3px;
+    }
+
+    /* On hover, add a black background color with a little bit see-through */
+    .prev:hover,
+    .next:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .myButton {
+        background-color: #4CAF50;
+        border-radius: 6px;
+        border: 1px solid #18ab29;
+        display: inline-block;
+        cursor: pointer;
+        color: #ffffff;
+        font-family: Arial;
+        font-size: 30pt;
+        padding: 2px 10px;
+        text-decoration: none;
+        text-shadow: 0px 1px 0px #2f6627;
+    }
+
+    .myButton:hover {
+        background-color: #5cbf2a;
+    }
+
+    .myButton:active {
+        position: relative;
+        top: 1px;
+    }
+
+    /* Caption text */
+    .text {
+      color: #f2f2f2;
+      font-size: 15px;
+      padding: 8px 12px;
+      position: absolute;
+      bottom: 8px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Number text (1/3 etc) */
+    .numbertext {
+      color: #f2f2f2;
+      font-size: 12px;
+      padding: 8px 12px;
+      position: absolute;
+      top: 0;
+    }
+
+    /* The dots/bullets/indicators */
+    .dot {
+      cursor: pointer;
+      height: 15px;
+      width: 15px;
+      margin: 0 2px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.6s ease;
+    }
+
+    .active,
+    .dot:hover {
+      background-color: #717171;
+    }
+
+    /* Fading animation */
+    .fade {
+      -webkit-animation-name: fade;
+      -webkit-animation-duration: 1.5s;
+      animation-name: fade;
+      animation-duration: 1.5s;
+    }
+
+    @-webkit-keyframes fade {
+      from {
+        opacity: .4
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    @keyframes fade {
+      from {
+        opacity: .4
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    /* On smaller screens, decrease text size */
+    @media only screen and (max-width: 300px) {
+
+      .prev,
+      .next,
+      .text {
+        font-size: 11px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="slideshow" class="slideshow-container">
+  </div>
+  <div id="points" style="text-align:center">
+  </div>
+  <script>
+    const files = [
+      "slides/ru/ewelink.png",
+      "slides/ru/scenarios.png",
+      "slides/ru/login.png",
+      "slides/ru/create.png",
+      "slides/ru/newtable.png",
+      "slides/ru/runscripts.png",
+      "slides/ru/pastescript.png",
+      "slides/ru/renamesaverun.png",
+      "slides/ru/allow1.png",
+      "slides/ru/allow2.png",
+      "slides/ru/allow3.png",
+      "slides/ru/allow4.png",
+      "slides/ru/allow5.png",
+      "slides/ru/scriptdone.png",
+      "slides/ru/gototriggers.png",
+      "slides/ru/firstdata.png",
+      "slides/ru/addtrigger.png",
+      "slides/ru/tunetrigger.png",
+      "slides/ru/edittrigger.png"
+    ];
+    var slideIndex = 1;
+    const maxSlideIndex = files.length;
+
+    const points = document.getElementById("points");
+    const slideshow = document.getElementById("slideshow");
+
+    for (var i = 0; i < maxSlideIndex; i++) {
+      points.insertAdjacentHTML('beforeend', `<span class="dot" onclick="currentSlide(${i + 1})"></span>`);
+      slideshow.insertAdjacentHTML('beforeend', `<div id="slide${i}" class="mySlides fade"><img src="${files[i]}" style="width:100%"></div>`);
+    }
+    slideshow.insertAdjacentHTML('beforeend', '<a class="prev" onclick="plusSlides(-1)">&#10094;</a><a class="next" onclick="plusSlides(1)">&#10095;</a>');
+
+    const slide = document.getElementById("slide4");
+    slide.insertAdjacentHTML('beforeend', 
+    `<button onclick="removeHelp()" class="myButton" style = "align: center; position: absolute;top: 50%; left:50%; transform: translateX(-50%);">Хочу смотреть блоки!</button>`);
+
+    document.getElementById("slide4").onclick = function(e) {
+      console.log(e.x,e.y);
+    };
+
+    console.log(document.getElementById("slide4"));
+
+    const sl = document.getElementById("slideshow").parentNode;
+    const w = document.body.clientWidth;
+    const h = document.body.clientHeight * 0.94 - 50;
+    console.log(document.body.clientHeight);
+    const proportion = 1920.0 / (1080 + 40);
+    const width = Math.min(w * 0.98, h * proportion);
+    console.log(sl);
+    document.getElementById("slideshow").style.maxWidth = `${width}px`;
+
+    showSlides(slideIndex);
+
+    function plusSlides(n) {
+      if (n > 0 && slideIndex === maxSlideIndex) {
+        removeHelp();
+      }
+      showSlides(slideIndex += n);
+    }
+
+    function currentSlide(n) {
+      showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+      var i;
+      var slides = document.getElementsByClassName("mySlides");
+      var dots = document.getElementsByClassName("dot");
+      if (n > slides.length) { slideIndex = 1 }
+      if (n < 1) { slideIndex = slides.length }
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+      }
+      slides[slideIndex - 1].style.display = "block";
+      dots[slideIndex - 1].className += " active";
+    }
+  </script>
+
+</body>
+
+</html>

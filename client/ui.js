@@ -3,7 +3,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 
-import { injectBlockly, assignProject, getUserData, updateCode, storeUser } from './workspace';
+import { injectBlockly, assignProject, getUserData, updateCode, storeUser, updateCodeCompletely } from './workspace';
 
 let helpTriggered = false;
 
@@ -376,9 +376,23 @@ function addNewLayoutTab() {
 function restoreToolbar() {
   const item = w2ui.layout_main_toolbar.items[0];
   item.text = 'Copy GS code to clipboard';
+  item.tid = 'COPYGS';
   item.hint = 'Copy gs (Google Sheets) code to clipboard.';
   item.img = 'icon-page';
   w2ui.layout_main_toolbar.refresh();
+}
+function copyCode() {
+  if (helpTriggered)removeHelp();
+  else {
+    const r = document.createRange();
+    updateCodeCompletely();
+    r.selectNode(w2ui.layout.el('main'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(r);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    updateCode();
+  }
 }
 $(() => {
   const pstyle = 'padding: 0px;';
@@ -418,18 +432,15 @@ $(() => {
         toolbar: {
           items: [
             { type: 'button', id: 'CopyGS', caption: 'Copy GS code to clipboard', img: 'icon-page', hint: 'Copy gs (Google Sheets) code to clipboard.' },
+            { type: 'button', id: 'OpenSheets', caption: 'Copy & Open Google Sheets', img: 'icon-page', hint: 'Copy gs (Google Sheets) code to clipboard and open Google Sheets.' },
           ],
           onClick(event) {
+            if (event.target === 'OpenSheets') {
+              copyCode();
+              window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');
+            } else
             if (event.target === 'CopyGS') {
-              if (helpTriggered)removeHelp();
-              else {
-                const r = document.createRange();
-                r.selectNode(w2ui.layout.el('main'));
-                window.getSelection().removeAllRanges();
-                window.getSelection().addRange(r);
-                document.execCommand('copy');
-                window.getSelection().removeAllRanges();
-              }
+              copyCode();
             }
           },
         },
@@ -491,6 +502,7 @@ function removeHelp() {
       }, 2000);
       injectBlockly();
     }
+    w2ui.layout.el('main').style['white-space'] = 'pre';
     helpTriggered = false;
     restoreToolbar();
     updateCode();
@@ -508,7 +520,8 @@ function scriptInfo() {
     helpTriggered = true;
     w2ui.layout.hide('right');
     w2ui.layout.hide('top');
-    w2ui.layout.load('main', 'howitworks.html');
+    w2ui.layout.el('main').style['white-space'] = 'nowrap';
+    w2ui.layout.load('main', 'slides/ru/slideshow.html');
   }
 }
 
