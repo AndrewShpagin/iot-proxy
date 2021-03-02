@@ -70,7 +70,7 @@ const options = {
       controls: true,
       wheel: true,
       startScale: 0.75,
-      maxScale: 4,
+      maxScale: 10,
       minScale: 0.25,
       scaleSpeed: 1.1,
     },
