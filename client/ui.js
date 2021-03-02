@@ -438,7 +438,6 @@ $(() => {
     ],
   });
   const uData = getUserData();
-  console.log('uData', uData);
   if (uData) {
     injectBlockly();
   } else {

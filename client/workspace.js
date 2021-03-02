@@ -170,7 +170,6 @@ function setupDroplists(devices) {
             if (arg.options.length === 0) {
               arg.options.push(['%{BKY_NODEVICES}', '0']);
             }
-            console.log(block.type, arg.options);
           }
         });
       }
