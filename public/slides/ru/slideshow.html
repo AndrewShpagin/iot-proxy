@@ -8,7 +8,7 @@
   <style>
     .splide__slide img {
       width: 100%;
-      height: auto;
+      height: 'auto';
       white-space: normal;
     }
 
@@ -58,6 +58,23 @@
       "slides/ru/tunetrigger.png",
       "slides/ru/edittrigger.png"
     ];
+
+    const menu = document.getElementById("mainmenu");
+    
+    var w = document.body.clientWidth;
+    var h = document.body.clientHeight;
+    if(menu)h -= menu.clientHeight;
+    h-= 75;
+
+    var nSlides = w*(1080+80)/h/(1920+80); 
+    if(nSlides<1)nSlides=1;
+
+    console.log(w2ui.layout_main_toolbar);
+    //const proportion = 1920.0 / (1080 + 40);
+    //const width = Math.min(w * 0.98, h * proportion);
+    //console.log(sl);
+    //document.getElementById("slideshow").style.maxWidth = `${width}px`;
+
     const slideslist = document.getElementById("slideslist");
     for (var i = 0; i < files.length; i++) {
       slideslist.insertAdjacentHTML('beforeend', `<li id="slide${i}" class="splide__slide"><img src="${files[i]}"></li>`);
@@ -70,18 +87,19 @@
     function runOnStart() {
       new Splide('#image-slider', {
         focus: 'center',
-        trimSpace: false,
-        perPage: 1,
+        perPage: nSlides,
       }).mount();
     }
-    if (document.readyState !== 'loading') {
-      runOnStart();
-    }
-    else {
-      document.addEventListener('DOMContentLoaded', function () {
-        runOnStart()
-      });
-    }
+    setTimeout( () => {
+      if (document.readyState !== 'loading') {
+        runOnStart();
+      }
+      else {
+        document.addEventListener('DOMContentLoaded', function () {
+          runOnStart()
+        });
+      }
+    }, 500);
   </script>
 </body>
 
