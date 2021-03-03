@@ -12,7 +12,7 @@
       white-space: normal;
     }
 
-    .myButton {
+    .myButton2 {
       background-color: #4CAF50;
       border-radius: 6pt;
       border: 1pt solid #18ab29;
@@ -63,13 +63,11 @@
     
     var w = document.body.clientWidth;
     var h = document.body.clientHeight;
-    if(menu)h -= menu.clientHeight;
-    h-= 75;
+    h -= menu.clientHeight + w2ui.layout_main_toolbar.box.clientHeight + 32;
 
-    var nSlides = w*(1080+80)/h/(1920+80); 
+    var nSlides = w*(1080+96)/h/(1920+96); 
     if(nSlides<1)nSlides=1;
 
-    console.log(w2ui.layout_main_toolbar);
     //const proportion = 1920.0 / (1080 + 40);
     //const width = Math.min(w * 0.98, h * proportion);
     //console.log(sl);
@@ -81,7 +79,7 @@
     }
     const slide = document.getElementById("slide4");
     slide.insertAdjacentHTML('beforeend',
-      `<button onclick="removeHelp()" class="myButton" style = "align: center; position: absolute;top: 50%; left:50%; transform: translateX(-50%);">Хочу смотреть блоки!</button>`);
+      `<button onclick="removeHelp()" class="myButton2" style = "align: center; position: absolute;top: 50%; left:50%; transform: translateX(-50%);">Хочу смотреть блоки!</button>`);
 
     console.log("start");
     function runOnStart() {
