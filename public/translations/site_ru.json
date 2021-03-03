@@ -4,5 +4,7 @@
 	"SAVEPROJECT": " Сохранить проект",
 	"OPENPROJECT": " Открыть",
 	"DEVLOGIN": " Приборы",
-    "SETLANG": " ENG"
+    "SETLANG": " ENG",
+    "TOPROJECTS": "Назад, к проектам!",
+    "TOBLOCKS": "Хочу смотреть блоки!"
 }

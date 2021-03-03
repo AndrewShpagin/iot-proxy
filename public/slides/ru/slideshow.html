@@ -20,7 +20,7 @@
       cursor: pointer;
       color: #ffffff;
       font-family: Arial;
-      font-size: 30pt;
+      font-size: 24px;
       padding: 2pt 10pt;
       text-decoration: none;
       text-shadow: 0px 1pt 0pt #2f6627;
@@ -68,18 +68,17 @@
     var nSlides = w*(1080+96)/h/(1920+96); 
     if(nSlides<1)nSlides=1;
 
-    //const proportion = 1920.0 / (1080 + 40);
-    //const width = Math.min(w * 0.98, h * proportion);
-    //console.log(sl);
-    //document.getElementById("slideshow").style.maxWidth = `${width}px`;
-
     const slideslist = document.getElementById("slideslist");
     for (var i = 0; i < files.length; i++) {
       slideslist.insertAdjacentHTML('beforeend', `<li id="slide${i}" class="splide__slide"><img src="${files[i]}"></li>`);
     }
     const slide = document.getElementById("slide4");
     slide.insertAdjacentHTML('beforeend',
-      `<button onclick="removeHelp()" class="myButton2" style = "align: center; position: absolute;top: 50%; left:50%; transform: translateX(-50%);">Хочу смотреть блоки!</button>`);
+      `<button onclick="removeHelp()" class="myButton2" style = "align: center; position: absolute;top: 50%; left:50%; transform: translateX(-50%);">${textByID('TOBLOCKS')}</button>`);
+
+    const last = document.getElementById(`slide${files.length - 1}`);
+    last.insertAdjacentHTML('beforeend',
+      `<button onclick="removeHelp()" class="myButton2" style = "align: center; position: absolute;top: 80%; left:50%; transform: translateX(-50%);">${textByID('TOPROJECTS')}</button>`);
 
     console.log("start");
     function runOnStart() {

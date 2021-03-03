@@ -59,6 +59,14 @@ function setLang() {
 
 applyLanguage();
 
+function textByID(id) {
+  let lang = window.localStorage.getItem('Language');
+  if (!lang)lang = 'ru';
+  const culang = lang_scope[lang];
+  return culang[id];
+}
+
 window.isMobile = isMobile;
 window.applyLanguage = applyLanguage;
 window.setLang = setLang;
+window.textByID = textByID;

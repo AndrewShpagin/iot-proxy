@@ -4,5 +4,7 @@
 	"SAVEPROJECT": " Save project",
 	"OPENPROJECT": " Open project",
 	"DEVLOGIN": " Devices",
-    "SETLANG": " RU"
+    "SETLANG": " RU",
+    "TOPROJECTS": "Back to projects!",
+    "TOBLOCKS": "Look blocks!"
 }
