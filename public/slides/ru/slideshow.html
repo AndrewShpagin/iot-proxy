@@ -4,23 +4,26 @@
 <head>
   <script src="splide.min.js"></script>
   <link rel="stylesheet" href="splide.min.css">
+  <link rel="stylesheet" href="splide-sea-green.min.css">
   <style>
     .splide__slide img {
       width: 100%;
       height: auto;
+      white-space: normal;
     }
+
     .myButton {
-        background-color: #4CAF50;
-        border-radius: 6pt;
-        border: 1pt solid #18ab29;
-        display: inline-block;
-        cursor: pointer;
-        color: #ffffff;
-        font-family: Arial;
-        font-size: 30pt;
-        padding: 2pt 10pt;
-        text-decoration: none;
-        text-shadow: 0px 1pt 0pt #2f6627;
+      background-color: #4CAF50;
+      border-radius: 6pt;
+      border: 1pt solid #18ab29;
+      display: inline-block;
+      cursor: pointer;
+      color: #ffffff;
+      font-family: Arial;
+      font-size: 30pt;
+      padding: 2pt 10pt;
+      text-decoration: none;
+      text-shadow: 0px 1pt 0pt #2f6627;
     }
   </style>
 </head>
@@ -28,13 +31,13 @@
 <body>
   <div id="image-slider" class="splide">
     <div class="splide__track">
-      <ul id = "slideslist" class="splide__list">
+      <ul id="slideslist" class="splide__list">
       </ul>
     </div>
   </div>
   <script>
 
-const files = [
+    const files = [
       "slides/ru/ewelink.png",
       "slides/ru/scenarios.png",
       "slides/ru/login.png",
@@ -60,13 +63,15 @@ const files = [
       slideslist.insertAdjacentHTML('beforeend', `<li id="slide${i}" class="splide__slide"><img src="${files[i]}"></li>`);
     }
     const slide = document.getElementById("slide4");
-    slide.insertAdjacentHTML('beforeend', 
-    `<button onclick="removeHelp()" class="myButton" style = "align: center; position: absolute;top: 50%; left:50%; transform: translateX(-50%);">Хочу смотреть блоки!</button>`);
+    slide.insertAdjacentHTML('beforeend',
+      `<button onclick="removeHelp()" class="myButton" style = "align: center; position: absolute;top: 50%; left:50%; transform: translateX(-50%);">Хочу смотреть блоки!</button>`);
 
     console.log("start");
     function runOnStart() {
       new Splide('#image-slider', {
-        'autoHeight': true,
+        focus: 'center',
+        trimSpace: false,
+        perPage: 1,
       }).mount();
     }
     if (document.readyState !== 'loading') {
