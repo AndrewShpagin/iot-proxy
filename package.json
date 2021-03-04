@@ -8,7 +8,7 @@
     "develop": "cross-env NODE_ENV=development node server/server.js",
     "prod": "cross-env NODE_ENV=production node server/server.js",
     "build": "webpack --config=webpack.prod.js",
-    "static": "node server/server.js"
+    "start": "node server/server.js"
   },
   "author": "Andrew Shpagin",
   "license": "ISC",
