@@ -28,16 +28,17 @@ server.listen(port, () => {
   console.log(`server starting on port : ${port}`);
 });
 
+app.options('*', cors());
+app.del('/products/:id', cors(), (req, res, next) => {
+  res.json({ msg: 'This is CORS-enabled for all origins!' });
+});
+
 // app.listen(port);
 // console.log(`Server listening on port ${port}`);
 
 app.use(async (req, res, next) => {
   console.log('path:', req.path);
   await ewRequest(req, res, next);
-});
-
-app.del('/products/:id', cors(), (req, res, next) => {
-  res.json({ msg: 'This is CORS-enabled for all origins!' });
 });
 
 app.use(express.static('public'));
