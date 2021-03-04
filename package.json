@@ -20,6 +20,7 @@
     "babel-eslint": "^10.1.0",
     "babel-preset-env": "^1.7.0",
     "blockly": "^4.20201217.0",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "crypto": "^1.0.1",
     "crypto-js": "^4.0.0",

@@ -19,6 +19,7 @@ const https_options = {
 
 const app = express();
 app.use(cors());
+app.options('/products/:id', cors()); // enable pre-flight request for DELETE request
 const port = process.env.PORT || 443;
 
 const server = https.createServer(https_options, app);
@@ -33,6 +34,10 @@ server.listen(port, () => {
 app.use(async (req, res, next) => {
   console.log('path:', req.path);
   await ewRequest(req, res, next);
+});
+
+app.del('/products/:id', cors(), (req, res, next) => {
+  res.json({ msg: 'This is CORS-enabled for all origins!' });
 });
 
 app.use(express.static('public'));
