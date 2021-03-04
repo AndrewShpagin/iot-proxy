@@ -5,6 +5,7 @@
 // import './css/bootstrap-reboot.css';
 // import './css/main.css';
 import './workspace';
+import { applyLocale } from './workspace';
 import text_en from '../public/translations/site_en.json';
 import text_ru from '../public/translations/site_ru.json';
 
@@ -35,9 +36,9 @@ export const isMobile = {
 };
 
 function applyLanguage() {
-  let lang = window.localStorage.getItem('Language');
-  if (!lang)lang = 'ru';
+  const lang = curLanguage();
   const culang = lang_scope[lang];
+  // const plang = lang_scope[prevLang];
   document.querySelectorAll('*').forEach(node => {
     if (node.hasAttribute('tid')) {
       let inn = node.innerHTML;
@@ -46,27 +47,41 @@ function applyLanguage() {
       inn = inn.substring(0, idx);
       node.innerHTML = inn + culang[node.getAttribute('tid')];
     }
+    // if (plang) {
+    //  for (const [key, value] of Object.entries(plang)) {
+    //    const s = `>${value}<`;
+    //    if (node.innerHTML.indexOf(s) >= 0) {
+    //      node.innerHTML = node.innerHTML.replace(s, `>${culang[key]}<`);
+    //    }
+    //  }
+    // }
   });
 }
 function setLang() {
-  let lang = window.localStorage.getItem('Language');
-  if (!lang)lang = 'ru';
+  let lang = curLanguage();
+  const plang = lang;
   if (lang === 'ru')lang = 'en';
   else lang = 'ru';
   window.localStorage.setItem('Language', lang);
-  applyLanguage();
+  applyLanguage(plang);
+  applyLocale(curLanguage());
 }
 
 applyLanguage();
 
-function textByID(id) {
+export function textByID(id) {
+  const culang = lang_scope[curLanguage()];
+  return culang[id];
+}
+
+export function curLanguage() {
   let lang = window.localStorage.getItem('Language');
   if (!lang)lang = 'ru';
-  const culang = lang_scope[lang];
-  return culang[id];
+  return lang;
 }
 
 window.isMobile = isMobile;
 window.applyLanguage = applyLanguage;
 window.setLang = setLang;
 window.textByID = textByID;
+window.curLanguage = curLanguage;

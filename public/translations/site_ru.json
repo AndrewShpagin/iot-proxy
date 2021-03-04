@@ -6,5 +6,9 @@
 	"DEVLOGIN": " Приборы",
     "SETLANG": " ENG",
     "TOPROJECTS": "Назад, к проектам!",
-    "TOBLOCKS": "Хочу смотреть блоки!"
+    "TOBLOCKS": "Хочу смотреть блоки!",
+    "COPYGS": "Копировать (GS) в клипбоард",
+    "COPYGSHINT": "Копировать код для Google Sheets/App Script в клипбоард",
+    "COPYOPEN": "Копировать и открыть Google Sheets",
+    "COPYOPENHINT": "Копировать код для Google Sheets/App Script в клипбоард и открыть Google Sheets."
 }

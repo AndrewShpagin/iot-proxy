@@ -4,6 +4,7 @@
 /* eslint-disable import/prefer-default-export */
 
 import { injectBlockly, assignProject, getUserData, updateCode, storeUser, updateCodeCompletely } from './workspace';
+import { textByID } from './index';
 
 let helpTriggered = false;
 
@@ -375,9 +376,9 @@ function addNewLayoutTab() {
 }
 function restoreToolbar() {
   const item = w2ui.layout_main_toolbar.items[0];
-  item.text = 'Copy GS code to clipboard';
+  item.text = textByID('COPYGS');
   item.tid = 'COPYGS';
-  item.hint = 'Copy gs (Google Sheets) code to clipboard.';
+  item.hint = textByID('COPYGSHINT');
   item.img = 'icon-page';
   w2ui.layout_main_toolbar.refresh();
 }
@@ -431,15 +432,15 @@ $(() => {
         style: pstyle,
         toolbar: {
           items: [
-            { type: 'button', id: 'CopyGS', caption: 'Copy GS code to clipboard', img: 'icon-page', hint: 'Copy gs (Google Sheets) code to clipboard.' },
-            { type: 'button', id: 'OpenSheets', caption: 'Copy & Open Google Sheets', img: 'icon-page', hint: 'Copy gs (Google Sheets) code to clipboard and open Google Sheets.' },
+            { type: 'button', id: '%ID_COPYGS', caption: textByID('COPYGS'), img: 'icon-page', hint: textByID('COPYGSHINT') },
+            { type: 'button', id: '%ID_COPYOPEN', caption: textByID('COPYOPEN'), img: 'icon-page', hint: textByID('COPYOPENHINT') },
           ],
           onClick(event) {
             if (event.target === 'OpenSheets') {
               copyCode();
               window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');
             } else
-            if (event.target === 'CopyGS') {
+            if (event.target === '%ID_COPYGS') {
               copyCode();
             }
           },

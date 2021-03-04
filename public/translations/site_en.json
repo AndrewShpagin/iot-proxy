@@ -6,5 +6,9 @@
 	"DEVLOGIN": " Devices",
     "SETLANG": " RU",
     "TOPROJECTS": "Back to projects!",
-    "TOBLOCKS": "Look blocks!"
+    "TOBLOCKS": "Look blocks!",
+    "COPYGS": "Copy GS code to clipboard",
+    "COPYGSHINT": "Copy gs (Google Sheets) code to clipboard.",
+    "COPYOPEN": "Copy & Open Google Sheets",
+    "COPYOPENHINT": "Copy gs (Google Sheets) code to clipboard and open Google Sheets."
 }

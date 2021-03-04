@@ -45,6 +45,10 @@ module.exports = {
       filename: '[name].[contenthash].css',
     }),
     new HtmlWebpackPlugin({
+      filename: 'frame.html',
+      template: 'client/html/frame.html',
+    }),
+    new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'client/html/index.html',
     }),

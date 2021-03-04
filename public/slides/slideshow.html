@@ -38,25 +38,25 @@
   <script>
 
     const files = [
-      "slides/ru/ewelink.png",
-      "slides/ru/scenarios.png",
-      "slides/ru/login.png",
-      "slides/ru/create.png",
-      "slides/ru/newtable.png",
-      "slides/ru/runscripts.png",
-      "slides/ru/pastescript.png",
-      "slides/ru/renamesaverun.png",
-      "slides/ru/allow1.png",
-      "slides/ru/allow2.png",
-      "slides/ru/allow3.png",
-      "slides/ru/allow4.png",
-      "slides/ru/allow5.png",
-      "slides/ru/scriptdone.png",
-      "slides/ru/gototriggers.png",
-      "slides/ru/firstdata.png",
-      "slides/ru/addtrigger.png",
-      "slides/ru/tunetrigger.png",
-      "slides/ru/edittrigger.png"
+      "ewelink.png",
+      "scenarios.png",
+      "login.png",
+      "create.png",
+      "newtable.png",
+      "runscripts.png",
+      "pastescript.png",
+      "renamesaverun.png",
+      "allow1.png",
+      "allow2.png",
+      "allow3.png",
+      "allow4.png",
+      "allow5.png",
+      "scriptdone.png",
+      "gototriggers.png",
+      "firstdata.png",
+      "addtrigger.png",
+      "tunetrigger.png",
+      "edittrigger.png"
     ];
 
     const menu = document.getElementById("mainmenu");
@@ -70,7 +70,7 @@
 
     const slideslist = document.getElementById("slideslist");
     for (var i = 0; i < files.length; i++) {
-      slideslist.insertAdjacentHTML('beforeend', `<li id="slide${i}" class="splide__slide"><img src="${files[i]}"></li>`);
+      slideslist.insertAdjacentHTML('beforeend', `<li id="slide${i}" class="splide__slide"><img src="slides/${curLanguage()}/${files[i]}"></li>`);
     }
     const slide = document.getElementById("slide4");
     slide.insertAdjacentHTML('beforeend',

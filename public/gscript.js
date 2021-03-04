@@ -7,9 +7,9 @@
 /// The code below may be used witout any restrictions.
 /// We will be thankful if you will refer the iot-proxy.com
 
-let email = '';
-let password = '';
-let region = '';
+let email = 'useremail';
+let password = 'userpassword';
+let region = 'userregion';
 let devices = null;
 const mySheet = SpreadsheetApp.getActiveSheet();
 

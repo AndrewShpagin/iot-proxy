@@ -19,6 +19,7 @@ import defEn from '../public/translations/en.json';
 import customEn from '../public/translations/custom_en.json';
 import defRu from '../public/translations/ru.json';
 import customRu from '../public/translations/custom_ru.json';
+import { curLanguage } from './index';
 
 const CryptoJS = require('crypto-js');
 
@@ -125,6 +126,15 @@ export function updateCodeCompletely() {
   const code = Blockly.JavaScript.workspaceToCode(workspace);
   let wholecode = getWholeCode(code);
   wholecode += `\n\n\n\n\n\n\n\n\n\n\n\n${gscript}`;
+
+  const user = getUserData();
+  const email = extract(user, '/email=');
+  const password = extract(user, '/password=');
+  const region = extract(user, '/region=');
+  wholecode = wholecode.replace('useremail', email);
+  wholecode = wholecode.replace('userpassword', password);
+  wholecode = wholecode.replace('userregion', region);
+
   w2ui.layout.el('main').textContent = wholecode;
 }
 export function updateCode() {
@@ -211,7 +221,7 @@ function setupDroplists(devices) {
   }
 }
 
-function applyLocale(locName) {
+export function applyLocale(locName) {
   const loc = localesList[locName];
   if (!loc) {
     const list = [`translations/${locName}.json`, `translations/custom_${locName}.json`];
@@ -222,11 +232,12 @@ function applyLocale(locName) {
     });
   } else {
     applyLocaleNow(loc);
-    if (workspace) Blockly.svgResize(workspace);
+    if (workspace) reinject();
   }
 }
 
-applyLocale('ru');
+applyLocale(curLanguage());
+let devices = {};
 
 export function injectBlockly() {
   let ioturl = '';
@@ -239,36 +250,36 @@ export function injectBlockly() {
     dlist.push(ioturl);
   }
   multiDownload(dlist, response => {
-    const blocklyDiv = w2ui.layout.el('top');
-    blocklyDiv.innerHTML = '';
-    blocklyDiv.style.padding = '0px';
-    if (!helpShown())w2ui.layout.el('main').style['white-space'] = 'pre';
-    w2ui.layout.el('right').style['white-space'] = 'pre';
-    baseJs = response['base.js'];
-
-    let devices = {};
+    devices = {};
     if (ioturl.length) devices = JSON.parse(response[ioturl]);
-
-    setupDroplists(devices);
-    // apply localisation
-
-    workspace = Blockly.inject(blocklyDiv, options);
-    Blockly.defineBlocksWithJsonArray(customBlocks);
-
-    function myUpdateFunction(event) {
-      updateCode();
-      const xml = Blockly.Xml.workspaceToDom(workspace);
-      const xmlText = Blockly.Xml.domToText(xml);
-      window.localStorage.setItem(currentTabContentTag(), xmlText);
-    }
-    w2ui.layout.on('resize', event => {
-      setTimeout(() => Blockly.svgResize(workspace), 100);
-    });
-    workspace.addChangeListener(myUpdateFunction);
-    const workspaceBlocks = window.localStorage.getItem(currentTabContentTag());
-    if (workspaceBlocks) {
-      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceBlocks), workspace);
-    }
-    Blockly.svgResize(workspace);
+    baseJs = response['base.js'];
+    reinject();
   });
+}
+export function reinject() {
+  const blocklyDiv = w2ui.layout.el('top');
+  blocklyDiv.innerHTML = '';
+  blocklyDiv.style.padding = '0px';
+  if (!helpShown())w2ui.layout.el('main').style['white-space'] = 'pre';
+  w2ui.layout.el('right').style['white-space'] = 'pre';
+
+  setupDroplists(devices);
+  workspace = Blockly.inject(blocklyDiv, options);
+  Blockly.defineBlocksWithJsonArray(customBlocks);
+
+  function myUpdateFunction(event) {
+    updateCode();
+    const xml = Blockly.Xml.workspaceToDom(workspace);
+    const xmlText = Blockly.Xml.domToText(xml);
+    window.localStorage.setItem(currentTabContentTag(), xmlText);
+  }
+  w2ui.layout.on('resize', event => {
+    setTimeout(() => Blockly.svgResize(workspace), 100);
+  });
+  workspace.addChangeListener(myUpdateFunction);
+  const workspaceBlocks = window.localStorage.getItem(currentTabContentTag());
+  if (workspaceBlocks) {
+    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceBlocks), workspace);
+  }
+  Blockly.svgResize(workspace);
 }
