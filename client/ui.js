@@ -396,7 +396,7 @@ function copyCode() {
   }
 }
 function ticon(color, icon, message) {
-  return `<i style="color: ${color}" class="fa fa-${icon}"></i> ${textByID(message)}`;
+  return `<i style="color: ${color}; transform: scale(1.3);" class="fa fa-${icon}" aria-hidden="true"></i>  ${textByID(message)}`;
 }
 function showSheetsMessage(panel) {
   w2ui.layout.message(panel, {
@@ -424,7 +424,7 @@ $(() => {
             { type: 'button', id: '%ID_SAVESCENE', caption: ticon('#000000', 'download', 'SAVESCENE'), hint: textByID('SAVESCENE_HINT') },
             { type: 'button', id: '%ID_OPENSCENE', caption: ticon('#000000', 'upload', 'OPENSCENE'), hint: textByID('OPENSCENE_HINT') },
             { type: 'button', id: '%ID_RUNSCRIPT', caption: ticon('#4CAF50', 'play', 'RUNSCRIPT'), hint: textByID('RUNSCRIPT_HINT') },
-            { type: 'button', id: '%ID_SHEDULE', caption: ticon('#000000', 'calendar', 'SHEDULE'), hint: textByID('SHEDULE_HINT') },
+            { type: 'button', id: '%ID_SHEDULE', caption: ticon('#000000', 'tasks', 'SHEDULE'), hint: textByID('SHEDULE_HINT') },
             { type: 'button', id: '%ID_GSHEETS', caption: ticon('#4CAF50', 'table', 'GSHEETS'), hint: textByID('GSHEETS_HINT') },
           ],
           onClick(event) {
@@ -467,11 +467,16 @@ $(() => {
         style: pstyle,
         toolbar: {
           items: [
-            { type: 'button', id: '%ID_COPYGS', caption: textByID('COPYGS'), img: 'icon-page', hint: textByID('COPYGSHINT') },
+            { type: 'button', id: '%ID_COPYGS', caption: ticon('#000000', 'copy', 'COPYGS'), hint: textByID('COPYGSHINT') },
+            { type: 'button', id: '%ID_COPYOPEN', caption: ticon('#4CAF50', 'table', 'COPYOPEN'), hint: textByID('COPYOPENHINT') },
           ],
           onClick(event) {
             if (event.target === '%ID_COPYGS') {
               copyCode();
+            }
+            if (event.target === '%ID_COPYOPEN') {
+              copyCode();
+              window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');
             }
           },
         },
