@@ -3,6 +3,7 @@
 /* eslint-disable no-unused-vars */
 const express = require('express');
 const webpack = require('webpack');
+const cors = require('cors');
 const https = require('https');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const fs = require('fs');
@@ -17,6 +18,7 @@ const https_options = {
 };
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 443;
 
 const server = https.createServer(https_options, app);
