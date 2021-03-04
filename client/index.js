@@ -71,7 +71,7 @@ applyLanguage();
 
 export function textByID(id) {
   const culang = lang_scope[curLanguage()];
-  return culang[id];
+  return culang[id] || id;
 }
 
 export function curLanguage() {

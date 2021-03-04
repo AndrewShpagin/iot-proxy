@@ -395,6 +395,19 @@ function copyCode() {
     updateCode();
   }
 }
+function ticon(color, icon, message) {
+  return `<i style="color: ${color}" class="fa fa-${icon}"></i> ${textByID(message)}`;
+}
+function showSheetsMessage(panel) {
+  w2ui.layout.message(panel, {
+    width: 400,
+    height: 70,
+    buttons:
+      `<button class="w2ui-btn" onclick="w2ui.layout.message('${panel}'); scriptInfo();">${ticon('#000000', 'info', 'INSTRUCTIONS')}</button>` +
+      `<button class="w2ui-btn" onclick="w2ui.layout.message('${panel}'); window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');">${ticon('#4CAF50', 'table', 'OPENGSHEETS')}</button>` +
+      `<button class="w2ui-btn" onclick="w2ui.layout.message('${panel}')">${textByID('CANCEL')}</button>`,
+  });
+}
 $(() => {
   const pstyle = 'padding: 0px;';
   $('#layout').w2layout({
@@ -406,6 +419,28 @@ $(() => {
         resizable: true,
         style: `${pstyle}border-top: 0px;`,
         content: '',
+        toolbar: {
+          items: [
+            { type: 'button', id: '%ID_SAVESCENE', caption: ticon('#000000', 'download', 'SAVESCENE'), hint: textByID('SAVESCENE_HINT') },
+            { type: 'button', id: '%ID_OPENSCENE', caption: ticon('#000000', 'upload', 'OPENSCENE'), hint: textByID('OPENSCENE_HINT') },
+            { type: 'button', id: '%ID_RUNSCRIPT', caption: ticon('#4CAF50', 'play', 'RUNSCRIPT'), hint: textByID('RUNSCRIPT_HINT') },
+            { type: 'button', id: '%ID_SHEDULE', caption: ticon('#000000', 'calendar', 'SHEDULE'), hint: textByID('SHEDULE_HINT') },
+            { type: 'button', id: '%ID_GSHEETS', caption: ticon('#4CAF50', 'table', 'GSHEETS'), hint: textByID('GSHEETS_HINT') },
+          ],
+          onClick(event) {
+            if (event.target === '%ID_SAVESCENE') {
+              downloadScript();
+            }
+            if (event.target === '%ID_OPENSCENE') {
+              uploadScript();
+            }
+            if (event.target === '%ID_GSHEETS') {
+              showSheetsMessage('top');
+              copyCode();
+              // window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');
+            }
+          },
+        },
         tabs: {
           active: 'workspace_0',
           tabs: [
@@ -433,13 +468,8 @@ $(() => {
         toolbar: {
           items: [
             { type: 'button', id: '%ID_COPYGS', caption: textByID('COPYGS'), img: 'icon-page', hint: textByID('COPYGSHINT') },
-            { type: 'button', id: '%ID_COPYOPEN', caption: textByID('COPYOPEN'), img: 'icon-page', hint: textByID('COPYOPENHINT') },
           ],
           onClick(event) {
-            if (event.target === 'OpenSheets') {
-              copyCode();
-              window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');
-            } else
             if (event.target === '%ID_COPYGS') {
               copyCode();
             }
@@ -513,7 +543,7 @@ function removeHelp() {
 }
 function scriptInfo() {
   const item = w2ui.layout_main_toolbar.items[0];
-  item.text = '<< Back to projects';
+  item.text = `<< ${textByID('TOPROJECTS')}`;
   item.tooltip = '';
   item.img = '';
   w2ui.layout_main_toolbar.refresh();

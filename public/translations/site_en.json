@@ -10,5 +10,18 @@
     "COPYGS": "Copy GS code to clipboard",
     "COPYGSHINT": "Copy gs (Google Sheets) code to clipboard.",
     "COPYOPEN": "Copy & Open Google Sheets",
-    "COPYOPENHINT": "Copy gs (Google Sheets) code to clipboard and open Google Sheets."
+    "COPYOPENHINT": "Copy gs (Google Sheets) code to clipboard and open Google Sheets.",
+    "SAVESCENE": "Save",
+    "SAVESCENE_HINT": "Download the scenario to the local drive",
+    "OPENSCENE": "Open",
+    "OPENSCENE_HINT": "Open the scenario from the local drive",
+    "RUNSCRIPT": "Run",
+    "RUNSCRIPT_HINT": "Run the script once to check how it works. Pay attention, e-mail operations will not be performed.",
+    "SHEDULE": "Shedule",
+    "SHEDULE_HINT": "Setup the shedule of the automatic script executions.",
+    "GSHEETS": "Google Sheets integration",
+    "GSHEETS_HINT": "Copy the code to clipboard and open Google Shets. Please read the instruction first.",
+    "INSTRUCTIONS": "Instructions",
+    "OPENGSHEETS": "Open Google Sheets",
+    "CANCEL": "Cancel"
 }
