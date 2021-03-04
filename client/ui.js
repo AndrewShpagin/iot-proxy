@@ -522,7 +522,7 @@ function scriptInfo() {
     w2ui.layout.hide('right');
     w2ui.layout.hide('top');
     w2ui.layout.el('main').style['white-space'] = 'nowrap';
-    w2ui.layout.load('main', 'slides/ru/slideshow.html');
+    w2ui.layout.load('main', 'slides/slideshow.html');
   }
 }
 

@@ -63,7 +63,8 @@
     
     var w = document.body.clientWidth;
     var h = document.body.clientHeight;
-    h -= menu.clientHeight + w2ui.layout_main_toolbar.box.clientHeight + 32;
+    if(menu) h -= menu.clientHeight;
+    h -= w2ui.layout_main_toolbar.box.clientHeight  + 32;
 
     var nSlides = w*(1080+96)/h/(1920+96); 
     if(nSlides<1)nSlides=1;
