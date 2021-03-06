@@ -894,14 +894,14 @@ const customBlocks =
         },
         {
           type: 'field_dropdown',
-          name: 'NAME',
+          name: 'STATE',
           options: [
             [
-              'online',
+              '%{BKY_ONLINE}',
               'ONLINE',
             ],
             [
-              'offline',
+              '%{BKY_OFFLINE}',
               'OFFLINE',
             ],
           ],
@@ -939,21 +939,27 @@ const customBlocks =
           name: 'EW_DEVICE',
           options: [[defDevs, '0']],
         },
-      ],
-      inputsInline: true,
-      output: 'Boolean',
-      colour: 210,
-      tooltip: '',
-      helpUrl: '',
-    },
-    {
-      type: 'isoffline',
-      message0: '%{BKY_ISOFFLINE}',
-      args0: [
         {
           type: 'field_dropdown',
-          name: 'EW_DEVICE',
-          options: [[defDevs, '0']],
+          name: 'STATE',
+          options: [
+            [
+              '%{BKY_SWITCHEDON}',
+              'ON',
+            ],
+            [
+              '%{BKY_SWITCHEDOFF}',
+              'OFF',
+            ],
+            [
+              '%{BKY_ONLINE}',
+              'ONLINE',
+            ],
+            [
+              '%{BKY_OFFLINE}',
+              'OFFLINE',
+            ],
+          ],
         },
       ],
       inputsInline: true,

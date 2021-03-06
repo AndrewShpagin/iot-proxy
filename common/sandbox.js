@@ -41,7 +41,6 @@ export class SandBox {
   humanVal(val) {
     const str = val.toString();
     if (this.isDate(str)) {
-      console.log('date:', val, w2utils.formatDateTime(new Date(val), 'mm-dd-yyyy|h:m:s'));
       return w2utils.formatDateTime(new Date(val), 'mm-dd-yyyy|h:m:s');
     }
     if (w2utils.isFloat(str)) return Number((Number(str)).toFixed(3)).toString();
@@ -71,7 +70,6 @@ export class SandBox {
     }
     let summ = 1;
     for (let i = 1; i <= t.lastcolumn; i++) summ += width[i];
-    console.log(summ, width);
     result.columns.push({
       field: '0',
       caption: '#',
@@ -94,7 +92,6 @@ export class SandBox {
       }
       result.records.push(elm);
     }
-    console.log(result);
     return result;
   }
 
@@ -112,8 +109,6 @@ export class SandBox {
         tb.lastcolumn = res.lastcolumn;
         tb.lastrow = res.lastrow;
       }
-      console.log(this.tables);
-      console.log(this.curTable());
     }
   }
 
@@ -221,11 +216,11 @@ export class SandBox {
     if (this.devices) {
       const device = this.devices.devicelist.find(el => el.name === deviceName);
       if (device) {
-        console.log(`Found the device by name: ${deviceName} => ${device.deviceid}`);
+        this.log(`Found the device by name: ${deviceName} => ${device.deviceid}`);
         return device.deviceid;
       } else {
         this.error(`Device "${deviceName}" not found. This is the list of available devices:`);
-        this.devices.devicelist.forEach(d => console.log(`${d.deviceid}: ${d.name}`));
+        this.devices.devicelist.forEach(d => this.log(`${d.deviceid}: ${d.name}`));
       }
     }
     return '';

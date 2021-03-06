@@ -2,10 +2,7 @@
   <category name="" colour="#5ba58c">
   <label text=" Devices" web-class="blocklyFlyoutHeading"></label>
     <!--block type="device"></block-->
-    <block type="switchedOn"></block>
-    <block type="switchedOff"></block>
     <block type="isonline"></block>
-    <block type="isoffline"></block>
     <block type="temperature"></block>
     <block type="humidity"></block>
     <block type="power"></block>

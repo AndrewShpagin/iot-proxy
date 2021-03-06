@@ -328,13 +328,13 @@ Blockly.JavaScript.controls_forEach = function (block) {
 
 Blockly.JavaScript.onlineofflinepassed = function (block) {
   const device = block.getFieldValue('EW_DEVICE');
-  const dropdown_name = block.getFieldValue('NAME');
+  const dropdown_state = block.getFieldValue('STATE');
   const dropdown_timeunits = block.getFieldValue('TIMEUNITS');
   let code = '';
   let K = 60;
   if (dropdown_timeunits === 'HOURS')K *= 60;
-  if (dropdown_timeunits === 'DAYS')K *= 24*60;
-  if (dropdown_name === 'ONLINE') {
+  if (dropdown_timeunits === 'DAYS')K *= 24 * 60;
+  if (dropdown_state === 'ONLINE') {
     code = `${ewpreffix}secondsPassedSinceOnline(${device}) / ${K}`;
   } else {
     code = `${ewpreffix}secondsPassedSinceOffline(${device}) / ${K}`;
@@ -344,12 +344,11 @@ Blockly.JavaScript.onlineofflinepassed = function (block) {
 
 Blockly.JavaScript.isonline = function (block) {
   const value_device = block.getFieldValue('EW_DEVICE');
-  const code = `${ewpreffix}deviceGet(${value_device}, 'online')`;
-  return [code, Blockly.JavaScript.ORDER_ATOMIC];
-};
-
-Blockly.JavaScript.isoffline = function (block) {
-  const value_device = block.getFieldValue('EW_DEVICE');
-  const code = `!${ewpreffix}deviceGet(${value_device}, 'online')`;
+  const dropdown_state = block.getFieldValue('STATE');
+  let code = '';
+  if (dropdown_state === 'ONLINE') code = `${ewpreffix}deviceGet(${value_device}, 'online')`;
+  if (dropdown_state === 'OFFLINE')code = `!${ewpreffix}deviceGet(${value_device}, 'online')`;
+  if (dropdown_state === 'ON')code = `!${ewpreffix}deviceGet(${value_device}, 'switch') === 'on'`;
+  if (dropdown_state === 'OFF')code = `!${ewpreffix}deviceGet(${value_device}, 'switch') === 'off'`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
