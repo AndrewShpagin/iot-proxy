@@ -8,6 +8,7 @@ import './workspace';
 import { applyLocale } from './workspace';
 import text_en from '../public/translations/site_en.json';
 import text_ru from '../public/translations/site_ru.json';
+import { testVM } from '../common/sandbox';
 
 const lang_scope = {
   en: text_en,

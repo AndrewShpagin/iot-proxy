@@ -5,7 +5,11 @@
 /* eslint-disable camelcase */
 // import Blockly from 'blockly';
 
-const ewpreffix = '';
+let ewpreffix = '';
+
+export function setPreffix(prf) {
+  ewpreffix = prf;
+}
 
 Blockly.JavaScript.switchedOn = function (block) {
   const value_device = block.getFieldValue('EW_DEVICE');
@@ -128,7 +132,7 @@ Blockly.JavaScript.currenttime = function (block) {
 
 Blockly.JavaScript.passedsince = function (block) {
   const value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `(${ewpreffix}now() - ${value_time})/1000`;
+  const code = `(${ewpreffix}now() - ${ewpreffix}toDate(${value_time}))/1000`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
@@ -188,7 +192,7 @@ Blockly.JavaScript.operaterange = function (block) {
   const value_column0 = Blockly.JavaScript.valueToCode(block, 'column0', Blockly.JavaScript.ORDER_ATOMIC);
   const value_row1 = Blockly.JavaScript.valueToCode(block, 'row1', Blockly.JavaScript.ORDER_ATOMIC);
   const value_column1 = Blockly.JavaScript.valueToCode(block, 'column1', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `${dropdown_name}(${value_row0}, ${value_column0}, ${value_row1}, ${value_column1})`;
+  const code = `${ewpreffix}${dropdown_name}(${value_row0}, ${value_column0}, ${value_row1}, ${value_column1})`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 

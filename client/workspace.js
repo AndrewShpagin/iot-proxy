@@ -5,15 +5,16 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 
-import './generators';
+import { setPreffix } from './generators';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import 'highlight.js/styles/github.css';
 import { Blocks } from 'blockly';
 import { download, multiDownload } from './assets';
-import { currentTabContentTag, helpShown } from './ui';
+import { currentTabContentTag, helpShown, triggerHelpMode, currentProjectName } from './ui';
 import { customBlocks, defDevs } from './custom-blocks';
 import customToolbox from './toolbox.xml';
+import { SandBox } from '../common/sandbox';
 
 import defEn from '../public/translations/en.json';
 import customEn from '../public/translations/custom_en.json';
@@ -114,7 +115,50 @@ function getWholeCode(code) {
   const rcode = code.trim().replace(/\n/g, '\n  ');
   return pre.replace('\'...functionBodyThere...\';', rcode);
 }
+
+let curSandBox = null;
 let workspace = null;
+
+let consoleText = '';
+function logCallback(msg) {
+  consoleText += `${msg}\n`;
+  w2ui.layout.el('main').textContent = consoleText;
+  hljs.highlightBlock(w2ui.layout.el('main'));
+  w2ui.layout.el('main').scrollTop += 50;
+}
+function appendTable() {
+  const page = `${w2ui.layout.el('main').innerHTML}<div id="MyTableAppended" style="height: 400px"></div>`;
+  w2ui.layout.content('main', page);
+  const theGrid = w2ui.Result;
+  if (theGrid)theGrid.destroy();
+  $('#MyTableAppended').w2grid(curSandBox.createTable());
+  document.getElementById('grid_Result_records').scrollTop = 10000;
+  w2ui.layout.el('main').scrollTop = 10000;
+}
+export function localRunScript() {
+  const user = getUserData();
+  const email = extract(user, '/email=');
+  const password = extract(user, '/password=');
+  const region = extract(user, '/region=');
+  if (workspace && email.length && password.length && region.length) {
+    triggerHelpMode(true);
+    w2ui.layout.hide('top');
+    curSandBox = new SandBox(email, password, region, currentProjectName(), 60000, false);
+    setPreffix('this.');
+    const code = Blockly.JavaScript.workspaceToCode(workspace);
+    setPreffix('');
+    w2ui.layout.el('main').textContent = '';
+    consoleText = '';
+    new Promise(resolve => setTimeout(() => {
+      curSandBox.run(code, logCallback);
+      resolve();
+    }, 500)).then(res => {
+      console.log('Script finished.');
+      appendTable();
+    });
+  }
+}
+
 export function assignProject(text) {
   Blockly.Xml.clearWorkspaceAndLoadFromXml(Blockly.Xml.textToDom(text), workspace);
 }
@@ -167,7 +211,6 @@ localesList.en = preloadLocale(defEn, customEn);
 localesList.ru = preloadLocale(defRu, customRu);
 
 function setupDroplists(devices) {
-  console.log(devices);
   const enc = {
     EW_POWER: 'power',
     EW_TEMPERATURE: 'currentTemperature',

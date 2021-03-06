@@ -3,13 +3,23 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 
-import { injectBlockly, assignProject, getUserData, updateCode, storeUser, updateCodeCompletely } from './workspace';
+import { injectBlockly, assignProject, getUserData, updateCode, storeUser, updateCodeCompletely, localRunScript } from './workspace';
 import { textByID } from './index';
 
 let helpTriggered = false;
 
 export function helpShown() {
   return helpTriggered;
+}
+export function triggerHelpMode(mode) {
+  helpTriggered = mode;
+  if (mode) {
+    const item = w2ui.layout_main_toolbar.items[0];
+    item.text = ticon('#000000', 'arrow-circle-left', 'TOPROJECTS');
+    item.tooltip = '';
+    w2ui.layout_main_toolbar.hide('%ID_COPYOPEN');
+    w2ui.layout_main_toolbar.refresh();
+  }
 }
 
 export function downloadScript() {
@@ -236,6 +246,9 @@ function askNewTabName() {
     },
   });
 }
+export function currentProjectName() {
+  return window.localStorage.getItem(`name_${currentContentTab}`);
+}
 function renameCurrentTab() {
   if (!w2ui.renameTab) {
     $().w2form({
@@ -376,10 +389,9 @@ function addNewLayoutTab() {
 }
 function restoreToolbar() {
   const item = w2ui.layout_main_toolbar.items[0];
-  item.text = textByID('COPYGS');
-  item.tid = 'COPYGS';
+  item.text = ticon('#000000', 'copy', 'COPYGS');
   item.hint = textByID('COPYGSHINT');
-  item.img = 'icon-page';
+  w2ui.layout_main_toolbar.show('%ID_COPYOPEN');
   w2ui.layout_main_toolbar.refresh();
 }
 function copyCode() {
@@ -408,6 +420,7 @@ function showSheetsMessage(panel) {
       `<button class="w2ui-btn" onclick="w2ui.layout.message('${panel}')">${textByID('CANCEL')}</button>`,
   });
 }
+
 $(() => {
   const pstyle = 'padding: 0px;';
   $('#layout').w2layout({
@@ -433,6 +446,9 @@ $(() => {
             }
             if (event.target === '%ID_OPENSCENE') {
               uploadScript();
+            }
+            if (event.target === '%ID_RUNSCRIPT') {
+              localRunScript();
             }
             if (event.target === '%ID_GSHEETS') {
               showSheetsMessage('top');
@@ -547,13 +563,8 @@ function removeHelp() {
   }
 }
 function scriptInfo() {
-  const item = w2ui.layout_main_toolbar.items[0];
-  item.text = `<< ${textByID('TOPROJECTS')}`;
-  item.tooltip = '';
-  item.img = '';
-  w2ui.layout_main_toolbar.refresh();
   if (!helpTriggered) {
-    helpTriggered = true;
+    triggerHelpMode(true);
     w2ui.layout.hide('right');
     w2ui.layout.hide('top');
     w2ui.layout.el('main').style['white-space'] = 'nowrap';

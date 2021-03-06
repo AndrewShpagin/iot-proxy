@@ -1,12 +1,16 @@
 /* eslint-disable func-names */
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
+const { decode, isUrlSafeBase64 } = require('url-safe-base64');
+global.atob = require('atob');
+
 const express = require('express');
 const webpack = require('webpack');
 const cors = require('cors');
 const https = require('https');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const fs = require('fs');
+const fetch = require('node-fetch');
 const custom = require('../client/custom-blocks').customBlocks;
 const { ewRequest } = require('./serverless');
 const dev = require('../webpack.dev.js');
@@ -38,6 +42,30 @@ app.del('/products/:id', cors(), (req, res, next) => {
 
 app.use(async (req, res, next) => {
   console.log('path:', req.path);
+  if (req.path.substring(0, 9) === '/aSevT56x') {
+    try {
+      const str = req.path.substring(9);
+      if (isUrlSafeBase64(str)) {
+        const data = atob(decode(str));
+        console.log('data:', data);
+        const obj = JSON.parse(data);
+        console.log('obj:', obj);
+        if (obj.uri && obj.method) {
+          const options = { headers: { Authorization: obj.auth }, method: obj.method, contentType: 'application/json', body: obj.body };
+          console.log('fetch:', obj.uri, options);
+          const request = await fetch(obj.uri, options);
+          const result = await request.json();
+          console.log('answ:', result);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.write(JSON.stringify(result));
+          res.end();
+          return;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   await ewRequest(req, res, next);
 });
 
