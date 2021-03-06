@@ -236,8 +236,20 @@ export class SandBox {
     let result = '';
     if (res.hasOwnProperty(field)) result = res[field];
     if (res.hasOwnProperty('params') && res.params.hasOwnProperty(field)) result = res.params[field];
-    this.log(`Got device ${device} (${res.name}), state: ${result}`);
+    this.log(`Got device ${device} (${res.name}), field ${field}, got state: ${result}`);
     return result;
+  }
+
+  secondsPassedSinceOnline(device) {
+    const dt = (new Date() - new Date(this.ewGetDeviceState(device, 'onlineTime'))) / 1000.0;
+    this.log(`secondsPassedSinceOnline(${device}) => ${dt} sec`);
+    return dt;
+  }
+
+  secondsPassedSinceOffline(device) {
+    const dt = (new Date() - new Date(this.ewGetDeviceState(device, 'offlineTime'))) / 1000.0;
+    this.log(`secondsPassedSinceOffline(${device}) => ${dt} sec`);
+    return dt;
   }
 
   deviceSet(device, state) {

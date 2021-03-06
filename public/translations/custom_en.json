@@ -4,6 +4,8 @@
 	"DEVICE1": "Device %1",
 	"DEVSWITCHEDON": "Turned ON? %1",
 	"DEVSWITCHEDOFF": "Turned OFF? %1",
+	"ISONLINE": "Is the device %1 online?",
+	"ISOFFLINE": "Is the device %1 offline?",
 	"DEVTOOPERATE": "The device to operate with",
 	"DEVSWITCHEDON_HINT": "Check if the device turned ON",
 	"DEVSWITCHEDFF_HINT": "Check if the device turned OFF",
@@ -63,5 +65,9 @@
 	"SATURDAY": "Saturday",
 	"SENDEMAIL123": "Send email to: %1 Subject: %2 Body: %3",
 	"LISTEMAILS17": "For all unread messages (last day),  %1 from: %2 text in subject: %3 text in body: %4 %5 %6 Mark as read;  %7 delete;",
-	"WHOSENT": "Who sent me this message?"
+	"WHOSENT": "Who sent me this message?",
+	"ONLINEOFFLINE": "Time passed since the device %1 has become %2 , %3",
+	"MINUTES": "minutes",
+	"HOURS": "hours",
+	"DAYS": "days"
 }

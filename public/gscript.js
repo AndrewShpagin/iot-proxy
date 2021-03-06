@@ -118,7 +118,7 @@ function ewGetDeviceState(device, field) {
   let result = '';
   if (res.hasOwnProperty(field)) result = res[field];
   if (res.hasOwnProperty('params') && res.params.hasOwnProperty(field)) result = res.params[field];
-  console.log(`Got device ${device} (${device.name}), state: ${result}`);
+  console.log(`Got device ${device} (${device.name}), field ${field}, got state: ${result}`);
   return result;
 }
 
@@ -139,6 +139,30 @@ function deviceSet(device, value) {
     return response.error === 0;
   }
   return false;
+}
+
+/**
+ * The time passed since the moment when the device turned online
+ *
+ * @param {device} device - the device identifier
+ * @returns time passed, seconds
+ */
+function secondsPassedSinceOnline(device) {
+  const dt = (new Date() - new Date(ewGetDeviceState(device, 'onlineTime'))) / 1000.0;
+  console.log(`secondsPassedSinceOnline(${device}) => ${dt} sec`);
+  return dt;
+}
+
+/**
+ * The time passed since the moment when the device turned offline
+ *
+ * @param {device} device - the device identifier
+ * @returns time passed, seconds
+ */
+function secondsPassedSinceOffline(device) {
+  const dt = (new Date() - new Date(ewGetDeviceState(device, 'offlineTime'))) / 1000.0;
+  console.log(`secondsPassedSinceOffline(${device}) => ${dt} sec`);
+  return dt;
 }
 
 /**
