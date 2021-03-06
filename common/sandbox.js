@@ -2,13 +2,13 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-eval */
-import { table } from './table';
-
 const Parallel = require('paralleljs');
+// let {SandCastle} = require('sandcastle');
 
 // const { VM } = require('vm2');
 const CryptoJS = require('crypto-js');
 const { encode } = require('url-safe-base64');
+const { table } = require('./table');
 require('./table');
 
 const APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
@@ -383,7 +383,7 @@ export class SandBox {
   }
 
   run(code, logcallback) {
-    const p = new Parallel('forwards');
+    // const p = new Parallel('forwards');
     // p.spawn(data => {
     //  console.log('START!');
     this.logcallback = logcallback;

@@ -298,3 +298,30 @@ Blockly.JavaScript.getfrom = function (block) {
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
+
+Blockly.JavaScript.controls_forEach = function (block) {
+  // For each loop.
+  const variable0 = Blockly.JavaScript.variableDB_.getName(
+    block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE,
+  );
+  const argument0 = Blockly.JavaScript.valueToCode(block, 'LIST',
+    Blockly.JavaScript.ORDER_ASSIGNMENT) || '[]';
+  let branch = Blockly.JavaScript.statementToCode(block, 'DO');
+  branch = Blockly.JavaScript.addLoopTrap(branch, block.id);
+  let code = '';
+  // Cache non-trivial values to variables to prevent repeated look-ups.
+  let listVar = argument0;
+  if (!argument0.match(/^\w+$/)) {
+    listVar = Blockly.JavaScript.variableDB_.getDistinctName(
+      `${variable0}_list`, Blockly.Variables.NAME_TYPE,
+    );
+    code += `var ${listVar} = ${argument0};\n`;
+  }
+  const indexVar = Blockly.JavaScript.variableDB_.getDistinctName(
+    `${variable0}_index`, Blockly.Variables.NAME_TYPE,
+  );
+  branch = `${Blockly.JavaScript.INDENT + variable0} = ${
+    listVar}[${indexVar}];\n${branch}`;
+  code += `for (var ${indexVar} of ${listVar}) {if (${listVar}.hasOwnProperty(${indexVar})) {\n${branch}}}\n`;
+  return code;
+};

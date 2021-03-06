@@ -322,18 +322,9 @@
           </shadow>
         </value>
         <value name="FROM">
-          <shadow type="math_arithmetic">
-            <value name="A">
-              <shadow type="math_number">
-                <field name="NUM">1</field>
-              </shadow>
-            </value>
-            <value name="B">
-              <shadow type="math_number">
-                <field name="NUM">1</field>
-              </shadow>
-            </value>
-          </shadow>
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
         </value>
         <value name="TO">
           <shadow type="math_number">

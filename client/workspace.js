@@ -5,7 +5,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 
-import { setPreffix } from './generators';
+import { setPreffix, assignGenerators } from './generators';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import 'highlight.js/styles/github.css';
@@ -309,6 +309,7 @@ export function reinject() {
   setupDroplists(devices);
   workspace = Blockly.inject(blocklyDiv, options);
   Blockly.defineBlocksWithJsonArray(customBlocks);
+  // assignGenerators();
 
   function myUpdateFunction(event) {
     updateCode();
