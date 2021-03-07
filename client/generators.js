@@ -341,7 +341,7 @@ Blockly.JavaScript.isonline = function (block) {
   let code = '';
   if (dropdown_state === 'ONLINE') code = `${ewpreffix}deviceGet(${value_device}, 'online')`;
   if (dropdown_state === 'OFFLINE')code = `!${ewpreffix}deviceGet(${value_device}, 'online')`;
-  if (dropdown_state === 'ON')code = `!${ewpreffix}deviceGet(${value_device}, 'switch') === 'on'`;
-  if (dropdown_state === 'OFF')code = `!${ewpreffix}deviceGet(${value_device}, 'switch') === 'off'`;
+  if (dropdown_state === 'ON')code = `${ewpreffix}deviceGet(${value_device}, 'switch') === 'on'`;
+  if (dropdown_state === 'OFF')code = `${ewpreffix}deviceGet(${value_device}, 'switch') === 'off'`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };

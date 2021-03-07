@@ -1,3 +1,9 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-undef */
+/* eslint-disable max-len */
+/* eslint-disable no-restricted-syntax */
 /// This script intended to be used with Google Script. Look the usage instructions at
 /// http://iot-proxy.com/howitworks.html
 /// Script functions documentation -
@@ -11,7 +17,7 @@ let email = 'useremail';
 let password = 'userpassword';
 let region = 'userregion';
 let devices = null;
-let devcache = {};
+const devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
 
 /**
@@ -71,7 +77,8 @@ function ewGetDevice(device) {
       devcache[device] = object;
       return object;
     }
-  } else return {};
+  }
+  return null;
 }
 
 /**
@@ -122,9 +129,11 @@ function getDeviceID(deviceName) {
 function ewGetDeviceState(device, field) {
   const res = ewGetDevice(device);
   let result = '';
-  if (res.hasOwnProperty(field)) result = res[field];
-  if (res.hasOwnProperty('params') && res.params.hasOwnProperty(field)) result = res.params[field];
-  console.log(`Got device ${device} (${device.name}), field ${field}, got state: ${result}`);
+  if (res) {
+    if (res.hasOwnProperty(field)) result = res[field];
+    if (res.hasOwnProperty('params') && res.params.hasOwnProperty(field)) result = res.params[field];
+    console.log(`Got device ${device} (${device.name}), field ${field}, got state: ${result}`);
+  }
   return result;
 }
 
@@ -137,19 +146,32 @@ function ewGetDeviceState(device, field) {
    */
 function deviceSet(device, state) {
   if (ewLogin()) {
-    const uri = `${baseUrl()}/device/status`;
-    const data = `{"deviceid":"${device}","params":${JSON.stringify(state)},"appid":"${APP_ID}","version":8}`;
-    const options = { headers: { Authorization: `Bearer ${token}` }, method: 'post', contentType: 'application/json', payload: data };
-    const response = JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
-    console.log(`Sent request to change state ${device}: ${JSON.stringify(state)}, got responce: ${JSON.stringify(response)}, ${response.error === 0 ? 'no errors' : 'error returned!'}`);
-    if(response.error === 0) {
+    if (ewGetDevice(device)) {
       const dev = devcache[device];
+      let any = false;
       if (dev) {
         for (const [st, value] of Object.entries(state)) {
-          if (dev.params.hasOwnField(st))dev.params[st] = value;
+          if (dev.params.hasOwnProperty(st) && dev.params[st] !== value) any = true;
         }
       }
-      return true;
+      if (any) {
+        const uri = `${baseUrl()}/device/status`;
+        const data = `{"deviceid":"${device}","params":${JSON.stringify(state)},"appid":"${APP_ID}","version":8}`;
+        const options = { headers: { Authorization: `Bearer ${token}` }, method: 'post', contentType: 'application/json', payload: data };
+        const response = JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
+        console.log(`Sent request to change state ${device}: ${JSON.stringify(state)}, got responce: ${JSON.stringify(response)}, ${response.error === 0 ? 'no errors' : 'error returned!'}`);
+        if (response.error === 0) {
+          if (dev) {
+            for (const [st, value] of Object.entries(state)) {
+              if (dev.params.hasOwnProperty(st))dev.params[st] = value;
+            }
+          }
+          return true;
+        }
+      } else {
+        console.log(`deviceSet(${device}, ${JSON.stringify(state)}) has not changed any state. Sent nothing to servers.`);
+        return true;
+      }
     }
   }
   return false;

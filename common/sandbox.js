@@ -193,7 +193,6 @@ export class SandBox {
     const out = `${d.toLocaleTimeString()} : ${par}`;
     if (this.logcallback) this.logcallback(out);
     this.logsumm += `${par}\n`;
-    // console.log(par);
   }
 
   error(par) {
@@ -228,7 +227,7 @@ export class SandBox {
 
   async ewGetDevice(deviceid) {
     if (await this.ewLogin()) {
-      if (this.devcache.hasOwnProperty(deviceid)) return this.devcache[deviceid];
+      if (this.devcache[deviceid]) return this.devcache[deviceid];
       const uri = `${this.base}/device/${deviceid}?deviceid=${deviceid}&appid=${APP_ID}&version=8`;
       const res = await this.asyncRequest('GET', uri, `Bearer ${this.auth}`, null);
       if (res && res.hasOwnProperty('deviceid')) {
@@ -236,7 +235,7 @@ export class SandBox {
         return res;
       }
     }
-    return {};
+    return null;
   }
 
   async ewGetDevices() {
@@ -275,9 +274,11 @@ export class SandBox {
   async ewGetDeviceState(device, field) {
     const res = await this.ewGetDevice(device);
     let result = '';
-    if (res.hasOwnProperty(field)) result = res[field];
-    if (res.hasOwnProperty('params') && res.params.hasOwnProperty(field)) result = res.params[field];
-    this.log(`Got device ${device} (${res.name}), field ${field}, got state: ${result}`);
+    if (res) {
+      if (res.hasOwnProperty(field)) result = res[field];
+      if (res.hasOwnProperty('params') && res.params.hasOwnProperty(field)) result = res.params[field];
+      this.log(`Got device ${device} (${res.name}), field ${field}, got state: ${result}`);
+    }
     return result;
   }
 
@@ -294,25 +295,38 @@ export class SandBox {
   }
 
   async deviceSet(device, state) {
-    this.log(`deviceSet(${device}, ${JSON.stringify(state)})`);
-    if (await this.ewLogin()) {
-      const uri = `${this.base}/device/status`;
-      const data = JSON.stringify({ deviceid: device,
-        params: { switch: state },
-        appid: APP_ID,
-        version: 8,
-      });
-      this.log(`Sent request to change state ${device}: ${JSON.stringify(state)}`);
-      const res = await this.asyncRequest('POST', uri, `Bearer ${this.auth}`, data);
-      this.log(`Got responce: ${JSON.stringify(res)}, ${res.error === 0 ? 'no errors' : 'error returned!'}`);
-      if (res && res.error === 0) {
+    if (await this.ewGetDevice(device)) {
+      this.log(`deviceSet(${device}, ${JSON.stringify(state)})`);
+      if (await this.ewLogin()) {
         const dev = this.devcache[device];
+        let any = false;
         if (dev) {
           for (const [st, value] of Object.entries(state)) {
-            if (dev.params.hasOwnField(st))dev.params[st] = value;
+            if (dev.params.hasOwnProperty(st) && dev.params[st] !== value) any = true;
           }
         }
-        return true;
+        if (any) {
+          const uri = `${this.base}/device/status`;
+          const data = JSON.stringify({ deviceid: device,
+            params: state,
+            appid: APP_ID,
+            version: 8,
+          });
+          this.log(`Sent request to change state ${device}: ${JSON.stringify(state)}`);
+          const res = await this.asyncRequest('POST', uri, `Bearer ${this.auth}`, data);
+          this.log(`Got responce: ${JSON.stringify(res)}, ${res.error === 0 ? 'no errors' : 'error returned!'}`);
+          if (res && res.error === 0) {
+            if (dev) {
+              for (const [st, value] of Object.entries(state)) {
+                if (dev.params.hasOwnProperty(st))dev.params[st] = value;
+              }
+            }
+            return true;
+          }
+        } else {
+          this.log(`deviceSet(${device}, ${JSON.stringify(state)}) has not changed any state. Sent nothing to servers.`);
+          return true;
+        }
       }
     }
     return false;

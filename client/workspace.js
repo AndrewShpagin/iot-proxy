@@ -158,7 +158,8 @@ export function assignProject(text) {
 }
 let gscript = '';
 download('gscript.js', res => {
-  gscript = res;
+  const v3 = res.indexOf('///');
+  gscript = res.substring(v3);
 });
 export function updateCodeCompletely() {
   const code = Blockly.JavaScript.workspaceToCode(workspace);
