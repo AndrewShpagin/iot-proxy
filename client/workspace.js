@@ -9,7 +9,6 @@ import { setPreffix, assignGenerators } from './generators';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import 'highlight.js/styles/github.css';
-import { Blocks } from 'blockly';
 import { download, multiDownload } from './assets';
 import { currentTabContentTag, helpShown, triggerHelpMode, currentProjectName } from './ui';
 import { customBlocks, defDevs } from './custom-blocks';
@@ -126,12 +125,13 @@ function logCallback(msg) {
   hljs.highlightBlock(w2ui.layout.el('main'));
   w2ui.layout.el('main').scrollTop += 50;
 }
-function appendTable() {
+function appendTable(box) {
   const page = `${w2ui.layout.el('main').innerHTML}<div id="MyTableAppended" style="height: 400px"></div>`;
   w2ui.layout.content('main', page);
   const theGrid = w2ui.Result;
   if (theGrid)theGrid.destroy();
-  $('#MyTableAppended').w2grid(curSandBox.createTable());
+  const res = box.createTable();
+  $('#MyTableAppended').w2grid(res);
   document.getElementById('grid_Result_records').scrollTop = 10000;
   w2ui.layout.el('main').scrollTop = 10000;
 }
@@ -144,18 +144,12 @@ export function localRunScript() {
     triggerHelpMode(true);
     w2ui.layout.hide('top');
     curSandBox = new SandBox(email, password, region, currentProjectName(), 60000, false);
-    setPreffix('this.');
+    setPreffix('myObject.');
     const code = Blockly.JavaScript.workspaceToCode(workspace);
     setPreffix('');
     w2ui.layout.el('main').textContent = '';
     consoleText = '';
-    new Promise(resolve => setTimeout(() => {
-      curSandBox.run(code, logCallback);
-      resolve();
-    }, 500)).then(res => {
-      console.log('Script finished.');
-      appendTable();
-    });
+    setTimeout(() => curSandBox.run(code, logCallback, box => appendTable(box)), 500);
   }
 }
 

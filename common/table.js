@@ -119,7 +119,6 @@ class table {
   }
 
   getLastRow() {
-    console.log('getLastRow =', this.lastrow);
     return this.lastrow;
   }
 }

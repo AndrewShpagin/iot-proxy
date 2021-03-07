@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable import/prefer-default-export */
@@ -35,6 +36,18 @@ export class SandBox {
     this.devices = null;
     this.restoreTables();
     this.devcache = {};
+    this.logsumm = '';
+    this.asyncReplace = [
+      'ewLogin',
+      'ewGetDevice',
+      'ewGetDevices',
+      'getDeviceID',
+      'ewGetDeviceState',
+      'secondsPassedSinceOnline',
+      'secondsPassedSinceOffline',
+      'deviceSet',
+      'deviceGet',
+    ];
   }
 
   isDate(str) {
@@ -42,12 +55,14 @@ export class SandBox {
   }
 
   humanVal(val) {
-    const str = val.toString();
-    if (this.isDate(str)) {
-      return w2utils.formatDateTime(new Date(val), 'mm-dd-yyyy|h:m:s');
-    }
-    if (w2utils.isFloat(str)) return Number((Number(str)).toFixed(3)).toString();
-    return str;
+    if (val) {
+      const str = val.toString();
+      if (this.isDate(str)) {
+        return w2utils.formatDateTime(new Date(val), 'mm-dd-yyyy|h:m:s');
+      }
+      if (w2utils.isFloat(str)) return Number((Number(str)).toFixed(3)).toString();
+      return str;
+    } else return 'null';
   }
 
   createTable() {
@@ -152,10 +167,32 @@ export class SandBox {
     return null;
   }
 
+  async asyncRequest(method, uri, auth, body) {
+    try {
+      if (this.onServer) {
+        const request = await fetch(uri, { method, headers: { Authorization: auth }, body });
+        return await request.json();
+      } else {
+        const text = JSON.stringify({
+          method,
+          uri,
+          auth,
+          body,
+        });
+        const request = await fetch(`/aSevT56x${encode(btoa(text))}`, { method: 'get' });
+        return await request.json();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  }
+
   log(par) {
     const d = new Date();
     const out = `${d.toLocaleTimeString()} : ${par}`;
     if (this.logcallback) this.logcallback(out);
+    this.logsumm += `${par}\n`;
     // console.log(par);
   }
 
@@ -165,7 +202,7 @@ export class SandBox {
     if (this.logcallback) this.logcallback(out);
   }
 
-  ewLogin() {
+  async ewLogin() {
     if (!this.auth) {
       const payload = JSON.stringify({
         appid: APP_ID,
@@ -175,25 +212,25 @@ export class SandBox {
         version: 8,
       });
       const sign = CryptoJS.HmacSHA256(payload, APP_SECRET).toString(CryptoJS.enc.Base64);
-      const res = this.syncRequest('POST', `${this.base}/login`, `Sign ${sign}`, payload);
+      const res = await this.asyncRequest('POST', `${this.base}/login`, `Sign ${sign}`, payload);
       if (res) { // OK
         if (res.hasOwnProperty('at')) {
-          this.log('Login to eWeLink successful.');
+          await this.log('Login to eWeLink successful.');
           this.auth = res.at;
           return this.auth;
         }
       } else {
-        this.error('Login to eWeLink failed.');
+        await this.error('Login to eWeLink failed.');
       }
     }
     return this.auth;
   }
 
-  ewGetDevice(deviceid) {
-    if (this.ewLogin()) {
+  async ewGetDevice(deviceid) {
+    if (await this.ewLogin()) {
       if (this.devcache.hasOwnProperty(deviceid)) return this.devcache[deviceid];
       const uri = `${this.base}/device/${deviceid}?deviceid=${deviceid}&appid=${APP_ID}&version=8`;
-      const res = this.syncRequest('GET', uri, `Bearer ${this.auth}`, null);
+      const res = await this.asyncRequest('GET', uri, `Bearer ${this.auth}`, null);
       if (res && res.hasOwnProperty('deviceid')) {
         this.devcache[deviceid] = res;
         return res;
@@ -202,17 +239,17 @@ export class SandBox {
     return {};
   }
 
-  ewGetDevices() {
+  async ewGetDevices() {
     if (this.devices) return this.devices;
-    if (this.ewLogin()) {
+    if (await this.ewLogin()) {
       const uri = `${this.base}/device?lang=en&appid=${APP_ID}&version=8&getTags=1`;
-      this.devices = this.syncRequest('GET', uri, `Bearer ${this.auth}`, null);
+      this.devices = await this.asyncRequest('GET', uri, `Bearer ${this.auth}`, null);
       if (this.devices && this.devices.hasOwnProperty('devicelist')) {
-        this.log(`Got devices list successvully, ${this.devices.devicelist.length} devices found.`);
+        await this.log(`Got devices list successvully, ${this.devices.devicelist.length} devices found.`);
         // eslint-disable-next-line no-return-assign
         this.devices.devicelist.forEach(el => this.devcache[el.deviceid] = el);
       } else {
-        this.error('Unable to get devices list.');
+        await this.error('Unable to get devices list.');
         this.devices = null;
       }
       return this.devices;
@@ -220,23 +257,23 @@ export class SandBox {
     return {};
   }
 
-  getDeviceID(deviceName) {
-    this.ewGetDevices();
-    if (this.devices) {
-      const device = this.devices.devicelist.find(el => el.name === deviceName);
+  async getDeviceID(deviceName) {
+    const devs = await this.ewGetDevices();
+    if (devs) {
+      const device = devs.devicelist.find(el => el.name === deviceName);
       if (device) {
-        this.log(`Found the device by name: ${deviceName} => ${device.deviceid}`);
+        await this.log(`Found the device by name: ${deviceName} => ${device.deviceid}`);
         return device.deviceid;
       } else {
-        this.error(`Device "${deviceName}" not found. This is the list of available devices:`);
+        await this.error(`Device "${deviceName}" not found. This is the list of available devices:`);
         this.devices.devicelist.forEach(d => this.log(`${d.deviceid}: ${d.name}`));
       }
     }
     return '';
   }
 
-  ewGetDeviceState(device, field) {
-    const res = this.ewGetDevice(device);
+  async ewGetDeviceState(device, field) {
+    const res = await this.ewGetDevice(device);
     let result = '';
     if (res.hasOwnProperty(field)) result = res[field];
     if (res.hasOwnProperty('params') && res.params.hasOwnProperty(field)) result = res.params[field];
@@ -244,21 +281,21 @@ export class SandBox {
     return result;
   }
 
-  secondsPassedSinceOnline(device) {
-    const dt = (new Date() - new Date(this.ewGetDeviceState(device, 'onlineTime'))) / 1000.0;
+  async secondsPassedSinceOnline(device) {
+    const dt = (new Date() - new Date(await this.ewGetDeviceState(device, 'onlineTime'))) / 1000.0;
     this.log(`secondsPassedSinceOnline(${device}) => ${dt} sec`);
     return dt;
   }
 
-  secondsPassedSinceOffline(device) {
-    const dt = (new Date() - new Date(this.ewGetDeviceState(device, 'offlineTime'))) / 1000.0;
+  async secondsPassedSinceOffline(device) {
+    const dt = (new Date() - new Date(await this.ewGetDeviceState(device, 'offlineTime'))) / 1000.0;
     this.log(`secondsPassedSinceOffline(${device}) => ${dt} sec`);
     return dt;
   }
 
-  deviceSet(device, state) {
+  async deviceSet(device, state) {
     this.log(`deviceSet(${device}, ${JSON.stringify(state)})`);
-    if (this.ewLogin()) {
+    if (await this.ewLogin()) {
       const uri = `${this.base}/device/status`;
       const data = JSON.stringify({ deviceid: device,
         params: { switch: state },
@@ -266,7 +303,7 @@ export class SandBox {
         version: 8,
       });
       this.log(`Sent request to change state ${device}: ${JSON.stringify(state)}`);
-      const res = this.syncRequest('POST', uri, `Bearer ${this.auth}`, data);
+      const res = await this.asyncRequest('POST', uri, `Bearer ${this.auth}`, data);
       this.log(`Got responce: ${JSON.stringify(res)}, ${res.error === 0 ? 'no errors' : 'error returned!'}`);
       if (res && res.error === 0) {
         const dev = this.devcache[device];
@@ -281,8 +318,8 @@ export class SandBox {
     return false;
   }
 
-  deviceGet(id, field) {
-    const res = this.ewGetDeviceState(id, field);
+  async deviceGet(id, field) {
+    const res = await this.ewGetDeviceState(id, field);
     this.log(`deviceGet(${id}, ${field}) => ${res}`);
     return res;
   }
@@ -299,7 +336,7 @@ export class SandBox {
 
   setCell(r, c, value) {
     this.log(`setCell(${r}, ${c}, ${value})`);
-    return this.curTable().set(r, c, value);
+    return (this.curTable()).set(r, c, value);
   }
 
   incrementCell(r, c, value) {
@@ -326,11 +363,11 @@ export class SandBox {
 
   cellsOperate(r0, c0, r1, c1, init, func) {
     const res = this.curTable().cellsOperate(r0, c0, r1, c1, init, func);
-    // this.log(`cellsOperate(${r0}, ${c0}, ${r1}, ${c1}, ...) => ${res}`);
+    // await this.log(`cellsOperate(${r0}, ${c0}, ${r1}, ${c1}, ...) => ${res}`);
     return res;
   }
 
-  summCells(r0, c0, r1, c1) {
+  async summCells(r0, c0, r1, c1) {
     const res = this.cellsOperate(r0, c0, r1, c1, 0, (summ, value) => summ + Number(value));
     this.log(`summCells(${r0}, ${c0}, ${r1}, ${c1}) => ${res}`);
     return res;
@@ -410,19 +447,43 @@ export class SandBox {
     this.error('sendEmail: e-mail functions not supported when you run in the Browser.');
   }
 
-  run(code, logcallback) {
-    // const p = new Parallel('forwards');
-    // p.spawn(data => {
-    //  console.log('START!');
+  replaceAll(body, what, to) {
+    let res = body;
+    if (what !== to) {
+      do {
+        const r = res.replace(what, to);
+        if (r === res) break;
+        res = r;
+      } while (true);
+    }
+    return res;
+  }
+
+  replaceAsync(body) {
+    let res = body;
+    this.asyncReplace.forEach(el => {
+      res = this.replaceAll(res, `myObject.${el}`, `-*+[]==&&+()!!~.${el}`);
+    });
+    return this.replaceAll(res, '-*+[]==&&+()!!~.', 'await myObject.');
+  }
+
+  baseRun(asyncCode, endCallback) {
+    const myObject = this;
+    const resfn =
+      `async function ev() { 
+        ${asyncCode} 
+      } 
+      ev().then(res => { 
+        myObject.storeTables();
+        endCallback(myObject);
+      });`;
+    eval(resfn);
+  }
+
+  async run(code, logcallback, endCallback) {
     this.logcallback = logcallback;
     this.log(`Executing code:\n/*-------------------------------------------*/\n${code}/*-------------------------------------------*/`);
-    eval(code);
-    this.log('Execution finished!');
-    this.storeTables();
-    //  console.log('END!');
-    //  return data;
-    // }, {}).then(data => {
-    //  console.log(data);
-    // });
+    const asyncCode = this.replaceAsync(code);
+    this.baseRun(asyncCode, endCallback);
   }
 }
