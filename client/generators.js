@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */

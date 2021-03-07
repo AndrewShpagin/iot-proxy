@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-undef */

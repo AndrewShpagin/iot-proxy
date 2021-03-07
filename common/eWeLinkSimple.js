@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
 const CryptoJS = require('crypto-js');
 
@@ -33,7 +34,7 @@ class ewSimple {
     try {
       if (await this.login()) {
         const uri = `${this.base}/device/${deviceid}?deviceid=${deviceid}&appid=${APP_ID}&version=8`;
-        const options = { method: 'get', headers: { Authorization: `Bearer ${token}` } };
+        const options = { method: 'get', headers: { Authorization: `Bearer ${this.auth}` } };
         const data = await fetch(uri, options);
         return await data.json();
       }
@@ -47,7 +48,7 @@ class ewSimple {
     try {
       if (await this.login()) {
         const uri = `${this.base}/device?lang=en&appid=${APP_ID}&version=8&getTags=1`;
-        const options = { method: 'get', headers: { Authorization: `Bearer ${token}` } };
+        const options = { method: 'get', headers: { Authorization: `Bearer ${this.auth}` } };
         const data = await fetch(uri, options);
         return await data.json();
       }
