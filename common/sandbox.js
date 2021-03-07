@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
@@ -32,6 +34,7 @@ export class SandBox {
     this.base = `https://${this.region}-api.coolkit.cc:8080/api/user`;
     this.devices = null;
     this.restoreTables();
+    this.devcache = {};
   }
 
   isDate(str) {
@@ -188,9 +191,13 @@ export class SandBox {
 
   ewGetDevice(deviceid) {
     if (this.ewLogin()) {
+      if (this.devcache.hasOwnProperty(deviceid)) return this.devcache[deviceid];
       const uri = `${this.base}/device/${deviceid}?deviceid=${deviceid}&appid=${APP_ID}&version=8`;
       const res = this.syncRequest('GET', uri, `Bearer ${this.auth}`, null);
-      if (res) return res;
+      if (res && res.hasOwnProperty('deviceid')) {
+        this.devcache[deviceid] = res;
+        return res;
+      }
     }
     return {};
   }
@@ -199,14 +206,16 @@ export class SandBox {
     if (this.devices) return this.devices;
     if (this.ewLogin()) {
       const uri = `${this.base}/device?lang=en&appid=${APP_ID}&version=8&getTags=1`;
-      devices = this.syncRequest('GET', uri, `Bearer ${this.auth}`, null);
-      if (devices && devices.hasOwnProperty('devicelist')) {
-        this.log(`Got devices list successvully, ${devices.devicelist.length} devices found.`);
+      this.devices = this.syncRequest('GET', uri, `Bearer ${this.auth}`, null);
+      if (this.devices && this.devices.hasOwnProperty('devicelist')) {
+        this.log(`Got devices list successvully, ${this.devices.devicelist.length} devices found.`);
+        // eslint-disable-next-line no-return-assign
+        this.devices.devicelist.forEach(el => this.devcache[el.deviceid] = el);
       } else {
         this.error('Unable to get devices list.');
-        devices = null;
+        this.devices = null;
       }
-      return devices;
+      return this.devices;
     }
     return {};
   }
@@ -259,7 +268,15 @@ export class SandBox {
       this.log(`Sent request to change state ${device}: ${JSON.stringify(state)}`);
       const res = this.syncRequest('POST', uri, `Bearer ${this.auth}`, data);
       this.log(`Got responce: ${JSON.stringify(res)}, ${res.error === 0 ? 'no errors' : 'error returned!'}`);
-      if (res && res.error === 0) return true;
+      if (res && res.error === 0) {
+        const dev = this.devcache[device];
+        if (dev) {
+          for (const [st, value] of Object.entries(state)) {
+            if (dev.params.hasOwnField(st))dev.params[st] = value;
+          }
+        }
+        return true;
+      }
     }
     return false;
   }
@@ -386,7 +403,11 @@ export class SandBox {
   }
 
   forAllRecentUnreadMails(from, subject, body, todo) {
-    this.error('e-mail functions not supported');
+    this.error('forAllRecentUnreadMails: e-mail functions not supported when you run in the Browser.');
+  }
+
+  sendEmail(email, subj, body) {
+    this.error('sendEmail: e-mail functions not supported when you run in the Browser.');
   }
 
   run(code, logcallback) {

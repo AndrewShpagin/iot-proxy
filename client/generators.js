@@ -59,15 +59,6 @@ Blockly.JavaScript.turnoff = function (block) {
   return `${ewpreffix}deviceSet(${value_device}, {switch: 'off', pulse: 'off'});\n`;
 };
 
-Blockly.JavaScript.ewelink_devices_access = function (block) {
-  const text_email = block.getFieldValue('EMAIL');
-  const text_pass = block.getFieldValue('PASS');
-  const dropdown_reg_list = block.getFieldValue('reg_list');
-  // TODO: Assemble JavaScript into code variable.
-  const code = ';\n';
-  return code;
-};
-
 Blockly.JavaScript.temperature = function (block) {
   const value_device = block.getFieldValue('EW_TEMPERATURE');
   const code = `${ewpreffix}deviceGet(${value_device}, 'currentTemperature')`;
@@ -269,7 +260,9 @@ Blockly.JavaScript.sendmail = function (block) {
   const value_email = Blockly.JavaScript.valueToCode(block, 'EMAIL', Blockly.JavaScript.ORDER_ATOMIC);
   const value_subject = Blockly.JavaScript.valueToCode(block, 'SUBJECT', Blockly.JavaScript.ORDER_ATOMIC);
   const value_body = Blockly.JavaScript.valueToCode(block, 'BODY', Blockly.JavaScript.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+  if (ewpreffix.length) {
+    return `${ewpreffix}sendEmail(${value_email}, ${value_subject}, ${value_body});\n`;
+  } else
   if (value_email === 'me') {
     return `MailApp.sendEmail(Session.getActiveUser().getEmail(), ${value_subject}, ${value_body});\n`;
   } else {

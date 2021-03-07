@@ -11,6 +11,7 @@ let email = 'useremail';
 let password = 'userpassword';
 let region = 'userregion';
 let devices = null;
+let devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
 
 /**
@@ -63,9 +64,13 @@ function ewLogin() {
    */
 function ewGetDevice(device) {
   if (ewLogin()) {
+    if (devcache.hasOwnProperty(device)) return devcache[device];
     const uri = `${baseUrl()}/device/${device}?deviceid=${device}&appid=${APP_ID}&version=8`;
     const object = JSON.parse(UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }).getContentText());
-    return object;
+    if (object && object.hasOwnProperty('deviceid')) {
+      devcache[device] = object;
+      return object;
+    }
   } else return {};
 }
 
@@ -79,6 +84,7 @@ function ewGetDevices() {
     devices = JSON.parse(UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }).getContentText());
     if (devices && devices.hasOwnProperty('devicelist')) {
       console.log(`Got devices list successvully, ${devices.devicelist.length} devices found.`);
+      devices.devicelist.forEach(el => devcache[el.deviceid] = el);
     } else {
       console.error('Unable to get devices list.');
       devices = null;
@@ -129,14 +135,22 @@ function ewGetDeviceState(device, field) {
    * @param {object} value - the object that containt the list of fields to change. Example: {switch: 'on', pulse: 'on', pulseWidth: 5000}.
    * Look the console.log(ewGetDevice(device).params) for the full set of possible values.
    */
-function deviceSet(device, value) {
+function deviceSet(device, state) {
   if (ewLogin()) {
     const uri = `${baseUrl()}/device/status`;
-    const data = `{"deviceid":"${device}","params":${JSON.stringify(value)},"appid":"${APP_ID}","version":8}`;
+    const data = `{"deviceid":"${device}","params":${JSON.stringify(state)},"appid":"${APP_ID}","version":8}`;
     const options = { headers: { Authorization: `Bearer ${token}` }, method: 'post', contentType: 'application/json', payload: data };
     const response = JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
-    console.log(`Sent request to change state ${device}: ${JSON.stringify(value)}, got responce: ${JSON.stringify(response)}, ${response.error === 0 ? 'no errors' : 'error returned!'}`);
-    return response.error === 0;
+    console.log(`Sent request to change state ${device}: ${JSON.stringify(state)}, got responce: ${JSON.stringify(response)}, ${response.error === 0 ? 'no errors' : 'error returned!'}`);
+    if(response.error === 0) {
+      const dev = devcache[device];
+      if (dev) {
+        for (const [st, value] of Object.entries(state)) {
+          if (dev.params.hasOwnField(st))dev.params[st] = value;
+        }
+      }
+      return true;
+    }
   }
   return false;
 }
