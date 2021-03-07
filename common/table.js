@@ -5,7 +5,7 @@
 function sqr(x) {
   return x * x;
 }
-class table {
+class SandboxTable {
   constructor(name) {
     this.lastrow = 0;
     this.lastcolumn = 0;
@@ -110,7 +110,7 @@ class table {
   }
 
   averageInCells(r0, c0, r1, c1) {
-    return this.summCells(r0, c0, r1, c1) / countFilledCells(r0, c0, r1, c1);
+    return this.summCells(r0, c0, r1, c1) / this.countFilledCells(r0, c0, r1, c1);
   }
 
   deviationInCells(r0, c0, r1, c1) {
@@ -122,4 +122,4 @@ class table {
     return this.lastrow;
   }
 }
-module.exports = { table };
+module.exports = { SandboxTable };

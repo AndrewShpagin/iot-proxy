@@ -11,8 +11,7 @@ const Parallel = require('paralleljs');
 // const { VM } = require('vm2');
 const CryptoJS = require('crypto-js');
 const { encode } = require('url-safe-base64');
-const { table } = require('./table');
-require('./table');
+const { SandboxTable } = require('./table');
 
 const APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
 const APP_SECRET = '4G91qSoboqYO4Y0XJ0LPPKIsq8reHdfa';
@@ -26,9 +25,7 @@ export class SandBox {
     this.auth = null;
     this.scriptName = scriptName;
     this.onServer = onServer;
-    this.tables = { default:
-      new table(),
-    };
+    this.tables = { default: new SandboxTable() };
     this.mySheet = this.tables.default;
     this.curtable = 'default';
     this.ts = Math.floor(Date.now() / 1000);
@@ -58,8 +55,10 @@ export class SandBox {
     if (val) {
       const str = val.toString();
       if (this.isDate(str)) {
+        // eslint-disable-next-line no-undef
         return w2utils.formatDateTime(new Date(val), 'mm-dd-yyyy|h:m:s');
       }
+      // eslint-disable-next-line no-undef
       if (w2utils.isFloat(str)) return Number((Number(str)).toFixed(3)).toString();
       return str;
     } else return 'null';
@@ -97,7 +96,7 @@ export class SandBox {
       result.columns.push({
         field: i,
         caption: i,
-        size: `${width[i] * 100.0 / summ}%`,
+        size: `${(width[i] * 100.0) / summ}%`,
       });
     }
     for (let i = 0; i <= t.lastrow; i++) {
@@ -114,7 +113,7 @@ export class SandBox {
   }
 
   tableStoreID(name) {
-    return `table_${this.email}_${this.scriptName}_${name}`;
+    return `SandboxTable_${this.email}_${this.scriptName}_${name}`;
   }
 
   restoreTables() {
@@ -123,7 +122,7 @@ export class SandBox {
       if (tab && tab.length) {
         const tb = this.tables.default;
         const res = JSON.parse(tab);
-        tb.table = res.table;
+        tb.table = res.table || new SandboxTable();
         tb.lastcolumn = res.lastcolumn;
         tb.lastrow = res.lastrow;
       }
@@ -354,10 +353,10 @@ export class SandBox {
   }
 
   incrementCell(r, c, value) {
-    const cc = getCell(r, c);
-    if (cc === '')setCell(r, c, value);
-    else setCell(r, c, cc + value);
-    this.log(`incrementCell(${r}, ${c}, ${value}) : ${cc} => ${getCell(r, c)}`);
+    const cc = this.getCell(r, c);
+    if (cc === '') this.setCell(r, c, value);
+    else this.setCell(r, c, cc + value);
+    this.log(`incrementCell(${r}, ${c}, ${value}) : ${cc} => ${this.getCell(r, c)}`);
   }
 
   deleteColumn(c) {
@@ -425,7 +424,7 @@ export class SandBox {
 
   deviationInCells(r0, c0, r1, c1) {
     const av = this.averageInCells(r0, c0, r1, c1);
-    const res = this.valid(Math.sqrt(this.cellsOperate(r0, c0, r1, c1, 0.0, (summ, value) => summ + sqr(Number(value) - av)) / this.countFilledCells(r0, c0, r1, c1)));
+    const res = this.valid(Math.sqrt(this.cellsOperate(r0, c0, r1, c1, 0.0, (summ, value) => summ + this.sqr(Number(value) - av)) / this.countFilledCells(r0, c0, r1, c1)));
     this.log(`deviationInCells(${r0}, ${c0}, ${r1}, ${c1}) => ${res}`);
     return res;
   }
@@ -468,6 +467,7 @@ export class SandBox {
         const r = res.replace(what, to);
         if (r === res) break;
         res = r;
+      // eslint-disable-next-line no-constant-condition
       } while (true);
     }
     return res;

@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
@@ -5,9 +6,9 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 
-import { setPreffix, assignGenerators } from './generators';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
+import { setPreffix } from './generators';
 import 'highlight.js/styles/github.css';
 import { download, multiDownload } from './assets';
 import { currentTabContentTag, helpShown, triggerHelpMode, currentProjectName } from './ui';

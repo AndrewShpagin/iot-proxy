@@ -1,16 +1,17 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 // import './css/bootstrap-reboot.css';
 // import './css/main.css';
-import './workspace';
 import { applyLocale } from './workspace';
+// eslint-disable-next-line camelcase
 import text_en from '../public/translations/site_en.json';
+// eslint-disable-next-line camelcase
 import text_ru from '../public/translations/site_ru.json';
-import { testVM } from '../common/sandbox';
 
-const lang_scope = {
+const langScope = {
   en: text_en,
   ru: text_ru,
 };
@@ -38,8 +39,7 @@ export const isMobile = {
 
 function applyLanguage() {
   const lang = curLanguage();
-  const culang = lang_scope[lang];
-  // const plang = lang_scope[prevLang];
+  const culang = langScope[lang];
   document.querySelectorAll('*').forEach(node => {
     if (node.hasAttribute('tid')) {
       let inn = node.innerHTML;
@@ -71,7 +71,7 @@ function setLang() {
 applyLanguage();
 
 export function textByID(id) {
-  const culang = lang_scope[curLanguage()];
+  const culang = langScope[curLanguage()];
   return culang[id] || id;
 }
 
