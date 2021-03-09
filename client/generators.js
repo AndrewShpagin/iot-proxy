@@ -47,8 +47,8 @@ Blockly.JavaScript.device_state = function (block) {
 
 Blockly.JavaScript.pause = function (block) {
   const value_pause = Blockly.JavaScript.valueToCode(block, 'pause', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `Utilities.sleep(${value_pause}*1000);\n`;
-  return code;
+  if (ewpreffix.length) return `${ewpreffix}makePause(${value_pause}*1000);\n`;
+  return `Utilities.sleep(${value_pause}*1000);\n`;
 };
 
 Blockly.JavaScript.turnon = function (block) {

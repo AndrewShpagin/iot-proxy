@@ -1,3 +1,5 @@
+/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable import/extensions */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
@@ -20,6 +22,9 @@ import defEn from '../public/translations/en.json';
 import customEn from '../public/translations/custom_en.json';
 import defRu from '../public/translations/ru.json';
 import customRu from '../public/translations/custom_ru.json';
+// eslint-disable-next-line import/no-unresolved
+import baseJs from '!raw-loader!../public/base';
+import gscript0 from '!raw-loader!../public/gscript';
 import { curLanguage } from './index';
 
 const CryptoJS = require('crypto-js');
@@ -33,6 +38,8 @@ function encStr(str) {
 function decStr(str) {
   return CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(str, seqPp));
 }
+
+const gscript = gscript0.substring(gscript0.indexOf('///'));
 
 hljs.registerLanguage('javascript', javascript);
 const side = 'start';
@@ -87,6 +94,11 @@ export function getUserData() {
   return null;
 }
 
+export function getUserEmail() {
+  const user = getUserData();
+  return extract(user, '/email=');
+}
+
 export function storeUser(log) {
   window.localStorage.setItem('userlogindata', encStr(log));
 }
@@ -103,7 +115,7 @@ function extract(path, key) {
   }
   return null;
 }
-let baseJs = '';
+
 function getWholeCode(code) {
   const user = getUserData();
   const email = extract(user, '/email=');
@@ -157,11 +169,7 @@ export function localRunScript() {
 export function assignProject(text) {
   Blockly.Xml.clearWorkspaceAndLoadFromXml(Blockly.Xml.textToDom(text), workspace);
 }
-let gscript = '';
-download('gscript.js', res => {
-  const v3 = res.indexOf('///');
-  gscript = res.substring(v3);
-});
+
 export function updateCodeCompletely() {
   const code = Blockly.JavaScript.workspaceToCode(workspace);
   let wholecode = getWholeCode(code);
@@ -213,7 +221,7 @@ function setupDroplists(devices) {
     EW_HUMIDITY: 'currentHumidity',
     EW_DEVICE: 'deviceid',
   };
-  if (Object.keys(devices).length) {
+  if (devices && Object.keys(devices).length) {
     customBlocks.forEach(block => {
       if (block.hasOwnProperty('args0')) {
         block.args0.forEach(arg => {
@@ -262,39 +270,44 @@ function setupDroplists(devices) {
 
 export function applyLocale(locName) {
   const loc = localesList[locName];
-  if (!loc) {
-    const list = [`translations/${locName}.json`, `translations/custom_${locName}.json`];
-    download(list, response => {
-      localesList[locName] = preloadLocale(response[list[0]], response[list[1]]);
-      applyLocaleNow(localesList[locName]);
-      if (workspace) Blockly.svgResize(workspace);
-    });
-  } else {
-    applyLocaleNow(loc);
-    if (workspace) reinject();
-  }
+  applyLocaleNow(loc);
+  if (workspace) reinject();
 }
 
 applyLocale(curLanguage());
 let devices = {};
-
-export function injectBlockly() {
-  let ioturl = '';
-  const dlist = ['base.js'];
-  const user = getUserData();
-  if (user) {
-    const sdata = `${user}/devices/`;
-    const hv = Date.now().toString().slice(-6);
-    ioturl = `/xRet78uz${encodeURI(encStr(hv + sdata))}`;
-    dlist.push(ioturl);
+const user = getUserData();
+if (user) {
+  try {
+    const locDevices = localStorage.getItem(`dev_${getUserEmail()}`);
+    if (locDevices && locDevices.length)devices = JSON.parse(locDevices);
+  } catch (error) {
+    console.log(error);
   }
-  multiDownload(dlist, response => {
-    devices = {};
-    if (ioturl.length) devices = JSON.parse(response[ioturl]);
-    baseJs = response['base.js'];
-    reinject();
+}
+if (user) {
+  const sdata = `${user}/devices/`;
+  const hv = Date.now().toString().slice(-6);
+  const ioturl = `/xRet78uz${encodeURI(encStr(hv + sdata))}`;
+  download(ioturl, res => {
+    if (res.length > 128) {
+      try {
+        const dev1 = JSON.parse(res);
+        if (JSON.stringify(dev1) !== JSON.stringify(devices)) {
+          console.log('Devices lust updated!');
+          devices = dev1;
+          localStorage.setItem(`dev_${getUserEmail()}`, res);
+          reinject();
+        } else {
+          console.log('Devices not changed');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   });
 }
+
 export function reinject() {
   const blocklyDiv = w2ui.layout.el('top');
   blocklyDiv.innerHTML = '';
@@ -302,6 +315,7 @@ export function reinject() {
   if (!helpShown())w2ui.layout.el('main').style['white-space'] = 'pre';
   w2ui.layout.el('right').style['white-space'] = 'pre';
 
+  localStorage.setItem(`dev_${getUserEmail()}`, JSON.stringify(devices));
   setupDroplists(devices);
   workspace = Blockly.inject(blocklyDiv, options);
   Blockly.defineBlocksWithJsonArray(customBlocks);

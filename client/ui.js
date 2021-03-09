@@ -4,7 +4,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 
-import { injectBlockly, assignProject, getUserData, updateCode, storeUser, updateCodeCompletely, localRunScript } from './workspace';
+import { reinject, assignProject, getUserData, updateCode, storeUser, updateCodeCompletely, localRunScript } from './workspace';
 import { textByID } from './index';
 
 let helpTriggered = false;
@@ -135,12 +135,12 @@ export function openLoginPopup() {
         Login() {
           storeUser(`/email=${w2ui.foo.get('Email').$el[0].value}/password=${w2ui.foo.get('Password').$el[0].value}/region=${w2ui.foo.get('Server').$el[0].value}`);
           w2popup.close();
-          injectBlockly();
+          reinject();
         },
         Cancel() {
           window.localStorage.removeItem('userlogindata');
           w2popup.close();
-          injectBlockly();
+          reinject();
         },
       },
     });
@@ -422,6 +422,7 @@ function showSheetsMessage(panel) {
   });
 }
 
+/// Setup the layout
 $(() => {
   const pstyle = 'padding: 0px;';
   $('#layout').w2layout({
@@ -501,12 +502,25 @@ $(() => {
       { type: 'right', size: '30%', resizable: true, style: pstyle, name: 'devices', title: 'Devices:' },
     ],
   });
+  const grid1 = {
+    name: 'devGrid',
+    columns: [
+      { field: 'deviceid', caption: 'DeviceID', size: '20%' },
+      { field: 'deviceName', caption: 'Name', size: '40%' },
+      { field: 'temperature', caption: 'Temperature', size: '13%' },
+      { field: 'humidity', caption: 'Humidity', size: '13%' },
+      { field: 'online', caption: 'Online', size: '60px' },
+      { field: 'state', caption: 'Switched ON', size: '60px' },
+    ],
+    records: [],
+  };
+  w2ui.layout.content('right', $().w2grid(grid1));
   const uData = getUserData();
   if (uData) {
-    injectBlockly();
+    reinject();
   } else {
-    injectBlockly();
-    setTimeout(scriptInfo(), 1000);
+    reinject();
+    setTimeout(scriptInfo(), 800);
   }
   let nn = 0;
   for (let i = 1; i < 1000; i++) {
@@ -528,22 +542,6 @@ $(() => {
   checkClosable();
 });
 
-const grid1 = {
-  name: 'devGrid',
-  columns: [
-    { field: 'deviceid', caption: 'DeviceID', size: '20%' },
-    { field: 'deviceName', caption: 'Name', size: '40%' },
-    { field: 'temperature', caption: 'Temperature', size: '13%' },
-    { field: 'humidity', caption: 'Humidity', size: '13%' },
-    { field: 'online', caption: 'Online', size: '60px' },
-    { field: 'state', caption: 'Switched ON', size: '60px' },
-  ],
-  records: [],
-};
-$(() => {
-  // initialization
-  w2ui.layout.content('right', $().w2grid(grid1));
-});
 function removeHelp() {
   if (helpTriggered) {
     if (!getUserData()) {
@@ -553,7 +551,7 @@ function removeHelp() {
             setTimeout(() => openLoginPopup(), 2000);
           });
       }, 2000);
-      injectBlockly();
+      reinject();
     }
     w2ui.layout.el('main').style['white-space'] = 'pre';
     helpTriggered = false;

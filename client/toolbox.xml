@@ -66,7 +66,13 @@
   </category>
   <category name="" colour="#60AA40"> 
     <label text=" Time" web-class="blocklyFlyoutHeading"></label>
-    <block type="pause"></block>
+    <block type="pause">
+      <value name="pause">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
     <block type="doininterval">
       <value name="HOUR1">
         <shadow type="math_number">
@@ -457,7 +463,11 @@
     <category name="" categorystyle="text_category" iconclass="blocklyTreeIconCustom text">
       <label text=" Text" web-class="blocklyFlyoutHeading"></label>
       <block type="comment"></block>
-      <block type="console"></block>
+      <block type="console">
+        <value name="NAME">
+          <shadow type="text"></shadow>
+        </value>
+      </block>
       <block type="text"></block>
       <block type="text_join"></block>
       <block type="text_append">

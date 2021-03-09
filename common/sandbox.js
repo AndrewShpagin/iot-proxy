@@ -5,7 +5,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-eval */
-const Parallel = require('paralleljs');
+// const Parallel = require('paralleljs');
 // let {SandCastle} = require('sandcastle');
 
 // const { VM } = require('vm2');
@@ -44,6 +44,7 @@ export class SandBox {
       'secondsPassedSinceOffline',
       'deviceSet',
       'deviceGet',
+      'makePause',
     ];
   }
 
@@ -198,6 +199,14 @@ export class SandBox {
     const d = new Date();
     const out = `${d.toLocaleTimeString()} : 'ERROR!' : ${par}`;
     if (this.logcallback) this.logcallback(out);
+  }
+
+  async makePause(ms) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, ms);
+    });
   }
 
   async ewLogin() {
