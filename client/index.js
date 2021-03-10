@@ -50,19 +50,6 @@ function applyLanguage(pl) {
       inn = inn.substring(0, idx);
       node.innerHTML = inn + culang[node.getAttribute('tid')];
     }
-    /*
-    if (pl) {
-      const plang = langScope[pl];
-      for (const [key, value] of Object.entries(plang)) {
-        const s = `>${value}<`;
-        if (node.innerHTML.indexOf(s) >= 0) {
-          console.log('vlue:', value, 'from:', node.innerHTML);
-          node.innerHTML = node.innerHTML.replace(s, `>${culang[key]}<`);
-          console.log('to:', node.innerHTML);
-        }
-      }
-    }
-    */
   });
 }
 function setLang() {
@@ -83,9 +70,23 @@ export function textByID(id) {
   return culang[id] || id;
 }
 
+if (!localStorage.getItem('autocountry')) {
+  $.get('https://api.ipdata.co?api-key=f58ae16e314a90471e213046735443ea0441711a4209d951125a9356',
+    response => {
+      const country = response.country_code;
+      console.log(country);
+      localStorage.setItem('autocountry', country);
+      if (country === 'UA' || country === 'RU') {
+        if (curLanguage() !== 'ru') setLang();
+      } else {
+        if(curLanguage() !== 'en') setLang();
+      }
+    }, 'jsonp');
+}
+
 export function curLanguage() {
   let lang = window.localStorage.getItem('Language');
-  if (!lang)lang = 'ru';
+  if (!lang)lang = 'en';
   return lang;
 }
 
