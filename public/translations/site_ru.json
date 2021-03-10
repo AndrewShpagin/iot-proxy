@@ -3,7 +3,7 @@
 	"HOWITWORKS": " Как это работает?",
 	"SAVEPROJECT": " Сохранить проект",
 	"OPENPROJECT": " Открыть",
-	"DEVLOGIN": " Войти",
+	"DEVLOGIN": " Приборы",
     "SETLANG": " ENG",
     "TOPROJECTS": "Назад, к проектам!",
     "TOBLOCKS": "Хочу смотреть блоки!",
@@ -23,5 +23,6 @@
     "GSHEETS_HINT": "Скопировать код в клипбоард и открыть Google Shets. Пожалуйста, предварительно ознакомьтесь с инструкцией по интеграции.",
     "INSTRUCTIONS": "Инструкции",
     "OPENGSHEETS": "Открыть Google Sheets",
-    "CANCEL": "Отмена"
+    "CANCEL": "Отмена",
+    "AUTHOR": "Об авторе"
 }

@@ -12,7 +12,7 @@ import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import { setPreffix } from './generators';
 import 'highlight.js/styles/github.css';
-import { download, multiDownload } from './assets';
+import { download } from './assets';
 import { currentTabContentTag, helpShown, triggerHelpMode, currentProjectName } from './ui';
 import { customBlocks, defDevs } from './custom-blocks';
 import customToolbox from './toolbox.xml';

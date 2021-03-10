@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
@@ -6,6 +7,7 @@
 // import './css/bootstrap-reboot.css';
 // import './css/main.css';
 import { applyLocale } from './workspace';
+import { refreshui } from './ui';
 // eslint-disable-next-line camelcase
 import text_en from '../public/translations/site_en.json';
 // eslint-disable-next-line camelcase
@@ -37,7 +39,7 @@ export const isMobile = {
   },
 };
 
-function applyLanguage() {
+function applyLanguage(pl) {
   const lang = curLanguage();
   const culang = langScope[lang];
   document.querySelectorAll('*').forEach(node => {
@@ -48,14 +50,19 @@ function applyLanguage() {
       inn = inn.substring(0, idx);
       node.innerHTML = inn + culang[node.getAttribute('tid')];
     }
-    // if (plang) {
-    //  for (const [key, value] of Object.entries(plang)) {
-    //    const s = `>${value}<`;
-    //    if (node.innerHTML.indexOf(s) >= 0) {
-    //      node.innerHTML = node.innerHTML.replace(s, `>${culang[key]}<`);
-    //    }
-    //  }
-    // }
+    /*
+    if (pl) {
+      const plang = langScope[pl];
+      for (const [key, value] of Object.entries(plang)) {
+        const s = `>${value}<`;
+        if (node.innerHTML.indexOf(s) >= 0) {
+          console.log('vlue:', value, 'from:', node.innerHTML);
+          node.innerHTML = node.innerHTML.replace(s, `>${culang[key]}<`);
+          console.log('to:', node.innerHTML);
+        }
+      }
+    }
+    */
   });
 }
 function setLang() {
@@ -66,6 +73,7 @@ function setLang() {
   window.localStorage.setItem('Language', lang);
   applyLanguage(plang);
   applyLocale(curLanguage());
+  refreshui();
 }
 
 applyLanguage();
@@ -79,6 +87,17 @@ export function curLanguage() {
   let lang = window.localStorage.getItem('Language');
   if (!lang)lang = 'ru';
   return lang;
+}
+
+export function translateToCurrent(str) {
+  for (const [lname, lang] of Object.entries(langScope)) {
+    for (const [key, value] of Object.entries(lang)) {
+      if (value === str) {
+        return textByID(key);
+      }
+    }
+  }
+  return str;
 }
 
 window.isMobile = isMobile;

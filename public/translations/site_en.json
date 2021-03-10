@@ -23,5 +23,6 @@
     "GSHEETS_HINT": "Copy the code to clipboard and open Google Shets. Please read the instruction first.",
     "INSTRUCTIONS": "Instructions",
     "OPENGSHEETS": "Open Google Sheets",
-    "CANCEL": "Cancel"
+    "CANCEL": "Cancel",
+    "AUTHOR": "About"
 }

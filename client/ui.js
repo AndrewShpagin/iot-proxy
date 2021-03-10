@@ -5,7 +5,7 @@
 /* eslint-disable import/prefer-default-export */
 
 import { reinject, assignProject, getUserData, updateCode, storeUser, updateCodeCompletely, localRunScript } from './workspace';
-import { textByID } from './index';
+import { textByID, translateToCurrent } from './index';
 
 let helpTriggered = false;
 
@@ -569,6 +569,26 @@ function scriptInfo() {
     w2ui.layout.el('main').style['white-space'] = 'nowrap';
     w2ui.layout.load('main', 'slides/slideshow.html');
   }
+}
+
+function translateToolbar(toolbar) {
+  toolbar.items.forEach(el => {
+    let str = el.text;
+    let preffix = '';
+    const ii = str.indexOf('</i>');
+    if (ii >= 0) {
+      preffix = str.substring(0, ii+6);
+      str = str.substring(ii+6);
+    }
+    el.text = preffix + translateToCurrent(str);
+    el.tooltip = translateToCurrent(el.tooltip);
+  });
+  toolbar.refresh();
+}
+
+export function refreshui() {
+  translateToolbar(w2ui.layout_main_toolbar);
+  translateToolbar(w2ui.layout_top_toolbar);
 }
 
 window.openLoginPopup = openLoginPopup;
