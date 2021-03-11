@@ -571,14 +571,18 @@ function scriptInfo() {
   }
 }
 
+export function forceSlideshow() {
+  w2ui.layout.load('main', 'slides/slideshow.html');
+}
+
 function translateToolbar(toolbar) {
   toolbar.items.forEach(el => {
     let str = el.text;
     let preffix = '';
     const ii = str.indexOf('</i>');
     if (ii >= 0) {
-      preffix = str.substring(0, ii+6);
-      str = str.substring(ii+6);
+      preffix = str.substring(0, ii + 6);
+      str = str.substring(ii + 6);
     }
     el.text = preffix + translateToCurrent(str);
     el.tooltip = translateToCurrent(el.tooltip);

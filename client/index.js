@@ -7,7 +7,7 @@
 // import './css/bootstrap-reboot.css';
 // import './css/main.css';
 import { applyLocale } from './workspace';
-import { refreshui } from './ui';
+import { helpShown, refreshui, forceSlideshow } from './ui';
 // eslint-disable-next-line camelcase
 import text_en from '../public/translations/site_en.json';
 // eslint-disable-next-line camelcase
@@ -52,13 +52,13 @@ function applyLanguage(pl) {
     }
   });
 }
-function setLang() {
+function setLang(language) {
   let lang = curLanguage();
-  const plang = lang;
   if (lang === 'ru')lang = 'en';
   else lang = 'ru';
+  if (language && language.length) lang = language;
   window.localStorage.setItem('Language', lang);
-  applyLanguage(plang);
+  applyLanguage();
   applyLocale(curLanguage());
   refreshui();
 }
@@ -76,10 +76,13 @@ if (!localStorage.getItem('autocountry')) {
       const country = response.country_code;
       console.log(country);
       localStorage.setItem('autocountry', country);
-      if (country === 'UA' || country === 'RU') {
-        if (curLanguage() !== 'ru') setLang();
-      } else {
-        if(curLanguage() !== 'en') setLang();
+      let needlang = 'en';
+      if (country === 'UA' || country === 'RU') needlang = 'ru';
+      if (curLanguage() !== needlang) {
+        setLang(needlang);
+        if (helpShown()) {
+          forceSlideshow();
+        }
       }
     }, 'jsonp');
 }
