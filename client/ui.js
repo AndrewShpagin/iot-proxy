@@ -146,7 +146,7 @@ export function openLoginPopup() {
     });
   }
   $().w2popup('open', {
-    title: 'Login',
+    title: textByID('EWELINKLOGIN'),
     body: '<div id="form" style="width: 100%; height: 100%;"></div>',
     style: 'padding: 15px 0px 0px 0px',
     width: 350,
@@ -546,10 +546,9 @@ function removeHelp() {
   if (helpTriggered) {
     if (!getUserData()) {
       setTimeout(() => {
-        w2alert('You may operate devices only after getting access to eWeLink devices. You need to provide email, password and region. This App never stores the data outside your computer. The provided information used only to get list of devices within this application.')
-          .ok(() => {
-            setTimeout(() => openLoginPopup(), 2000);
-          });
+        w2alert(textByID('LOGINHINT')).ok(() => {
+          setTimeout(() => openLoginPopup(), 2000);
+        });
       }, 2000);
       reinject();
     }
