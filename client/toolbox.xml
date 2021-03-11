@@ -168,7 +168,7 @@
   </category>
   <category name="" colour="#5ba58c">
     <label text=" Google Sheets" web-class="blocklyFlyoutHeading"></label>
-    <block type="namedsheet"></block>
+    <!--block type="namedsheet"></block-->
     <block type="getcellvalue">
       <value name="row">
         <shadow type="math_number">

@@ -108,13 +108,16 @@ Blockly.JavaScript.accamulatecell = function (block) {
 };
 
 Blockly.JavaScript.getlastrow = function (block) {
-  const code = `${ewpreffix}mySheet.getLastRow() + 1`;
+  const code = `${ewpreffix}lastUnusedRow`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.namedsheet = function (block) {
   const value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `${ewpreffix}mySheet = SpreadsheetApp.getSheetByName(${value_name})`;
+  let code = `${ewpreffix}mySheet = SpreadsheetApp.getSheetByName(${value_name});\n${ewpreffix}lastUnusedRow = mySheet.getLastRow() + 1;\n`;
+  if (ewpreffix.length) {
+    code = `${ewpreffix}error('Only one table per script allowed!');\n`;
+  }
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 

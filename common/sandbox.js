@@ -34,6 +34,7 @@ export class SandBox {
     this.restoreTables();
     this.devcache = {};
     this.logsumm = '';
+    this.lastUnusedRow = this.mySheet.getLastRow() + 1;
     this.asyncReplace = [
       'ewLogin',
       'ewGetDevice',

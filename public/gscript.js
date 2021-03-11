@@ -17,6 +17,7 @@ let email = 'useremail';
 let password = 'userpassword';
 let region = 'userregion';
 let devices = null;
+let lastUnusedRow = 1;
 const devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
 
