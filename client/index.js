@@ -39,6 +39,12 @@ export const isMobile = {
   },
 };
 
+function resize() {
+  if(isMobile.any()){
+    
+  }
+}
+window.resize  =resize;
 function applyLanguage(pl) {
   const lang = curLanguage();
   const culang = langScope[lang];
