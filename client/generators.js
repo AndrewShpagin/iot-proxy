@@ -257,7 +257,7 @@ Blockly.JavaScript.beforetime = function (block) {
 
 Blockly.JavaScript.dayoftheweek = function (block) {
   const dropdown_day = block.getFieldValue('DAY');
-  const code = `${ewpreffix}thisDayTime() === ${dropdown_day}`;
+  const code = `${ewpreffix}thisWeekDay() === ${dropdown_day}`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
