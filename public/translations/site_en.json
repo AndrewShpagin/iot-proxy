@@ -3,7 +3,8 @@
 	"HOWITWORKS": " How it works?",
 	"SAVEPROJECT": " Save project",
 	"OPENPROJECT": " Open project",
-	"DEVLOGIN": " Devices",
+	"DEVLOGIN": " Login",
+    "LOGOUT": " Logout",
     "SETLANG": " RU",
     "TOPROJECTS": "Back to projects!",
     "TOBLOCKS": "Look blocks!",
@@ -27,5 +28,7 @@
     "AUTHOR": "About",
     "LOGINHINT" : "You may manage the devices only after getting access to eWeLink. You need to provide email, password and region. This App never stores the data outside your computer. The provided information used only to get list of devices within this application.",
     "EWELINKLOGIN": "Login to eWeLink",
-    "PLDONATE": "Please <a> support</a> the project development."
+    "PLDONATE": "Please <a> support</a> the project development.",
+    "LOOGEDSUCCESSFULLY": "Logged in successfully, got the list of devices.",
+    "LOGINFAILED": "Unable to login, probably email, password or region are incorrect or you are offline."
 }

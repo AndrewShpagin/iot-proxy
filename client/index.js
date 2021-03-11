@@ -6,7 +6,7 @@
 /* eslint-disable no-unused-vars */
 // import './css/bootstrap-reboot.css';
 // import './css/main.css';
-import { applyLocale } from './workspace';
+import { applyLocale, getUserData } from './workspace';
 import { helpShown, refreshui, forceSlideshow } from './ui';
 // eslint-disable-next-line camelcase
 import text_en from '../public/translations/site_en.json';
@@ -104,8 +104,24 @@ export function translateToCurrent(str) {
   return str;
 }
 
+function show(el, state) {
+  document.getElementById(el).style.display = state ? 'inherit' : 'none';
+}
+export function correctHeader() {
+  if (getUserData()) {
+    show('DEVLOGIN', false);
+    show('LOGOUT', true);
+  } else {
+    show('DEVLOGIN', true);
+    show('LOGOUT', false);
+  }
+}
+
+correctHeader();
+
 window.isMobile = isMobile;
 window.applyLanguage = applyLanguage;
 window.setLang = setLang;
 window.textByID = textByID;
 window.curLanguage = curLanguage;
+window.correctHeader = correctHeader;

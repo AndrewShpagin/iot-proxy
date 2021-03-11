@@ -4,9 +4,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 
-import { reinject, assignProject, getUserData, updateCode, storeUser, updateCodeCompletely, localRunScript } from './workspace';
-import { textByID, translateToCurrent } from './index';
-import {isMobile } from "./index";
+import { reinject, assignProject, getUserData, clearDevices, updateCode, storeUser, updateCodeCompletely, localRunScript, updateDevices } from './workspace';
+import { textByID, translateToCurrent, correctHeader ,isMobile } from './index';
 
 let helpTriggered = false;
 
@@ -111,6 +110,12 @@ export function uploadScript() {
   });
 }
 
+export function logoutPopup() {
+  clearDevices();
+  window.localStorage.removeItem('userlogindata');
+  correctHeader();
+}
+
 export function openLoginPopup() {
   if (!w2ui.foo) {
     $().w2form({
@@ -136,10 +141,17 @@ export function openLoginPopup() {
         Login() {
           storeUser(`/email=${w2ui.foo.get('Email').$el[0].value}/password=${w2ui.foo.get('Password').$el[0].value}/region=${w2ui.foo.get('Server').$el[0].value}`);
           w2popup.close();
-          reinject();
+          updateDevices(() => {
+            w2alert(textByID('LOOGEDSUCCESSFULLY'));
+          },
+          () => {
+            w2alert(textByID('LOGINFAILED'));
+          });
+          // reinject();
+          correctHeader();
         },
         Cancel() {
-          //window.localStorage.removeItem('userlogindata');
+          // window.localStorage.removeItem('userlogindata');
           w2popup.close();
           reinject();
         },
@@ -603,3 +615,4 @@ window.downloadScript = downloadScript;
 window.uploadScript = uploadScript;
 window.scriptInfo = scriptInfo;
 window.removeHelp = removeHelp;
+window.logoutPopup = logoutPopup;

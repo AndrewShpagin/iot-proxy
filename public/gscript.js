@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-prototype-builtins */
@@ -17,9 +18,9 @@ let email = 'useremail';
 let password = 'userpassword';
 let region = 'userregion';
 let devices = null;
-let lastUnusedRow = 1;
 const devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
+let lastUnusedRow = mySheet.getLastRow() + 1;
 
 /**
  * Provide email, password and region to control the eWeLink devices through the script.

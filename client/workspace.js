@@ -276,37 +276,54 @@ export function applyLocale(locName) {
 
 applyLocale(curLanguage());
 let devices = {};
-const user = getUserData();
-if (user) {
-  try {
-    const locDevices = localStorage.getItem(`dev_${getUserEmail()}`);
-    if (locDevices && locDevices.length)devices = JSON.parse(locDevices);
-  } catch (error) {
-    console.log(error);
+
+export function clearDevices() {
+  if (getUserData()) {
+    localStorage.removeItem(`dev_${getUserEmail()}`);
+    devices = {};
+    if (workspace) reinject();
   }
 }
-if (user) {
-  const sdata = `${user}/devices/`;
-  const hv = Date.now().toString().slice(-6);
-  const ioturl = `/xRet78uz${encodeURI(encStr(hv + sdata))}`;
-  download(ioturl, res => {
-    if (res.length > 128) {
-      try {
-        const dev1 = JSON.parse(res);
-        if (JSON.stringify(dev1) !== JSON.stringify(devices)) {
-          console.log('Devices lust updated!');
-          devices = dev1;
-          localStorage.setItem(`dev_${getUserEmail()}`, res);
-          reinject();
-        } else {
-          console.log('Devices not changed');
-        }
-      } catch (error) {
-        console.log(error);
-      }
+
+export function updateDevices(successCallback, failCallback) {
+  const user = getUserData();
+  if (user) {
+    try {
+      const locDevices = localStorage.getItem(`dev_${getUserEmail()}`);
+      if (locDevices && locDevices.length)devices = JSON.parse(locDevices);
+    } catch (error) {
+      console.log(error);
     }
-  });
+  } else {
+    devices = {};
+  }
+  if (user) {
+    const sdata = `${user}/devices/`;
+    const hv = Date.now().toString().slice(-6);
+    const ioturl = `/xRet78uz${encodeURI(encStr(hv + sdata))}`;
+    download(ioturl, res => {
+      if (res.length > 128) {
+        try {
+          const dev1 = JSON.parse(res);
+          if (JSON.stringify(dev1) !== JSON.stringify(devices)) {
+            console.log('Devices list updated!');
+            devices = dev1;
+            localStorage.setItem(`dev_${getUserEmail()}`, res);
+            reinject();
+            if (successCallback)successCallback();
+          } else {
+            console.log('Devices not changed');
+          }
+        } catch (error) {
+          if (failCallback) failCallback();
+          console.log(error);
+        }
+      } else if (failCallback) failCallback();
+    });
+  }
 }
+
+updateDevices();
 
 export function reinject() {
   const blocklyDiv = w2ui.layout.el('top');
