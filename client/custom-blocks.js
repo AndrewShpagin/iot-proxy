@@ -685,6 +685,80 @@ const customBlocks =
       helpUrl: '',
     },
     {
+      type: 'doinweekdays',
+      message0: '%{BKY_WEEKSDAYSSET}',
+      args0: [
+        {
+          type: 'input_value',
+          name: 'HOUR1',
+          check: 'Number',
+        },
+        {
+          type: 'input_value',
+          name: 'MIN1',
+          check: 'Number',
+        },
+        {
+          type: 'input_value',
+          name: 'HOUR2',
+          check: 'Number',
+        },
+        {
+          type: 'input_value',
+          name: 'MIN2',
+          check: 'Number',
+        },
+        {
+          type: 'field_checkbox',
+          name: 'W0',
+          checked: true,
+        },
+        {
+          type: 'field_checkbox',
+          name: 'W1',
+          checked: true,
+        },
+        {
+          type: 'field_checkbox',
+          name: 'W2',
+          checked: true,
+        },
+        {
+          type: 'field_checkbox',
+          name: 'W3',
+          checked: true,
+        },
+        {
+          type: 'field_checkbox',
+          name: 'W4',
+          checked: true,
+        },
+        {
+          type: 'field_checkbox',
+          name: 'W5',
+          checked: true,
+        },
+        {
+          type: 'field_checkbox',
+          name: 'W6',
+          checked: true,
+        },
+        {
+          type: 'input_dummy',
+        },
+        {
+          type: 'input_statement',
+          name: 'NAME',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: '#60AA40',
+      tooltip: '',
+      helpUrl: '',
+    },
+    {
       type: 'hoursinterval',
       message0: '%{BKY_FROM1234}',
       args0: [

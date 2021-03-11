@@ -54,6 +54,7 @@
 	"TURNONPULSE12": "Turn on pulse mode %1 , the delay is %2 sec",
 	"TURNONPULSE12_HINT": "The pulse mode allows to turn off the device after the period of time after it will be turned ON.",
 	"DOININTERVAL17": "Do in the interval from %1 : %2 to %3 : %4 ,  %5 %6 do %7",
+	"WEEKSDAYSSET": "From %1 : %2 to %3 : %4 , %5 Sun,  %6 Mon, %7 Tue, %8 Wed, %9 Thu, %10 Fri, %11 Sat %12 do %13",
 	"FROM1234": "From %1 : %2 to %3 : %4",
 	"AFTER12": "After %1 : %2",
 	"BEFORE12": "Before %1 : %2",

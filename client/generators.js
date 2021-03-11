@@ -232,6 +232,33 @@ Blockly.JavaScript.doininterval = function (block) {
   return code;
 };
 
+Blockly.JavaScript.doinweekdays = function (block) {
+  const value_hour1 = Blockly.JavaScript.valueToCode(block, 'HOUR1', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_min1 = Blockly.JavaScript.valueToCode(block, 'MIN1', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_hour2 = Blockly.JavaScript.valueToCode(block, 'HOUR2', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_min2 = Blockly.JavaScript.valueToCode(block, 'MIN2', Blockly.JavaScript.ORDER_ATOMIC);
+  let days = '';
+  for (let k = 0; k < 7; k++) {
+    if (block.getFieldValue(`W${k}`) === 'TRUE') {
+      if (days.length)days += ', ';
+      days += k;
+    }
+  }
+  days = `[${days}]`;
+  const statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+  let code = '';
+  if (days.length === 21) {
+    code = `if( ${ewpreffix}thisDayTime() >= ${ewpreffix}dayTime(${value_hour1}, ${value_min1})  && ${ewpreffix}thisDayTime() <= ${ewpreffix}dayTime(${value_hour2}, ${value_min2})) {\n` +
+           `${statements_name}` +
+           '}\n';
+  } else {
+    code = `if( ${ewpreffix}thisDayTime() >= ${ewpreffix}dayTime(${value_hour1}, ${value_min1}) && ${ewpreffix}thisDayTime() <= ${ewpreffix}dayTime(${value_hour2}, ${value_min2}) && ${days}.includes(${ewpreffix}thisWeekDay())) {\n` +
+           `${statements_name}` +
+           '}\n';
+  }
+  return code;
+};
+
 Blockly.JavaScript.hoursinterval = function (block) {
   const value_hour1 = Blockly.JavaScript.valueToCode(block, 'HOUR1', Blockly.JavaScript.ORDER_ATOMIC);
   const value_min1 = Blockly.JavaScript.valueToCode(block, 'MIN1', Blockly.JavaScript.ORDER_ATOMIC);

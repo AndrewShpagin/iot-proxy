@@ -95,6 +95,28 @@
         </shadow>
       </value>
     </block>
+    <block type="doinweekdays">
+      <value name="HOUR1">
+        <shadow type="math_number">
+          <field name="NUM">0</field>
+        </shadow>
+      </value>
+      <value name="HOUR2">
+        <shadow type="math_number">
+          <field name="NUM">23</field>
+        </shadow>
+      </value>
+      <value name="MIN1">
+        <shadow type="math_number">
+          <field name="NUM">00</field>
+        </shadow>
+      </value>
+      <value name="MIN2">
+        <shadow type="math_number">
+          <field name="NUM">59</field>
+        </shadow>
+      </value>
+    </block>
     <block type="hoursinterval">
       <value name="HOUR1">
         <shadow type="math_number">
