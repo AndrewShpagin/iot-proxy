@@ -6,6 +6,7 @@
 
 import { reinject, assignProject, getUserData, updateCode, storeUser, updateCodeCompletely, localRunScript } from './workspace';
 import { textByID, translateToCurrent } from './index';
+import {isMobile } from "./index";
 
 let helpTriggered = false;
 
@@ -432,7 +433,7 @@ $(() => {
     padding: 4,
     panels: [
       { type: 'top',
-        size: '70%',
+        size: isMobile.any() ? '99%' : '70%',
         resizable: true,
         style: `${pstyle}border-top: 0px;`,
         content: '',
