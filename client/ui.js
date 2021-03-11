@@ -138,7 +138,7 @@ export function openLoginPopup() {
           reinject();
         },
         Cancel() {
-          window.localStorage.removeItem('userlogindata');
+          //window.localStorage.removeItem('userlogindata');
           w2popup.close();
           reinject();
         },
@@ -412,7 +412,9 @@ function ticon(color, icon, message) {
   return `<i style="color: ${color}; transform: scale(1.3);" class="fa fa-${icon}" aria-hidden="true"></i>  ${textByID(message)}`;
 }
 function showSheetsMessage(panel) {
+  const text = textByID('PLDONATE').replace('<a>', '<a href="https://www.patreon.com/AndrewShpagin" target="_blank">');
   w2ui.layout.message(panel, {
+    body: `<div style="text-align: center">${text}</div>`,
     width: 400,
     height: 70,
     buttons:
@@ -493,8 +495,9 @@ $(() => {
               copyCode();
             }
             if (event.target === '%ID_COPYOPEN') {
-              copyCode();
-              window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');
+              showSheetsMessage('main');
+              // copyCode();
+              // window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');
             }
           },
         },

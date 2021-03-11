@@ -26,5 +26,6 @@
     "CANCEL": "Cancel",
     "AUTHOR": "About",
     "LOGINHINT" : "You may manage the devices only after getting access to eWeLink. You need to provide email, password and region. This App never stores the data outside your computer. The provided information used only to get list of devices within this application.",
-    "EWELINKLOGIN": "Login to eWeLink"
+    "EWELINKLOGIN": "Login to eWeLink",
+    "PLDONATE": "Please <a> support</a> the project development."
 }
