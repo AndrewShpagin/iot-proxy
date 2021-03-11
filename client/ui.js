@@ -433,7 +433,7 @@ $(() => {
     padding: 4,
     panels: [
       { type: 'top',
-        size: isMobile.any() ? '99%' : '70%',
+        size: isMobile.any() ? '100%' : '70%',
         resizable: true,
         style: `${pstyle}border-top: 0px;`,
         content: '',
