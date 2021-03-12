@@ -377,3 +377,14 @@ Blockly.JavaScript.isonline = function (block) {
   if (dropdown_state === 'OFF')code = `${ewpreffix}deviceGet(${value_device}, 'switch') === 'off'`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
+
+Blockly.JavaScript.statechanged = function (block) {
+  let dropdown_ew_device = block.getFieldValue('EW_DEVICE');
+  var dropdown_state = block.getFieldValue('STATE');
+  // var dropdown_device = block.getFieldValue('Device');
+  // var dropdown_device = block.getFieldValue('Device');
+  let statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+  // TODO: Assemble JavaScript into code variable.
+  let code = `if (${ewpreffix}deviceGetPrevState(${dropdown_ew_device}, '${dropdown_state}') !== ${ewpreffix}deviceGet(${dropdown_ew_device}, '${dropdown_state}')) {\n${statements_name}}\n`;
+  return code;
+};

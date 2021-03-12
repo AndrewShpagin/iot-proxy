@@ -7,6 +7,7 @@
     <block type="humidity"></block>
     <block type="power"></block>
     <block type="onlineofflinepassed"></block>
+    <block type="statechanged"></block>
     <!--block type="device_state"></block-->
     <block type="turnon"></block>
     <block type="turnontemporary">

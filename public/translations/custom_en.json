@@ -73,5 +73,10 @@
 	"ONLINEOFFLINE": "Time passed since the device %1 has become %2 , %3",
 	"MINUTES": "minutes",
 	"HOURS": "hours",
-	"DAYS": "days"
+	"DAYS": "days",
+	"STATECHANGED": "When the device  %1 state %2 changed %3 %4",
+	"SWITCHED": "switched",
+	"TEMPERATURE": "temperature",
+	"HUMIDITY": "humidity",
+	"POWER": "power"
 }

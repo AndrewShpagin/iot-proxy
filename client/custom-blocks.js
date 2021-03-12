@@ -965,6 +965,9 @@ const customBlocks =
           type: 'field_dropdown',
           name: 'EW_DEVICE',
           options: [[defDevs, '0']],
+          validate(newValue) {
+            console.log('validate', newValue);
+          },
         },
         {
           type: 'field_dropdown',
@@ -1042,6 +1045,60 @@ const customBlocks =
       tooltip: '',
       helpUrl: '',
     },
+    {
+      type: 'statechanged',
+      message0: '%{BKY_STATECHANGED}',
+      args0: [
+        {
+          type: 'field_dropdown',
+          name: 'EW_DEVICE',
+          options: [
+            [
+              'defDevs',
+              '0',
+            ],
+          ],
+        },
+        {
+          type: 'field_dropdown',
+          name: 'STATE',
+          options: [
+            [
+              '%{BKY_SWITCHED}',
+              'switch',
+            ],
+            [
+              '%{BKY_ONLINE}',
+              'online',
+            ],
+            [
+              '%{BKY_TEMPERATURE}',
+              'currentTemperature',
+            ],
+            [
+              '%{BKY_HUMIDITY}',
+              'currentHumidity',
+            ],
+            [
+              '%{BKY_POWER}',
+              'power',
+            ],
+          ],
+        },
+        {
+          type: 'input_dummy',
+        },
+        {
+          type: 'input_statement',
+          name: 'NAME',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: 230,
+      tooltip: '',
+      helpUrl: '',
+    },
   ];
-
 module.exports = { customBlocks, defDevs };

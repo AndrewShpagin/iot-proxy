@@ -21,6 +21,7 @@ let devices = null;
 const devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
 let lastUnusedRow = mySheet.getLastRow() + 1;
+const scriptProperties = PropertiesService.getScriptProperties();
 
 /**
  * Provide email, password and region to control the eWeLink devices through the script.
@@ -41,7 +42,30 @@ const APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
 function baseUrl() {
   return `https://${region}-api.coolkit.cc:8080/api/user`;
 }
-let token = null;
+let token = PropertiesService.getUserProperties().getProperty(`auth_${email}`);
+let checkToken = token !== null;
+
+function oldAuth(object) {
+  return object && object.hasOwnProperty('error') && object.error === 406;
+}
+
+function tryEw(fn, id) {
+  let object = null;
+  try {
+    object = JSON.parse(fn().getContentText());
+  } catch (error) {
+    console.log(error);
+  }
+  if (oldAuth(object)) {
+    token = null;
+    if (ewLogin()) {
+      object = JSON.parse(fn().getContentText());
+      error = object && object.hasOwnProperty('error') && object.error === 406;
+      if (!oldAuth(object) && object.hasOwnProperty('deviceid')) return object;
+    }
+    return {};
+  } else return object;
+}
 
 function ewLogin() {
   if (!token) {
@@ -53,6 +77,7 @@ function ewLogin() {
       if (answ.hasOwnProperty('at')) {
         console.log('Login to eWeLink successful.');
         token = answ.at;
+        PropertiesService.getUserProperties().setProperty(`auth_${email}`, token);
         return true;
       } else {
         console.error('Login to eWeLink failed.');
@@ -74,8 +99,8 @@ function ewGetDevice(device) {
   if (ewLogin()) {
     if (devcache.hasOwnProperty(device)) return devcache[device];
     const uri = `${baseUrl()}/device/${device}?deviceid=${device}&appid=${APP_ID}&version=8`;
-    const object = JSON.parse(UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }).getContentText());
-    if (object && object.hasOwnProperty('deviceid')) {
+    const object = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }), 'deviceid');
+    if (object) {
       devcache[device] = object;
       return object;
     }
@@ -90,15 +115,15 @@ function ewGetDevices() {
   if (devices) return devices;
   if (ewLogin()) {
     const uri = `${baseUrl()}/device?lang=en&appid=${APP_ID}&version=8&getTags=1`;
-    devices = JSON.parse(UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }).getContentText());
-    if (devices && devices.hasOwnProperty('devicelist')) {
+    devices = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }), 'devicelist');
+    if (devices) {
       console.log(`Got devices list successvully, ${devices.devicelist.length} devices found.`);
       devices.devicelist.forEach(el => devcache[el.deviceid] = el);
     } else {
       console.error('Unable to get devices list.');
       devices = null;
     }
-    return devices;
+    return devices.devicelist;
   } else return {};
 }
 
@@ -160,7 +185,7 @@ function deviceSet(device, state) {
         const uri = `${baseUrl()}/device/status`;
         const data = `{"deviceid":"${device}","params":${JSON.stringify(state)},"appid":"${APP_ID}","version":8}`;
         const options = { headers: { Authorization: `Bearer ${token}` }, method: 'post', contentType: 'application/json', payload: data };
-        const response = JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
+        const response = tryEw(() => UrlFetchApp.fetch(uri, options), 'error');
         console.log(`Sent request to change state ${device}: ${JSON.stringify(state)}, got responce: ${JSON.stringify(response)}, ${response.error === 0 ? 'no errors' : 'error returned!'}`);
         if (response.error === 0) {
           if (dev) {
@@ -219,7 +244,31 @@ function validate(str) {
    * @param {string} field - the value to get state, usually it are 'switch', 'currentTemperature', 'currentHumidity'.
    */
 function deviceGet(id, field) {
-  return ewGetDeviceState(id, field);
+  const state = ewGetDeviceState(id, field);
+  setProperty(`device_${id}_${field}`, state);
+  return state;
+}
+
+/**
+   * Get the device state stored on the previous call of the deviceGet(...).
+   *
+   * @param {string} device - the device identifier, in ''
+   * @param {string} field - the value to get state, usually it are 'switch', 'currentTemperature', 'currentHumidity'.
+   */
+function deviceGetPrevState(id, field) {
+  return getProperty(`device_${id}_${field}`);
+}
+
+/**
+   * Returns true if the device state changed since the previous check
+   *
+   * @param {string} device - the device identifier, in ''
+   * @param {string} field - the value to get state, usually it are 'switch', 'currentTemperature', 'currentHumidity'.
+   */
+function stateChanged(id, field) {
+  const pstate = deviceGetPrevState(id, field);
+  const state = deviceGet(id, field);
+  return pstate !== state;
 }
 
 /// simplest math
@@ -493,4 +542,27 @@ function forAllRecentUnreadMails(from, subject, body, todo) {
       todo(message);
     }
   }
+}
+
+/**
+ * Get globally stored property related to this script
+ *
+ * @param{string} key - the name of the property
+ * @returns{string} - returns the value that corresponds to the key.
+ */
+
+function getProperty(key) {
+  return scriptProperties.getProperty(key);
+}
+
+/**
+ * Set globally stored property related to this script
+ *
+ * @param{string} key - the name of the property
+ * @param{string} value - the value to assign to the key
+ * @returns{string} - returns the value that corresponds to the key.
+ */
+
+function setProperty(key, value) {
+  return scriptProperties.setProperty(key, value);
 }

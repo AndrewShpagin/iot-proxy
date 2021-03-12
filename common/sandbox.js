@@ -343,8 +343,13 @@ export class SandBox {
 
   async deviceGet(id, field) {
     const res = await this.ewGetDeviceState(id, field);
+    this.setProperty(`device_${id}_${field}`, res);
     this.log(`deviceGet(${id}, ${field}) => ${res}`);
     return res;
+  }
+
+  deviceGetPrevState(id, field) {
+    return this.getProperty(`device_${id}_${field}`);
   }
 
   getCell(r, c) {
@@ -468,6 +473,14 @@ export class SandBox {
 
   sendEmail(email, subj, body) {
     this.error('sendEmail: e-mail functions not supported when you run in the Browser.');
+  }
+
+  getProperty(key) {
+    return localStorage.getItem(key);
+  }
+
+  setProperty(key, value) {
+    localStorage.setItem(key, value);
   }
 
   replaceAll(body, what, to) {
