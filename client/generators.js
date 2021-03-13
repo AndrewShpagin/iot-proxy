@@ -6,6 +6,17 @@
 /* eslint-disable no-extend-native */
 /* eslint-disable camelcase */
 // import Blockly from 'blockly';
+import {hashStrShort} from './workspace';
+
+let accumCode ='';
+let tempArray = [];
+export function startCodeGeneration(){
+  accumCode ='';
+  tempArray = [];
+}
+export function endCodeGeneration(code) {
+  return code + accumCode;
+} 
 
 let ewpreffix = '';
 
@@ -292,14 +303,16 @@ Blockly.JavaScript.sendmail = function (block) {
   const value_email = Blockly.JavaScript.valueToCode(block, 'EMAIL', Blockly.JavaScript.ORDER_ATOMIC);
   const value_subject = Blockly.JavaScript.valueToCode(block, 'SUBJECT', Blockly.JavaScript.ORDER_ATOMIC);
   const value_body = Blockly.JavaScript.valueToCode(block, 'BODY', Blockly.JavaScript.ORDER_ATOMIC);
+  let code = `console.log('Sent email to', ${value_email}, 'subject:', ${value_subject});\n`;
   if (ewpreffix.length) {
-    return `${ewpreffix}sendEmail(${value_email}, ${value_subject}, ${value_body});\n`;
+    code += `${ewpreffix}sendEmail(${value_email}, ${value_subject}, ${value_body});\n`;
   } else
-  if (value_email === 'me') {
-    return `MailApp.sendEmail(Session.getActiveUser().getEmail(), ${value_subject}, ${value_body});\n`;
+  if (value_email === 'me' || value_email === "'me'") {
+    code += `MailApp.sendEmail(Session.getActiveUser().getEmail(), ${value_subject}, ${value_body});\n`;
   } else {
-    return `MailApp.sendEmail(${value_email}, ${value_subject}, ${value_body});\n`;
+    code += `MailApp.sendEmail(${value_email}, ${value_subject}, ${value_body});\n`;
   }
+  return code;
 };
 
 Blockly.JavaScript.gotnewmessage = function (block) {
@@ -379,12 +392,47 @@ Blockly.JavaScript.isonline = function (block) {
 };
 
 Blockly.JavaScript.statechanged = function (block) {
-  let dropdown_ew_device = block.getFieldValue('EW_DEVICE');
-  var dropdown_state = block.getFieldValue('STATE');
-  // var dropdown_device = block.getFieldValue('Device');
-  // var dropdown_device = block.getFieldValue('Device');
-  let statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
-  // TODO: Assemble JavaScript into code variable.
-  let code = `if (${ewpreffix}deviceGetPrevState(${dropdown_ew_device}, '${dropdown_state}') !== ${ewpreffix}deviceGet(${dropdown_ew_device}, '${dropdown_state}')) {\n${statements_name}}\n`;
+  const dropdown_ew_device = block.getFieldValue('EW_DEVICE');
+  const dropdown_state = block.getFieldValue('STATE');
+  const statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+  const code = `if (${ewpreffix}stateChanged(${dropdown_ew_device}, '${dropdown_state}')) {\n${statements_name}}\n`;
+  const s = `${dropdown_ew_device}+${dropdown_state}`;
+  if (!(s in tempArray)) {
+    tempArray.push(s);
+    accumCode += `${ewpreffix}storeDeviceState(${dropdown_ew_device}, '${dropdown_state}');\n`;
+  }
+  return code;
+};
+
+Blockly.JavaScript.sincelastrun = function (block) {
+  const units = Number.parseInt(block.getFieldValue('UNITS'), 10);
+  const code = units > 1 ? `${passedSinceLastRun}/${units}` : `${passedSinceLastRun}`;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.accumtime = function (block) {
+  let value_value = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
+  let value_limit = Blockly.JavaScript.valueToCode(block, 'LIMIT', Blockly.JavaScript.ORDER_ATOMIC);
+  let units = Number.parseInt(block.getFieldValue('UNITS'));
+  let statements_todo = Blockly.JavaScript.statementToCode(block, 'TODO');
+  const hash = hashStrShort(value_limit);
+  const varname = `prev_state_${hash}`;
+  const timename = `accum_time_${hash}`;
+  const mulsuffix = units > 1 ? `  limit *= ${units};\n` : '';
+  statements_todo = statements_todo.replace(/\n/g, '\n  ');
+  const code =
+    // eslint-disable-next-line prefer-template
+    '{\n' +
+    `  const cur = ${value_value};\n` +
+    `  let limit = ${value_limit};\n` + mulsuffix +
+    `  let time = ${ewpreffix}toFloat(${ewpreffix}getProperty('${timename}') || '0');\n` +
+    `  if (cur.toString() === ${ewpreffix}getProperty('${varname}')) time += passedSinceLastRun;\n` +
+    '  console.log(\'Accumulated time:\', time);\n' +
+    '  if (time > limit) {\n' +
+    '    time -= limit;\n' +
+    `  ${statements_todo}}\n` +
+    `  ${ewpreffix}setProperty('${timename}', time);\n` +
+    `  ${ewpreffix}setProperty('${varname}', cur);\n` +
+    '}\n';
   return code;
 };

@@ -1064,11 +1064,11 @@ const customBlocks =
           name: 'STATE',
           options: [
             [
-              '%{BKY_SWITCHED}',
+              '%{BKY_STATESWITCHED}',
               'switch',
             ],
             [
-              '%{BKY_ONLINE}',
+              '%{BKY_STATEONLINE}',
               'online',
             ],
             [
@@ -1091,6 +1091,96 @@ const customBlocks =
         {
           type: 'input_statement',
           name: 'NAME',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: 230,
+      tooltip: '',
+      helpUrl: '',
+    },
+    {
+      type: 'sincelastrun',
+      message0: '%{BKY_SINCELASTRUN}',
+      args0: [
+        {
+          type: 'field_dropdown',
+          name: 'UNITS',
+          options: [
+            [
+              '%{BKY_SECONDS}',
+              '1',
+            ],
+            [
+              '%{BKY_MINUTES}',
+              '60',
+            ],
+            [
+              '%{BKY_HOURS}',
+              '3600',
+            ],
+            [
+              '%{BKY_DAYS}',
+              '86400',
+            ],
+          ],
+        },
+      ],
+      inputsInline: true,
+      output: 'Number',
+      colour: '#60AA40',
+      tooltip: '',
+      helpUrl: '',
+    },
+    {
+      type: 'accumtime',
+      message0: '%{BKY_ACCUMULATEDTIME}',
+      args0: [
+        {
+          type: 'input_dummy',
+        },
+        {
+          type: 'input_value',
+          name: 'VALUE',
+          check: 'Boolean',
+        },
+        {
+          type: 'input_dummy',
+        },
+        {
+          type: 'input_value',
+          name: 'LIMIT',
+          check: 'Number',
+        },
+        {
+          type: 'field_dropdown',
+          name: 'UNITS',
+          options: [
+            [
+              '%{BKY_SECONDS}',
+              '1',
+            ],
+            [
+              '%{BKY_MINUTES}',
+              '60',
+            ],
+            [
+              '%{BKY_HOURS}',
+              '3600',
+            ],
+            [
+              '%{BKY_DAYS}',
+              '86400',
+            ],
+          ],
+        },
+        {
+          type: 'input_dummy',
+        },
+        {
+          type: 'input_statement',
+          name: 'TODO',
         },
       ],
       inputsInline: true,

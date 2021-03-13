@@ -71,12 +71,16 @@
 	"LISTEMAILS17": "For all unread messages (last day),  %1 from: %2 text in subject: %3 text in body: %4 %5 %6 Mark as read;  %7 delete;",
 	"WHOSENT": "Who sent me this message?",
 	"ONLINEOFFLINE": "Time passed since the device %1 has become %2 , %3",
+	"SECONDS": "sec",
 	"MINUTES": "minutes",
 	"HOURS": "hours",
 	"DAYS": "days",
-	"STATECHANGED": "When the device  %1 state %2 changed %3 %4",
-	"SWITCHED": "switched",
+	"STATECHANGED": "When the device  %1 state %2 changed %3 %4 For example device become online or offline, or the temperature changed.",
+	"STATEONLINE": "online/offline",
+	"STATESWITCHED": "switched ON/OFF",
 	"TEMPERATURE": "temperature",
 	"HUMIDITY": "humidity",
-	"POWER": "power"
+	"POWER": "power",
+	"SINCELASTRUN": "Time passed since last script run, %1",
+	"ACCUMULATEDTIME": "If accumulated time  when  %1 %2 reaches the value %3 %4 %5 %6 %7 Set any logical expression as condition, for example, Temperature > 50."
 }

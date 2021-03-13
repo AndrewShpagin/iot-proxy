@@ -10,7 +10,7 @@
 
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
-import { setPreffix } from './generators';
+import { setPreffix, startCodeGeneration, endCodeGeneration } from './generators';
 import 'highlight.js/styles/github.css';
 import { download } from './assets';
 import { currentTabContentTag, helpShown, triggerHelpMode, currentProjectName } from './ui';
@@ -31,11 +31,15 @@ const CryptoJS = require('crypto-js');
 
 const seqPp = 'JHghhjJHgYiguuyuy786GhhjbYT6';
 
-function encStr(str) {
+export function encStr(str) {
   return CryptoJS.AES.encrypt(str, seqPp);
 }
 
-function decStr(str) {
+export function hashStrShort(str) {
+  return CryptoJS.MD5(str).toString().substring(0, 8);
+}
+
+export function decStr(str) {
   return CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(str, seqPp));
 }
 
@@ -158,7 +162,8 @@ export function localRunScript() {
     w2ui.layout.hide('top');
     curSandBox = new SandBox(email, password, region, currentProjectName(), 60000, false);
     setPreffix('myObject.');
-    const code = Blockly.JavaScript.workspaceToCode(workspace);
+    startCodeGeneration();
+    const code = endCodeGeneration(Blockly.JavaScript.workspaceToCode(workspace));
     setPreffix('');
     w2ui.layout.el('main').textContent = '';
     consoleText = '';
@@ -171,7 +176,8 @@ export function assignProject(text) {
 }
 
 export function updateCodeCompletely() {
-  const code = Blockly.JavaScript.workspaceToCode(workspace);
+  startCodeGeneration();
+  const code = endCodeGeneration(Blockly.JavaScript.workspaceToCode(workspace));
   let wholecode = getWholeCode(code);
   wholecode += `\n\n\n\n\n\n\n\n\n\n\n\n${gscript}`;
 
@@ -187,7 +193,8 @@ export function updateCodeCompletely() {
 }
 export function updateCode() {
   if (workspace) {
-    const code = Blockly.JavaScript.workspaceToCode(workspace);
+    startCodeGeneration();
+    const code = endCodeGeneration(Blockly.JavaScript.workspaceToCode(workspace));
     if (!helpShown()) {
       const wholecode = getWholeCode(code);
       w2ui.layout.el('main').textContent = wholecode;

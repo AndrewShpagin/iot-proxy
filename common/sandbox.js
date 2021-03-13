@@ -343,13 +343,18 @@ export class SandBox {
 
   async deviceGet(id, field) {
     const res = await this.ewGetDeviceState(id, field);
-    this.setProperty(`device_${id}_${field}`, res);
     this.log(`deviceGet(${id}, ${field}) => ${res}`);
     return res;
   }
 
-  deviceGetPrevState(id, field) {
-    return this.getProperty(`device_${id}_${field}`);
+  storeDeviceState(id, field) {
+    this.setProperty(`device_${id}_${field}`, this.deviceGet(id, field));
+  }
+
+  stateChanged(id, field) {
+    const pstate = this.getProperty(`device_${id}_${field}`) || '';
+    const state = this.deviceGet(id, field).toString();
+    return pstate.toString() !== state;
   }
 
   getCell(r, c) {
@@ -360,6 +365,18 @@ export class SandBox {
 
   valid(x) {
     return x < 10000000000 && x > -10000000000 ? x : 0;
+  }
+
+  toInt(str) {
+    const v = Number.parseInt(str, 10);
+    if (!this.valid(v)) return 0;
+    return v;
+  }
+
+  toFloat(str) {
+    const v = Number.parseFloat(str, 10);
+    if (!this.valid(v)) return 0;
+    return v;
   }
 
   setCell(r, c, value) {

@@ -22,6 +22,9 @@ const devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
 let lastUnusedRow = mySheet.getLastRow() + 1;
 const scriptProperties = PropertiesService.getScriptProperties();
+const prevRunTime = getProperty('prevTime');
+const passedSinceLastRun = prevRunTime ? (new Date() - new Date(prevRunTime)) / 1000.0 : 0.0;
+setProperty('prevTime', new Date());
 
 /**
  * Provide email, password and region to control the eWeLink devices through the script.
@@ -42,29 +45,41 @@ const APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
 function baseUrl() {
   return `https://${region}-api.coolkit.cc:8080/api/user`;
 }
-let token = PropertiesService.getUserProperties().getProperty(`auth_${email}`);
-let checkToken = token !== null;
+let token = getProperty(`auth_${email}`);
 
 function oldAuth(object) {
-  return object && object.hasOwnProperty('error') && object.error === 406;
+  return object && 'error' in object && object.error === 406;
 }
 
-function tryEw(fn, id) {
+function tryfn(fn) {
   let object = null;
   try {
     object = JSON.parse(fn().getContentText());
   } catch (error) {
     console.log(error);
   }
-  if (oldAuth(object)) {
-    token = null;
-    if (ewLogin()) {
-      object = JSON.parse(fn().getContentText());
-      error = object && object.hasOwnProperty('error') && object.error === 406;
-      if (!oldAuth(object) && object.hasOwnProperty('deviceid')) return object;
+  return oldAuth(object) ? null : object;
+}
+
+function tryEw(fn) {
+  let obj = tryfn(fn);
+  if (!obj) {
+    console.log('Pass1. Failed with token', token);
+    token = getGlobalProperty(`auth_${email}`);
+    console.log('trying with token', token);
+    obj = tryfn(fn);
+    if (!obj) {
+      console.log('Pass2. Failed with token', token);
+      token = null;
+      if (ewLogin()) {
+        console.log('Pass3. Logged, got token', token);
+        return tryfn(fn);
+      }
+    } else {
+      setProperty(`auth_${email}`, token);
     }
-    return {};
-  } else return object;
+  }
+  return obj;
 }
 
 function ewLogin() {
@@ -74,10 +89,11 @@ function ewLogin() {
       const encoded = Utilities.base64Encode(Utilities.computeHmacSha256Signature(data, '4G91qSoboqYO4Y0XJ0LPPKIsq8reHdfa'));
       const options = { headers: { Authorization: `Sign ${encoded}` }, method: 'post', contentType: 'application/json', payload: data };
       const answ = JSON.parse(UrlFetchApp.fetch(`${baseUrl()}/login`, options).getContentText());
-      if (answ.hasOwnProperty('at')) {
+      if ('at' in answ) {
         console.log('Login to eWeLink successful.');
         token = answ.at;
-        PropertiesService.getUserProperties().setProperty(`auth_${email}`, token);
+        setGlobalProperty(`auth_${email}`, token);
+        setProperty(`auth_${email}`, token);
         return true;
       } else {
         console.error('Login to eWeLink failed.');
@@ -97,9 +113,9 @@ function ewLogin() {
    */
 function ewGetDevice(device) {
   if (ewLogin()) {
-    if (devcache.hasOwnProperty(device)) return devcache[device];
+    if (device in devcache) return devcache[device];
     const uri = `${baseUrl()}/device/${device}?deviceid=${device}&appid=${APP_ID}&version=8`;
-    const object = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }), 'deviceid');
+    const object = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }));
     if (object) {
       devcache[device] = object;
       return object;
@@ -115,7 +131,7 @@ function ewGetDevices() {
   if (devices) return devices;
   if (ewLogin()) {
     const uri = `${baseUrl()}/device?lang=en&appid=${APP_ID}&version=8&getTags=1`;
-    devices = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }), 'devicelist');
+    devices = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }));
     if (devices) {
       console.log(`Got devices list successvully, ${devices.devicelist.length} devices found.`);
       devices.devicelist.forEach(el => devcache[el.deviceid] = el);
@@ -157,8 +173,8 @@ function ewGetDeviceState(device, field) {
   const res = ewGetDevice(device);
   let result = '';
   if (res) {
-    if (res.hasOwnProperty(field)) result = res[field];
-    if (res.hasOwnProperty('params') && res.params.hasOwnProperty(field)) result = res.params[field];
+    if (field in res) result = res[field];
+    if ('params' in res && field in res.params) result = res.params[field];
     console.log(`Got device ${device} (${device.name}), field ${field}, got state: ${result}`);
   }
   return result;
@@ -178,19 +194,18 @@ function deviceSet(device, state) {
       let any = false;
       if (dev) {
         for (const [st, value] of Object.entries(state)) {
-          if (dev.params.hasOwnProperty(st) && dev.params[st] !== value) any = true;
+          if (st in dev.params && dev.params[st] !== value) any = true;
         }
       }
       if (any) {
         const uri = `${baseUrl()}/device/status`;
         const data = `{"deviceid":"${device}","params":${JSON.stringify(state)},"appid":"${APP_ID}","version":8}`;
-        const options = { headers: { Authorization: `Bearer ${token}` }, method: 'post', contentType: 'application/json', payload: data };
-        const response = tryEw(() => UrlFetchApp.fetch(uri, options), 'error');
+        const response = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` }, method: 'post', contentType: 'application/json', payload: data }));
         console.log(`Sent request to change state ${device}: ${JSON.stringify(state)}, got responce: ${JSON.stringify(response)}, ${response.error === 0 ? 'no errors' : 'error returned!'}`);
         if (response.error === 0) {
           if (dev) {
             for (const [st, value] of Object.entries(state)) {
-              if (dev.params.hasOwnProperty(st))dev.params[st] = value;
+              if (st in dev.params)dev.params[st] = value;
             }
           }
           return true;
@@ -244,19 +259,17 @@ function validate(str) {
    * @param {string} field - the value to get state, usually it are 'switch', 'currentTemperature', 'currentHumidity'.
    */
 function deviceGet(id, field) {
-  const state = ewGetDeviceState(id, field);
-  setProperty(`device_${id}_${field}`, state);
-  return state;
+  return ewGetDeviceState(id, field);
 }
 
 /**
-   * Get the device state stored on the previous call of the deviceGet(...).
+   * Store the device state to use on the next cycle
    *
    * @param {string} device - the device identifier, in ''
    * @param {string} field - the value to get state, usually it are 'switch', 'currentTemperature', 'currentHumidity'.
    */
-function deviceGetPrevState(id, field) {
-  return getProperty(`device_${id}_${field}`);
+function storeDeviceState(id, field) {
+  setProperty(`device_${id}_${field}`, deviceGet(id, field));
 }
 
 /**
@@ -266,8 +279,8 @@ function deviceGetPrevState(id, field) {
    * @param {string} field - the value to get state, usually it are 'switch', 'currentTemperature', 'currentHumidity'.
    */
 function stateChanged(id, field) {
-  const pstate = deviceGetPrevState(id, field);
-  const state = deviceGet(id, field);
+  const pstate = getProperty(`device_${id}_${field}`);
+  const state = deviceGet(id, field).toString();
   return pstate !== state;
 }
 
@@ -297,6 +310,17 @@ function valid(x) {
   return x < 10000000000 && x > -10000000000 ? x : 0;
 }
 
+function toInt(str) {
+  const v = Number.parseInt(str, 10);
+  if (!valid(v)) return 0;
+  return v;
+}
+
+function toFloat(str) {
+  const v = Number.parseFloat(str, 10);
+  if (!valid(v)) return 0;
+  return v;
+}
 /// Google Sheets cells access
 
 /**
@@ -560,9 +584,39 @@ function getProperty(key) {
  *
  * @param{string} key - the name of the property
  * @param{string} value - the value to assign to the key
- * @returns{string} - returns the value that corresponds to the key.
  */
 
 function setProperty(key, value) {
   return scriptProperties.setProperty(key, value);
+}
+
+/**
+ * Get globally stored your personal property unrelated to this script. The value is shared between all your scripts.
+ * The value stored int the file in your Google Drive, this is slower than getProperty.
+ *
+ * @param{string} key - the name of the property
+ * @param{string} value - the value to assign to the key
+ */
+
+function getGlobalProperty(name) {
+  let files = DriveApp.getFilesByName(name);
+  while (files.hasNext()) return files.next().getBlob().getDataAsString();
+  return null;
+}
+
+/**
+ * Set globally stored your personal property unrelated to this script. The value is shared between all your scripts.
+ * It creates the file in your personal Google Drive, this is slower than setProperty.
+ *
+ * @param{string} key - the name of the property
+ * @param{string} value - the value to assign to the key
+ */
+
+function setGlobalProperty(key, value) {
+  let files = DriveApp.getFilesByName(key);
+  while (files.hasNext()) {
+    files.next().setContent(value);
+    return;
+  }
+  DriveApp.createFile(key, value);
 }
