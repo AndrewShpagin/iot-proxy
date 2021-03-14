@@ -1186,7 +1186,7 @@ const customBlocks =
       inputsInline: true,
       previousStatement: null,
       nextStatement: null,
-      colour: 230,
+      colour: '#60AA40',
       tooltip: '',
       helpUrl: '',
     },
