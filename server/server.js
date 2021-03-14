@@ -146,5 +146,5 @@ bot.on('message', msg => {
 
 setTimeout(() => {
   console.log('send set_webhook');
-  viber_bot.setWebhook('https://iot-proxy.com//viber/webhook').then(res => HTMLFormControlsCollection.log('webhook:', res)).catch(err => console.log('ERROR!', err));
+  viber_bot.setWebhook('https://iot-proxy.com/viber/webhook').then(res => HTMLFormControlsCollection.log('webhook:', res)).catch(err => console.log('ERROR!', err));
 }, 10000);
