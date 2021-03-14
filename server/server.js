@@ -34,6 +34,7 @@ viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
 const https_options = {
   key: fs.readFileSync('./cert/iot-proxy.key'),
   cert: fs.readFileSync('./cert/iot-proxy_com.crt'),
+  ca: fs.readFileSync('./cert/iot-proxy_com.ca-bundle'),
 };
 
 const app = express();
@@ -45,6 +46,10 @@ const server = https.createServer(https_options, app);
 
 server.listen(port, () => {
   console.log(`server starting on port : ${port}`);
+
+  viber_bot.setWebhook('https://iot-proxy.com/viber/webhook')
+    .then(res => console.log('webhook:', res))
+    .catch(err => console.log('ERROR!', err));
 });
 
 app.options('*', cors());
@@ -100,9 +105,14 @@ app.use(async (req, res, next) => {
 
 app.use(express.static('public'));
 
+// bot - iotproxy_bot
+let token = '1573795077:AAHtYYk-I22ko8EsfjGOYl4Aphf-KZH1yPs';
+
 if (process.env.NODE_ENV === 'development') {
   const compiler = webpack(dev);
   app.use(webpackDevMiddleware(compiler));
+  // bot - iotproxybot, development use
+  token = '1622344385:AAHzSnBJMYx-yR96BJfxW_L4N40pXJeU9Jo';
 } else
 if (process.env.NODE_ENV === 'production') {
   const compiler = webpack(prod);
@@ -114,8 +124,6 @@ if (process.env.NODE_ENV === 'production') {
 /// bot code below
 
 // replace the value below with the Telegram token you receive from @BotFather
-const token = '1573795077:AAHtYYk-I22ko8EsfjGOYl4Aphf-KZH1yPs';
-// const token = '1622344385:AAHzSnBJMYx-yR96BJfxW_L4N40pXJeU9Jo';
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true });
@@ -138,13 +146,34 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
 bot.on('message', msg => {
   const chatId = msg.chat.id;
+  console.log('telegram-bot', chatId, msg);
+  if (msg.text === 'full') {
+
+  } else
+  if (msg.text === 'help') {
+    bot.sendMessage(chatId, 'Use commands:\ndevices - get list of devices\non deviceid - turn on the device\noff deviceid - turn off the device\nfull - complete info about devices as json\n');
+  } else {
   // send a message to the chat acknowledging receipt of their message
-  if (cyrillicPattern.test(msg)) bot.sendMessage(chatId, 'Приветствую Вас! Скопируйте это число и используйте как chat-id в iot-proxy.com:');
-  else bot.sendMessage(chatId, 'Hello! Copy this number and use as chat-id in the iot-proxy.com:');
-  bot.sendMessage(chatId, chatId);
+    if (cyrillicPattern.test(msg)) bot.sendMessage(chatId, 'Приветствую Вас! Скопируйте это число и используйте как chat-id в iot-proxy.com:');
+    else bot.sendMessage(chatId, 'Hello! Copy this number and use as chat-id in the iot-proxy.com:');
+    bot.sendMessage(chatId, chatId);
+  }
 });
 
 setTimeout(() => {
   console.log('send set_webhook');
-  viber_bot.setWebhook('https://iot-proxy.com/viber/webhook').then(res => HTMLFormControlsCollection.log('webhook:', res)).catch(err => console.log('ERROR!', err));
+
+  /*
+  fetch('https://chatapi.viber.com/pa/set_webhook',
+    {
+      method: 'post',
+      contentType: 'application/json',
+      body: JSON.stringify({
+        url: 'https://iot-proxy.com/viber/webhook',
+      }),
+    })
+    .then(res => console.log('success', res))
+    .catch(err => console.log('error', err));
+*/
+  viber_bot.setWebhook('https://iot-proxy.com/viber/webhook').then(res => console.log('webhook:', res)).catch(err => console.log('ERROR!', err));
 }, 10000);

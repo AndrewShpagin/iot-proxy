@@ -98,70 +98,77 @@ function deviceInfo(element) {
   return object;
 }
 
+async function proxyRequest(path0) {
+  let path = path0;
+  let answer = '';
+  const connection = await ewconnect(path);
+  if (connection) {
+    path = removeTags(path, '/auth=', '/email=', '/password=', '/region=');
+    let deviceid = null;
+    let device = null;
+    let state = null;
+    let key = null;
+    let val = null;
+    let some = false;
+    const accumulate = el => { answer += el; some = true; };
+    try {
+      do {
+        [key, val, path] = getTag(path);
+        if (key.length) {
+          some = false;
+          if (key === 'login') {
+            const login = await connection.getCredentials();
+            accumulate(login.at);
+          }
+          if (key === 'devices') {
+            const devices = await connection.getDevices();
+            const short = {};
+            devices.forEach(dev => { short[dev.deviceid] = deviceInfo(dev); });
+            accumulate(JSON.stringify(short, null, '\t'));
+          }
+          if (key === 'raw') {
+            const devices = await connection.getDevices();
+            accumulate(JSON.stringify(devices, null, '\t'));
+          }
+          if (key === 'device') {
+            deviceid = val;
+            device = await connection.getDevice(deviceid);
+            state = deviceInfo(device);
+            some = true;
+          }
+          if (device && deviceid.length) {
+            if (key === 'info') accumulate(JSON.stringify(state, null, '\t'));
+            if (key === 'toggle') {
+              connection.toggleDevice(deviceid);
+              some = true;
+            }
+            if (key === 'on') {
+              connection.setDevicePowerState(deviceid, 'on');
+              some = true;
+            }
+            if (key === 'off') {
+              connection.setDevicePowerState(deviceid, 'off');
+              some = true;
+            }
+            if (key === 'value') accumulate(state[val]);
+          }
+          if (!some) accumulate(key);
+        }
+      } while (path.length > 0);
+    } catch (error) {
+      answer = JSON.stringify(error, null, '\t');
+    }
+  }
+  return answer;
+}
 async function ewRequest(req, res, next) {
   const idx = req.path.indexOf('/xRet78uz');
   if (idx >= 0) {
-    let path = decStr(decodeURI(req.path.substring(idx + 9))).substring(6);
+    const path = decStr(decodeURI(req.path.substring(idx + 9))).substring(6);
     if (path.indexOf('/email=') >= 0 || path.indexOf('/auth=') >= 0) {
       try {
-        const connection = await ewconnect(path);
-        if (connection) {
-          path = removeTags(path, '/auth=', '/email=', '/password=', '/region=');
-          let answer = '';
-          let deviceid = null;
-          let device = null;
-          let state = null;
-          let key = null;
-          let val = null;
-          let some = false;
-          const accumulate = el => { answer += el; some = true; };
-          try {
-            do {
-              [key, val, path] = getTag(path);
-              if (key.length) {
-                some = false;
-                if (key === 'login') {
-                  const login = await connection.getCredentials();
-                  accumulate(login.at);
-                }
-                if (key === 'devices') {
-                  const devices = await connection.getDevices();
-                  const short = {};
-                  devices.forEach(dev => { short[dev.deviceid] = deviceInfo(dev); });
-                  accumulate(JSON.stringify(short, null, '\t'));
-                }
-                if (key === 'raw') {
-                  const devices = await connection.getDevices();
-                  accumulate(JSON.stringify(devices, null, '\t'));
-                }
-                if (key === 'device') {
-                  deviceid = val;
-                  device = await connection.getDevice(deviceid);
-                  state = deviceInfo(device);
-                  some = true;
-                }
-                if (device && deviceid.length) {
-                  if (key === 'info') accumulate(JSON.stringify(state, null, '\t'));
-                  if (key === 'toggle') {
-                    connection.toggleDevice(deviceid);
-                    some = true;
-                  }
-                  if (key === 'on') {
-                    connection.setDevicePowerState(deviceid, 'on');
-                    some = true;
-                  }
-                  if (key === 'off') {
-                    connection.setDevicePowerState(deviceid, 'off');
-                    some = true;
-                  }
-                  if (key === 'value') accumulate(state[val]);
-                }
-                if (!some) accumulate(key);
-              }
-            } while (path.length > 0);
-          } catch (error) {
-            answer = JSON.stringify(error, null, '\t');
-          }
+        const answer = await proxyRequest(path);
+        if (answer) {
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.write(answer);
           res.end();
