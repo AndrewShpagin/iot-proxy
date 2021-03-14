@@ -18,6 +18,7 @@ const dev = require('../webpack.dev.js');
 const prod = require('../webpack.prod.js');
 const ViberBot = require('viber-bot').Bot;
 const BotEvents = require('viber-bot').Events;
+const TextMessage = require('viber-bot').Message.Text;
 
 const viber_bot = new ViberBot({
   authToken: '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1',
