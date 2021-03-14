@@ -6,17 +6,19 @@
 /* eslint-disable no-extend-native */
 /* eslint-disable camelcase */
 // import Blockly from 'blockly';
-import {hashStrShort} from './workspace';
+import { hashStrShort } from './workspace';
 
-let accumCode ='';
+let accumCode = '';
 let tempArray = [];
-export function startCodeGeneration(){
-  accumCode ='';
+let uniq = 0;
+export function startCodeGeneration() {
+  accumCode = '';
   tempArray = [];
+  uniq = 0;
 }
 export function endCodeGeneration(code) {
   return code + accumCode;
-} 
+}
 
 let ewpreffix = '';
 
@@ -411,11 +413,11 @@ Blockly.JavaScript.sincelastrun = function (block) {
 };
 
 Blockly.JavaScript.accumtime = function (block) {
-  let value_value = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
-  let value_limit = Blockly.JavaScript.valueToCode(block, 'LIMIT', Blockly.JavaScript.ORDER_ATOMIC);
-  let units = Number.parseInt(block.getFieldValue('UNITS'));
+  const value_value = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_limit = Blockly.JavaScript.valueToCode(block, 'LIMIT', Blockly.JavaScript.ORDER_ATOMIC);
+  const units = Number.parseInt(block.getFieldValue('UNITS'));
   let statements_todo = Blockly.JavaScript.statementToCode(block, 'TODO');
-  const hash = hashStrShort(value_limit);
+  const hash = hashStrShort(value_value);
   const varname = `prev_state_${hash}`;
   const timename = `accum_time_${hash}`;
   const mulsuffix = units > 1 ? `  limit *= ${units};\n` : '';
@@ -434,5 +436,21 @@ Blockly.JavaScript.accumtime = function (block) {
     `  ${ewpreffix}setProperty('${timename}', time);\n` +
     `  ${ewpreffix}setProperty('${varname}', cur);\n` +
     '}\n';
+  return code;
+};
+
+Blockly.JavaScript.cellaccumulate = function (block) {
+  const value_row = Blockly.JavaScript.valueToCode(block, 'ROW', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_column = Blockly.JavaScript.valueToCode(block, 'COLUMN', Blockly.JavaScript.ORDER_ATOMIC);
+  const units = block.getFieldValue('UNITS');
+  const value_cond = Blockly.JavaScript.valueToCode(block, 'COND', Blockly.JavaScript.ORDER_ATOMIC);
+  const suffix = `${uniq + 1}_${value_row}${value_column}`;
+  const divsuffix = units > 1 ? `  / ${units}` : '';
+  uniq++;
+  const code =
+    // eslint-disable-next-line prefer-template
+    `const cur_state${uniq} = ${value_cond};\n` +
+    `if (cur_state${uniq}.toString() === ${ewpreffix}getProperty('state${suffix}')) ${ewpreffix}incrementCell(${value_row}, ${value_column}, passedSinceLastRun${divsuffix});\n` +
+    `${ewpreffix}setProperty('state${suffix}', cur_state${uniq});\n`;
   return code;
 };

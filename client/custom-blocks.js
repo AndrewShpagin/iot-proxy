@@ -1190,5 +1190,57 @@ const customBlocks =
       tooltip: '',
       helpUrl: '',
     },
+    {
+      type: 'cellaccumulate',
+      message0: '%{BKY_CELLACCUMULATE}',
+      args0: [
+        {
+          type: 'input_dummy',
+        },
+        {
+          type: 'input_value',
+          name: 'ROW',
+          check: 'Number',
+        },
+        {
+          type: 'input_value',
+          name: 'COLUMN',
+          check: 'Number',
+        },
+        {
+          type: 'field_dropdown',
+          name: 'UNITS',
+          options: [
+            [
+              '%{BKY_SECONDS}',
+              '1',
+            ],
+            [
+              '%{BKY_MINUTES}',
+              '60',
+            ],
+            [
+              '%{BKY_HOURS}',
+              '3600',
+            ],
+            [
+              '%{BKY_DAYS}',
+              '86400',
+            ],
+          ],
+        },
+        {
+          type: 'input_value',
+          name: 'COND',
+          check: 'Boolean',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: '#60AA40',
+      tooltip: '',
+      helpUrl: '',
+    },
   ];
 module.exports = { customBlocks, defDevs };
