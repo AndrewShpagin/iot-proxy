@@ -28,7 +28,7 @@ const viber_bot = new ViberBot({
 // Perfect! Now here's the key part:
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
   // Echo's back the message to the client. Your bot logic should sit here.
-  response.send(message);
+  response.send(JSON.stringify(response));
 });
 
 const https_options = {
@@ -47,9 +47,9 @@ const server = https.createServer(https_options, app);
 server.listen(port, () => {
   console.log(`server starting on port : ${port}`);
 
-  viber_bot.setWebhook('https://iot-proxy.com/viber/webhook')
-    .then(res => console.log('webhook:', res))
-    .catch(err => console.log('ERROR!', err));
+  // viber_bot.setWebhook('https://iot-proxy.com/viber/webhook')
+  //  .then(res => console.log('webhook:', res))
+  //  .catch(err => console.log('ERROR!', err));
 });
 
 app.options('*', cors());
@@ -57,13 +57,26 @@ app.del('/products/:id', cors(), (req, res, next) => {
   res.json({ msg: 'This is CORS-enabled for all origins!' });
 });
 
-// app.listen(port);
-// console.log(`Server listening on port ${port}`);
-
 app.use('/viber/webhook', viber_bot.middleware());
 
 app.use(async (req, res, next) => {
   console.log('path:', req.path);
+  if (req.path.substring(0, 10) === '/viberbot/') {
+    const id = req.path.substring(10);
+    console.log(id);
+    const e = id.indexOf('/');
+    if (e > 0) {
+      const chatid = id.substring(0, e);
+      console.log(chatid);
+      const udec = id.substring(e + 1);
+      console.log(udec);
+      // viber_bot.sendMessage() fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatid}&text=${udec}`, { method: 'get' });
+      res.writeHead(200, { 'Content-Type': 'text' });
+      res.write('ok');
+      res.end();
+      return;
+    }
+  } else
   if (req.path.substring(0, 13) === '/telegrambot/') {
     const id = req.path.substring(13);
     console.log(id);
@@ -159,21 +172,3 @@ bot.on('message', msg => {
     bot.sendMessage(chatId, chatId);
   }
 });
-
-setTimeout(() => {
-  console.log('send set_webhook');
-
-  /*
-  fetch('https://chatapi.viber.com/pa/set_webhook',
-    {
-      method: 'post',
-      contentType: 'application/json',
-      body: JSON.stringify({
-        url: 'https://iot-proxy.com/viber/webhook',
-      }),
-    })
-    .then(res => console.log('success', res))
-    .catch(err => console.log('error', err));
-*/
-  viber_bot.setWebhook('https://iot-proxy.com/viber/webhook').then(res => console.log('webhook:', res)).catch(err => console.log('ERROR!', err));
-}, 10000);
