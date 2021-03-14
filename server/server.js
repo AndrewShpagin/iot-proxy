@@ -16,6 +16,20 @@ const custom = require('../client/custom-blocks').customBlocks;
 const { ewRequest } = require('./serverless');
 const dev = require('../webpack.dev.js');
 const prod = require('../webpack.prod.js');
+const ViberBot = require('viber-bot').Bot;
+const BotEvents = require('viber-bot').Events;
+
+const viber_bot = new ViberBot({
+  authToken: '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1',
+  name: 'EchoBot',
+  avatar: 'http://viber.com/avatar.jpg', // It is recommended to be 720x720, and no more than 100kb.
+});
+
+// Perfect! Now here's the key part:
+viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
+  // Echo's back the message to the client. Your bot logic should sit here.
+  response.send(message);
+});
 
 const https_options = {
   key: fs.readFileSync('./cert/iot-proxy.key'),
@@ -40,6 +54,8 @@ app.del('/products/:id', cors(), (req, res, next) => {
 
 // app.listen(port);
 // console.log(`Server listening on port ${port}`);
+
+app.use('/viber/webhook', viber_bot.middleware());
 
 app.use(async (req, res, next) => {
   console.log('path:', req.path);
@@ -99,6 +115,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // replace the value below with the Telegram token you receive from @BotFather
 const token = '1573795077:AAHtYYk-I22ko8EsfjGOYl4Aphf-KZH1yPs';
+// const token = '1622344385:AAHzSnBJMYx-yR96BJfxW_L4N40pXJeU9Jo';
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true });
