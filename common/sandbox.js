@@ -357,6 +357,12 @@ export class SandBox {
     return pstate.toString() !== state;
   }
 
+  sendTelegramMessage(chatid, msg) {
+    if (chatid && chatid.length) {
+      fetch(`https://iot-proxy.com/telegrambot/${chatid}/${encodeURIComponent(msg)}`, { method: 'get' });
+    }
+  }
+
   getCell(r, c) {
     const rr = this.curTable().get(r, c);
     this.log(`getCell(${r}, ${c}) => ${rr}`);

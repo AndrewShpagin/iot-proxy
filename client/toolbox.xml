@@ -51,6 +51,18 @@
         </shadow>
       </value>   
     </block>
+    <block type="sendtelegram">
+      <value name="chatid">
+        <shadow type="text">
+          <field name="TEXT">Get it at https://t.me/iotproxy_bot</field>
+        </shadow>
+      </value>    
+      <value name="msg">
+        <shadow type="text">
+          <field name="TEXT">Type message there...</field>
+        </shadow>
+      </value>  
+    </block>
     <block type="gotnewmessage">
       <value name="FROM">
         <shadow type="text">

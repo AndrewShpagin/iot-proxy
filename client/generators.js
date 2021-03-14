@@ -454,3 +454,10 @@ Blockly.JavaScript.cellaccumulate = function (block) {
     `${ewpreffix}setProperty('state${suffix}', cur_state${uniq});\n`;
   return code;
 };
+
+Blockly.JavaScript.sendtelegram = function (block) {
+  const value_chatid = Blockly.JavaScript.valueToCode(block, 'chatid', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_msg = Blockly.JavaScript.valueToCode(block, 'msg', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `${ewpreffix}sendTelegramMessage(${value_chatid}, ${value_msg});\n`;
+  return code;
+};

@@ -1242,5 +1242,27 @@ const customBlocks =
       tooltip: '',
       helpUrl: '',
     },
+    {
+      type: 'sendtelegram',
+      message0: '%{BKY_SENDTELEGRAM}',
+      args0: [
+        {
+          type: 'input_value',
+          name: 'chatid',
+          check: 'String',
+        },
+        {
+          type: 'input_value',
+          name: 'msg',
+          check: 'String',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: 230,
+      tooltip: 'You need to joinn the channel first: https://t.me/iotproxy_bot',
+      helpUrl: 'https://t.me/iotproxy_bot',
+    },
   ];
 module.exports = { customBlocks, defDevs };

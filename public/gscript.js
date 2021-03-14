@@ -544,6 +544,13 @@ function thisWeekDay() {
   return (new Date()).getDay();
 }
 
+function sendTelegramMessage(chatid, msg) {
+  let chat = chatid;
+  if (chat && chat.length) {
+    UrlFetchApp.fetch(`https://iot-proxy.com/telegrambot/${chatid}/${encodeURIComponent(msg)}`, { method: 'get' });
+  }
+}
+
 /**
  * Scans all unread mails for the last day
  *
