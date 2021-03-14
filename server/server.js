@@ -28,7 +28,7 @@ const viber_bot = new ViberBot({
 // Perfect! Now here's the key part:
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
   // Echo's back the message to the client. Your bot logic should sit here.
-  response.send(JSON.stringify(response));
+  response.send(`${response.userProfile}`);
 });
 
 const https_options = {
