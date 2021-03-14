@@ -28,8 +28,8 @@ const viber_bot = new ViberBot({
 // Perfect! Now here's the key part:
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
   // Echo's back the message to the client. Your bot logic should sit here.
-  console.log(response.userProfile);
-  response.send(message);
+  // console.log(response.userProfile);
+  response.send(`Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy.com to get notifications:\n${response.userProfile.id}`);
 });
 
 const https_options = {
