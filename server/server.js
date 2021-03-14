@@ -31,7 +31,7 @@ viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
   console.log(typeof response.userProfile, response.userProfile);
   const mss = `Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy.com to get notifications:\n${response.userProfile.id}`;
   console.log(mss);
-  response.send(mss);
+  response.send(new TextMessage(mss));
 });
 
 const https_options = {
