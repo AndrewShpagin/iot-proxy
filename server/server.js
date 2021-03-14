@@ -21,7 +21,7 @@ const BotEvents = require('viber-bot').Events;
 
 const viber_bot = new ViberBot({
   authToken: '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1',
-  name: 'EchoBot',
+  name: 'iotproxy',
   avatar: 'http://viber.com/avatar.jpg', // It is recommended to be 720x720, and no more than 100kb.
 });
 
@@ -143,3 +143,8 @@ bot.on('message', msg => {
   else bot.sendMessage(chatId, 'Hello! Copy this number and use as chat-id in the iot-proxy.com:');
   bot.sendMessage(chatId, chatId);
 });
+
+setTimeout(() => {
+  console.log('send set_webhook');
+  viber_bot.setWebhook('https://iot-proxy.com//viber/webhook').then(res => HTMLFormControlsCollection.log('webhook:', res)).catch(err => console.log(err));
+}, 10000);
