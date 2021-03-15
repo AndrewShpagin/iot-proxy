@@ -332,6 +332,12 @@ export function updateDevices(successCallback, failCallback) {
 
 updateDevices();
 
+function explainChatID(message, url) {
+  w2alert(textByID(message)).ok(() => {
+    window.open(url, '_blank');
+  });
+}
+
 export function reinject() {
   const blocklyDiv = w2ui.layout.el('top');
   blocklyDiv.innerHTML = '';
@@ -342,6 +348,8 @@ export function reinject() {
   localStorage.setItem(`dev_${getUserEmail()}`, JSON.stringify(devices));
   setupDroplists(devices);
   workspace = Blockly.inject(blocklyDiv, options);
+  workspace.registerButtonCallback('viberCallback', () => explainChatID('BOTVIBER', 'viber://pa?chatURI=iotproxy'));
+  workspace.registerButtonCallback('telegramCallback', () => explainChatID('BOTTELEGRAM', 'https://t.me/iotproxy_bot'));
   Blockly.defineBlocksWithJsonArray(customBlocks);
   // assignGenerators();
 

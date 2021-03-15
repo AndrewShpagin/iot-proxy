@@ -30,5 +30,7 @@
     "EWELINKLOGIN": "Login to eWeLink",
     "PLDONATE": "Please <a> support</a> the project development.",
     "LOOGEDSUCCESSFULLY": "Logged in successfully, got the list of devices.",
-    "LOGINFAILED": "Unable to login, probably email, password or region are incorrect or you are offline."
+    "LOGINFAILED": "Unable to login, probably email, password or region are incorrect or you are offline.",
+    "BOTVIBER": "To be able to get Viber messages from the iot-proxy bot you need to obtain the chat-id and paste it into the sender block. Press OK and then write anything to the bot, he will send you the chat-id. Copy it and paste into the block.",
+    "BOTTELEGRAM": "To be able to get Telegram messages from the iot-proxy bot you need to obtain the chat-id and paste it into the sender block. Press OK and then write anything to the bot, he will send you the chat-id. Copy it and paste into the block."
 }
