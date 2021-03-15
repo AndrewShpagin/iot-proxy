@@ -26,13 +26,11 @@ const viber_token = '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1';
 const viber_bot = new ViberBot({
   authToken: viber_token,
   name: 'iotproxy',
-  avatar: 'http://viber.com/avatar.jpg', // It is recommended to be 720x720, and no more than 100kb.
 });
 
-// Perfect! Now here's the key part:
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
-  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy.com to get notifications:`));
-  response.send(new TextMessage(`${response.userProfile.id}`));
+  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy to get notifications:`));
+  setTimeout(() => response.send(new TextMessage(`${response.userProfile.id}`)), 500);
 });
 
 const https_options = {
@@ -67,13 +65,10 @@ app.use(async (req, res, next) => {
   console.log('path:', req.path);
   if (req.path.substring(0, 10) === '/viberbot/') {
     const id = req.path.substring(10);
-    console.log(id);
     const e = id.indexOf('/');
     if (e > 0) {
       const chatid = id.substring(0, e);
-      console.log(chatid);
       const udec = id.substring(e + 1);
-      console.log(udec);
       const sendobj = {
         receiver: chatid,
         min_api_version: 1,
@@ -99,13 +94,10 @@ app.use(async (req, res, next) => {
   } else
   if (req.path.substring(0, 13) === '/telegrambot/') {
     const id = req.path.substring(13);
-    console.log(id);
     const e = id.indexOf('/');
     if (e > 0) {
       const chatid = id.substring(0, e);
-      console.log(chatid);
       const udec = id.substring(e + 1);
-      console.log(udec);
       fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatid}&text=${udec}`, { method: 'get' });
       res.writeHead(200, { 'Content-Type': 'text' });
       res.write('ok');

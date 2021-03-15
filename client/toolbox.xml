@@ -54,7 +54,19 @@
     <block type="sendtelegram">
       <value name="chatid">
         <shadow type="text">
-          <field name="TEXT">Get it at https://t.me/iotproxy_bot</field>
+          <field name="TEXT">Get chat-id at https://t.me/iotproxy_bot</field>
+        </shadow>
+      </value>    
+      <value name="msg">
+        <shadow type="text">
+          <field name="TEXT">Type message there...</field>
+        </shadow>
+      </value>  
+    </block>
+    <block type="sendviber">
+      <value name="chatid">
+        <shadow type="text">
+          <field name="TEXT">Get chat-id at https://www.viber.com/iotproxy</field>
         </shadow>
       </value>    
       <value name="msg">

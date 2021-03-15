@@ -1264,5 +1264,27 @@ const customBlocks =
       tooltip: 'You need to joinn the channel first: https://t.me/iotproxy_bot',
       helpUrl: 'https://t.me/iotproxy_bot',
     },
+    {
+      type: 'sendviber',
+      message0: '%{BKY_SENDVIBER}',
+      args0: [
+        {
+          type: 'input_value',
+          name: 'chatid',
+          check: 'String',
+        },
+        {
+          type: 'input_value',
+          name: 'msg',
+          check: 'String',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: 230,
+      tooltip: 'You need to joinn the channel first: https://www.viber.com/iotproxy',
+      helpUrl: 'https://www.viber.com/iotproxy',
+    },
   ];
 module.exports = { customBlocks, defDevs };

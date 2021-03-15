@@ -551,6 +551,13 @@ function sendTelegramMessage(chatid, msg) {
   }
 }
 
+function sendViberMessage(chatid, msg) {
+  let chat = chatid;
+  if (chat && chat.length) {
+    UrlFetchApp.fetch(`https://iot-proxy.com/viberbot/${chatid}/${encodeURIComponent(msg)}`, { method: 'get' });
+  }
+}
+
 /**
  * Scans all unread mails for the last day
  *
