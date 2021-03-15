@@ -26,11 +26,12 @@ const viber_token = '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1';
 const viber_bot = new ViberBot({
   authToken: viber_token,
   name: 'iotproxy',
+  avatar: 'http://viber.com/avatar.jpg', // It is recommended to be 720x720, and no more than 100kb.
 });
 
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
-  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy to get notifications:`));
-  response.send(new TextMessage(`${response.userProfile.id}`));
+  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy.com to get notifications:`));
+  setTimeout(() => response.send(new TextMessage(`${response.userProfile.id}`)), 500);
 });
 
 const https_options = {
