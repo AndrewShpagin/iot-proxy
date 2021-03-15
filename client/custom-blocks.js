@@ -1283,7 +1283,7 @@ const customBlocks =
       previousStatement: null,
       nextStatement: null,
       colour: 230,
-      tooltip: 'You need to joinn the channel first: https://www.viber.com/iotproxy',
+      tooltip: 'You need to joinn the channel first, open in browser: viber://pa?chatURI=iotproxy',
       helpUrl: 'https://www.viber.com/iotproxy',
     },
   ];
