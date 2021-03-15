@@ -19,6 +19,7 @@ const prod = require('../webpack.prod.js');
 const ViberBot = require('viber-bot').Bot;
 const BotEvents = require('viber-bot').Events;
 const TextMessage = require('viber-bot').Message.Text;
+const { UserProfile } = require('viber-bot');
 
 const viber_bot = new ViberBot({
   authToken: '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1',
@@ -28,11 +29,8 @@ const viber_bot = new ViberBot({
 
 // Perfect! Now here's the key part:
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
-  // Echo's back the message to the client. Your bot logic should sit here.
-  console.log(typeof response.userProfile, response.userProfile);
-  const mss = `Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy.com to get notifications:\n${response.userProfile.id}`;
-  console.log(mss);
-  response.send(new TextMessage(mss));
+  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy.com to get notifications:`));
+  response.send(new TextMessage(`${response.userProfile.id}`));
 });
 
 const https_options = {
@@ -74,7 +72,17 @@ app.use(async (req, res, next) => {
       console.log(chatid);
       const udec = id.substring(e + 1);
       console.log(udec);
-      // viber_bot.sendMessage() fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatid}&text=${udec}`, { method: 'get' });
+      const sendobj = {
+        receiver: chatid,
+        min_api_version: 1,
+        sender: {
+          name: 'iot-provy',
+        },
+        tracking_data: 'tracking data',
+        type: 'text',
+        text: decodeURI(udec),
+      };
+      fetch('https://chatapi.viber.com/pa/send_message', { method: 'post', body: sendobj });
       res.writeHead(200, { 'Content-Type': 'text' });
       res.write('ok');
       res.end();
