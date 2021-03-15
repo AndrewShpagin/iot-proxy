@@ -1284,7 +1284,7 @@ const customBlocks =
       nextStatement: null,
       colour: 230,
       tooltip: 'You need to joinn the channel first, open in browser: viber://pa?chatURI=iotproxy',
-      helpUrl: 'https://www.viber.com/iotproxy',
+      helpUrl: 'viber://pa?chatURI=iotproxy',
     },
   ];
 module.exports = { customBlocks, defDevs };
