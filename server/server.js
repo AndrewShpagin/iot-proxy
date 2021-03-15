@@ -82,7 +82,7 @@ app.use(async (req, res, next) => {
         type: 'text',
         text: decodeURI(udec),
       };
-      fetch('https://chatapi.viber.com/pa/send_message', { method: 'post', body: sendobj }).then(r => console.log('done', r)).catch(error => console.log('error', error));
+      fetch('https://chatapi.viber.com/pa/send_message', { method: 'post', body: JSON.stringify(sendobj) }).then(r => console.log('done', r)).catch(error => console.log('error', error));
       res.writeHead(200, { 'Content-Type': 'text' });
       res.write('ok');
       res.end();
