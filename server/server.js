@@ -30,7 +30,7 @@ const viber_bot = new ViberBot({
 });
 
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
-  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy.com to get notifications:`));
+  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy to get notifications:`));
   setTimeout(() => response.send(new TextMessage(`${response.userProfile.id}`)), 500);
 });
 
@@ -86,7 +86,7 @@ app.use(async (req, res, next) => {
         headers: {
           'X-Viber-Auth-Token': viber_token,
         },
-      }).then(r => console.log('done', r)).catch(error => console.log('error', error));
+      }).catch(error => console.log('error', error));
       res.writeHead(200, { 'Content-Type': 'text' });
       res.write('ok');
       res.end();
