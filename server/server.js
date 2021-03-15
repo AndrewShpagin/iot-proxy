@@ -21,8 +21,10 @@ const BotEvents = require('viber-bot').Events;
 const TextMessage = require('viber-bot').Message.Text;
 const { UserProfile } = require('viber-bot');
 
+const viber_token = '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1';
+
 const viber_bot = new ViberBot({
-  authToken: '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1',
+  authToken: viber_token,
   name: 'iotproxy',
   avatar: 'http://viber.com/avatar.jpg', // It is recommended to be 720x720, and no more than 100kb.
 });
@@ -82,7 +84,13 @@ app.use(async (req, res, next) => {
         type: 'text',
         text: decodeURI(udec),
       };
-      fetch('https://chatapi.viber.com/pa/send_message', { method: 'post', body: JSON.stringify(sendobj) }).then(r => console.log('done', r)).catch(error => console.log('error', error));
+      fetch('https://chatapi.viber.com/pa/send_message', {
+        method: 'post',
+        body: JSON.stringify(sendobj),
+        headers: {
+          'X-Viber-Auth-Token': viber_token,
+        },
+      }).then(r => console.log('done', r)).catch(error => console.log('error', error));
       res.writeHead(200, { 'Content-Type': 'text' });
       res.write('ok');
       res.end();
