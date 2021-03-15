@@ -30,7 +30,7 @@ const viber_bot = new ViberBot({
 });
 
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
-  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the user id into clipboard and use it in the iot-proxy to get notifications:`));
+  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the chat-id into clipboard and use it in the iot-proxy to get notifications:`));
   setTimeout(() => response.send(new TextMessage(`${response.userProfile.id}`)), 500);
 });
 
