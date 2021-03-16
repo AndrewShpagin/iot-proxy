@@ -501,6 +501,34 @@ function deviationInCells(r0, c0, r1, c1) {
   return valid(sqrt(cellsOperate(r0, c0, r1, c1, 0.0, (summ, value) => summ + sqr(Number(value) - av)) / countFilledCells(r0, c0, r1, c1)));
 }
 
+/**
+ * Find the cell in the column after the last used row.
+ *
+ * @param {number} column - the column to find the empty cell.
+ */
+function findUnusedRowInColumn(column) {
+  let rng = mySheet.getRange(mySheet.getLastRow(), column);
+  if (rng.isBlank()) rng = rng.getNextDataCell(SpreadsheetApp.Direction.UP);
+  const row = rng.getLastRow();
+  return getCell(row, column) === '' ? row : row + 1;
+}
+
+/**
+ *
+ * @param {number} row - the row to insert empty line
+ */
+function insertEmptyRow(row) {
+  mySheet.insertRowBefore(row);
+}
+
+/**
+ *
+ * @param {number} column - the column to insert empty one
+ */
+function insertEmptyColumn(row) {
+  mySheet.insertColumnBefore(row);
+}
+
 /// Date and time
 
 /**
@@ -544,12 +572,26 @@ function thisWeekDay() {
   return (new Date()).getDay();
 }
 
+/**
+ * Send the message to user via telegram. You need to get chat-id from the telegram bot 
+ *
+ * @param{string} chatid - chat identifier, get it at https://t.me/iotproxy_bot
+ * @param{string} msg - text message
+ */
+
 function sendTelegramMessage(chatid, msg) {
   let chat = chatid;
   if (chat && chat.length) {
     UrlFetchApp.fetch(`https://iot-proxy.com/telegrambot/${chatid}/${encodeURIComponent(msg)}`, { method: 'get' });
   }
 }
+
+/**
+ * Send the message to user via viber. You need to get chat-id from the viber bot
+ *
+ * @param{string} chatid - chat identifier, get it at viber://pa?chatURI=iotproxy
+ * @param{string} msg - text message
+ */
 
 function sendViberMessage(chatid, msg) {
   let chat = chatid;

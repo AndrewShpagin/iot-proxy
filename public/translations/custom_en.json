@@ -85,5 +85,8 @@
 	"ACCUMULATEDTIME": "If accumulated time  when  %1 %2 reaches the value %3 %4 %5 %6 %7 Set any logical expression as condition, for example, Temperature > 50.",
 	"CELLACCUMULATE": "In the cell -  %1 row %2, column %3 accumulate the time (%4), when condition is true: %5",
     "SENDTELEGRAM": "Send telegram message, chat-id: %1 , message %2",
-	"SENDVIBER": "Send viber message, chat-id: %1 , message %2"
+	"SENDVIBER": "Send viber message, chat-id: %1 , message %2",
+	"GETEMPTYROWCOL": "Get empty row in column %1",
+	"INSERTROW": "Insert the empty row at %1",
+	"INSERTCOL": "Insert the empty column at %1"
 }

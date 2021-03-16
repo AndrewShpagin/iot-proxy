@@ -476,3 +476,21 @@ Blockly.JavaScript.sendviber = function (block) {
   }
   return code;
 };
+
+Blockly.JavaScript.getunusedincol = function (block) {
+  const value_column = Blockly.JavaScript.valueToCode(block, 'column', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `${ewpreffix}findUnusedRowInColumn(${value_column})`;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.insertrow = function (block) {
+  const value_row = Blockly.JavaScript.valueToCode(block, 'row', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `${ewpreffix}insertEmptyRow(${value_row});\n`;
+  return code;
+};
+
+Blockly.JavaScript.insertcol = function (block) {
+  const value_col = Blockly.JavaScript.valueToCode(block, 'col', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `${ewpreffix}insertEmptyColumn(${value_col});\n`;
+  return code;
+};

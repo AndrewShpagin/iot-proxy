@@ -5,7 +5,7 @@
 /* eslint-disable import/prefer-default-export */
 
 import { reinject, assignProject, getUserData, clearDevices, updateCode, storeUser, updateCodeCompletely, localRunScript, updateDevices } from './workspace';
-import { textByID, translateToCurrent, correctHeader ,isMobile } from './index';
+import { textByID, translateToCurrent, correctHeader, isMobile } from './index';
 
 let helpTriggered = false;
 
@@ -306,6 +306,11 @@ function renameCurrentTab() {
     },
   });
 }
+function delTabForever(i) {
+  window.localStorage.removeItem(`workspace_${i}`);
+  window.localStorage.removeItem(`name_${i}`);
+}
+
 function downloadTab(i) {
   let name = window.localStorage.getItem(`name_${i}`);
   if (!name)name = 'Project';
@@ -371,17 +376,19 @@ function closeTab(tabId) {
     $().w2popup('open', {
       title: 'Close the tab',
       body: '<div id="form" style="width: 100%; height: 100%;">' +
-            'You are about to close the tab. There are three possibilities:<br>' +
-            '1) Download the project from the tab and close it forever.<br>' +
-            '2) Just close it, but it will it will appear again when you will refresh the page or visit us again.<br>' +
-            '3) Keep the tab.<br>' +
+            `${textByID('CLOSETABWARN')}<br>` +
+            `${textByID('POSSB1')}<br>` +
+            `${textByID('POSSB2')}<br>` +
+            `${textByID('POSSB3')}<br>` +
+            `${textByID('POSSB4')}<br>` +
             '</div>',
       buttons:
-            `<button class="w2ui-btn" onclick="downloadTab('${idx}');w2popup.close();">Close and download</button> ` +
-            '<button class="w2ui-btn" onclick="w2popup.close();">Just close</button>' +
-            `<button class="w2ui-btn" onclick="restoreTab('${idx}');w2popup.close();">Keep the tab</button>`,
+            `<button class="w2ui-btn" onclick="downloadTab('${idx}');w2popup.close();">${textByID('CLOSEDOWNLOAD')}</button> ` +
+            `<button class="w2ui-btn" onclick="w2popup.close();">${textByID('JUSTCLOSE')}</button>` +
+            `<button class="w2ui-btn" onclick="delTabForever('${idx}');w2popup.close();">${textByID('DELFOREVER')}</button>` +
+            `<button class="w2ui-btn" onclick="restoreTab('${idx}');w2popup.close();">${textByID('KEEPTAB')}</button>`,
       style: 'padding: 15px 20px 20px 20px',
-      width: 450,
+      width: 580,
       height: 250,
       onToggle(event) {
         $(w2ui.renameTab.box).hide();
@@ -616,3 +623,4 @@ window.uploadScript = uploadScript;
 window.scriptInfo = scriptInfo;
 window.removeHelp = removeHelp;
 window.logoutPopup = logoutPopup;
+window.delTabForever = delTabForever;

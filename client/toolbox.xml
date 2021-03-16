@@ -298,6 +298,27 @@
       </value>
     </block>
     <block type="getlastrow"></block>
+    <block type="getunusedincol">
+      <value name="column">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="insertrow">
+      <value name="row">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="insertcol">
+      <value name="col">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
     <block type="removerow">
       <value name="NAME">
         <shadow type="math_number">

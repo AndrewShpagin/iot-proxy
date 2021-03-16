@@ -1,28 +1,6 @@
 const defDevs = '%{BKY_LOGIN}';
 const customBlocks =
   [
-    /*
-    {
-      type: 'device',
-      message0: '%{BKY_DEVICE1}',
-      args0: [
-        {
-          type: 'field_dropdown',
-          name: 'NAME',
-          options: [
-            [
-              'Login to get devices list',
-              '0',
-            ],
-          ],
-        },
-      ],
-      output: 'deviceID',
-      colour: 60,
-      tooltip: '%{BKY_DEVTOOPERATE}',
-      helpUrl: '',
-    },
-    */
     {
       type: 'switchedOn',
       message0: '%{BKY_DEVSWITCHEDON}',
@@ -1285,6 +1263,72 @@ const customBlocks =
       colour: 230,
       tooltip: 'You need to joinn the channel first, open in browser: viber://pa?chatURI=iotproxy',
       helpUrl: 'viber://pa?chatURI=iotproxy',
+    },
+    {
+      type: 'getunusedincol',
+      message0: '%{BKY_GETEMPTYROWCOL}',
+      args0: [
+        {
+          type: 'input_value',
+          name: 'column',
+          check: 'Number',
+        },
+      ],
+      inputsInline: true,
+      output: 'Number',
+      colour: 230,
+      tooltip: '',
+      helpUrl: '',
+    },
+    {
+      type: 'getunusedincol',
+      message0: '%{BKY_GETEMPTYROWCOL}',
+      args0: [
+        {
+          type: 'input_value',
+          name: 'column',
+          check: 'Number',
+        },
+      ],
+      inputsInline: true,
+      output: 'Number',
+      colour: 230,
+      tooltip: '',
+      helpUrl: '',
+    },
+    {
+      type: 'insertrow',
+      message0: '%{BKY_INSERTROW}',
+      args0: [
+        {
+          type: 'input_value',
+          name: 'row',
+          check: 'Number',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: 230,
+      tooltip: '',
+      helpUrl: '',
+    },
+    {
+      type: 'insertcol',
+      message0: '%{BKY_INSERTCOL}',
+      args0: [
+        {
+          type: 'input_value',
+          name: 'col',
+          check: 'Number',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: 230,
+      tooltip: '',
+      helpUrl: '',
     },
   ];
 module.exports = { customBlocks, defDevs };

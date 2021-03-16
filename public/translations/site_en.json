@@ -32,5 +32,14 @@
     "LOOGEDSUCCESSFULLY": "Logged in successfully, got the list of devices.",
     "LOGINFAILED": "Unable to login, probably email, password or region are incorrect or you are offline.",
     "BOTVIBER": "To be able to get Viber messages from the iot-proxy bot you need to obtain the chat-id and paste it into the sender block. Press OK and then write anything to the bot, he will send you the chat-id. Copy it and paste into the block.",
-    "BOTTELEGRAM": "To be able to get Telegram messages from the iot-proxy bot you need to obtain the chat-id and paste it into the sender block. Press OK and then write anything to the bot, he will send you the chat-id. Copy it and paste into the block."
+    "BOTTELEGRAM": "To be able to get Telegram messages from the iot-proxy bot you need to obtain the chat-id and paste it into the sender block. Press OK and then write anything to the bot, he will send you the chat-id. Copy it and paste into the block.",
+    "CLOSEDOWNLOAD": "Close and download",
+    "JUSTCLOSE": "Just close",
+    "DELFOREVER": "Delete forever",
+    "KEEPTAB": "Keep the tab",
+    "CLOSETABWARN": "You are about to close the tab. There are three possibilities:",
+    "POSSB1": "1) Download the project from the tab and close it forever.",
+    "POSSB2": "2) Just close it, but it will it will appear again when you will refresh the page or visit us again.",
+    "POSSB3": "3) Close and delete forever.",
+    "POSSB4": "4) Keep the tab."
 }
