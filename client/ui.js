@@ -34,6 +34,11 @@ export function downloadScript() {
   document.body.removeChild(element);
 }
 
+function b64DecodeUnicode(str) {
+  // Going backwards: from bytestream, to percent-encoding, to original string.
+  return decodeURIComponent(atob(str).split('').map(c => `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`).join(''));
+}
+
 export function uploadScript() {
   if (!w2ui.upload) {
     $().w2form({
@@ -60,7 +65,9 @@ export function uploadScript() {
           $('#file').w2field('file', {});
           try {
             if ($('#ProjectFile').data('selected').length) {
-              const xml = atob($('#ProjectFile').data('selected')[0].content);
+              const xml = b64DecodeUnicode($('#ProjectFile').data('selected')[0].content);
+              console.log(xml);
+              console.log($('#ProjectFile').data('selected')[0].content);
               const empty = getEmptyIndex();
               let prjName = $('#ProjectFile').data('selected')[0].name;
               let end = prjName.indexOf('.ewelink (');
@@ -478,7 +485,6 @@ $(() => {
             if (event.target === '%ID_GSHEETS') {
               showSheetsMessage('top');
               copyCode();
-              // window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');
             }
           },
         },
@@ -493,7 +499,6 @@ $(() => {
               addNewLayoutTab();
             } else {
               switchToTabContent(event.target);
-              // this.owner.content('top', event);
             }
           },
           onClose(event) {
@@ -517,8 +522,6 @@ $(() => {
             }
             if (event.target === '%ID_COPYOPEN') {
               showSheetsMessage('main');
-              // copyCode();
-              // window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');
             }
           },
         },
