@@ -5,7 +5,8 @@
 /* eslint-disable import/prefer-default-export */
 
 import { reinject, assignProject, getUserData, clearDevices, updateCode, storeUser, updateCodeCompletely, localRunScript, updateDevices } from './workspace';
-import { textByID, translateToCurrent, correctHeader, isMobile } from './index';
+import { correctHeader, isMobile } from './index';
+import { textByID, translateToolbar } from './languages';
 
 let helpTriggered = false;
 
@@ -597,25 +598,13 @@ export function forceSlideshow() {
   w2ui.layout.load('main', 'slides/slideshow.html');
 }
 
-function translateToolbar(toolbar) {
-  toolbar.items.forEach(el => {
-    let str = el.text;
-    let preffix = '';
-    const ii = str.indexOf('</i>');
-    if (ii >= 0) {
-      preffix = str.substring(0, ii + 6);
-      str = str.substring(ii + 6);
-    }
-    el.text = preffix + translateToCurrent(str);
-    el.tooltip = translateToCurrent(el.tooltip);
-  });
-  toolbar.refresh();
-}
-
-export function refreshui() {
-  translateToolbar(w2ui.layout_main_toolbar);
-  translateToolbar(w2ui.layout_top_toolbar);
-}
+document.addEventListener('language', () => {
+  if (w2ui.layout_main_toolbar) translateToolbar(w2ui.layout_main_toolbar);
+  if (w2ui.layout_top_toolbar) translateToolbar(w2ui.layout_top_toolbar);
+  if (helpShown()) {
+    forceSlideshow();
+  }
+});
 
 window.openLoginPopup = openLoginPopup;
 window.downloadScript = downloadScript;

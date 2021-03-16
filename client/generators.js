@@ -428,7 +428,7 @@ Blockly.JavaScript.accumtime = function (block) {
     `  const cur = ${value_value};\n` +
     `  let limit = ${value_limit};\n` + mulsuffix +
     `  let time = ${ewpreffix}toFloat(${ewpreffix}getProperty('${timename}') || '0');\n` +
-    `  if (cur.toString() === ${ewpreffix}getProperty('${varname}')) time += passedSinceLastRun;\n` +
+    `  if (cur && cur.toString() === ${ewpreffix}getProperty('${varname}')) time += passedSinceLastRun;\n` +
     '  console.log(\'Accumulated time:\', time);\n' +
     '  if (time > limit) {\n' +
     '    time -= limit;\n' +
@@ -450,7 +450,7 @@ Blockly.JavaScript.cellaccumulate = function (block) {
   const code =
     // eslint-disable-next-line prefer-template
     `const cur_state${uniq} = ${value_cond};\n` +
-    `if (cur_state${uniq}.toString() === ${ewpreffix}getProperty('state${suffix}')) ${ewpreffix}incrementCell(${value_row}, ${value_column}, passedSinceLastRun${divsuffix});\n` +
+    `if (cur_state${uniq} && cur_state${uniq}.toString() === ${ewpreffix}getProperty('state${suffix}')) ${ewpreffix}incrementCell(${value_row}, ${value_column}, passedSinceLastRun${divsuffix});\n` +
     `${ewpreffix}setProperty('state${suffix}', cur_state${uniq});\n`;
   return code;
 };

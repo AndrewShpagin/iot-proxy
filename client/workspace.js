@@ -22,10 +22,11 @@ import defEn from '../public/translations/en.json';
 import customEn from '../public/translations/custom_en.json';
 import defRu from '../public/translations/ru.json';
 import customRu from '../public/translations/custom_ru.json';
+
 // eslint-disable-next-line import/no-unresolved
 import baseJs from '!raw-loader!../public/base';
 import gscript0 from '!raw-loader!../public/gscript';
-import { curLanguage } from './index';
+import { curLanguage, setLang } from './languages';
 
 const CryptoJS = require('crypto-js');
 
@@ -204,13 +205,8 @@ export function updateCode() {
   }
 }
 const localesList = {};
-function applyLocaleNow(locObject) {
-  Object.keys(locObject).forEach(key => {
-    Blockly.Msg[key] = locObject[key];
-  });
-  if (workspace) Blockly.svgResize(workspace);
-}
-function preloadLocale(dst, src) {
+
+function preloadBlocklyLocale(dst, src) {
   const add = src;
   Object.keys(add).forEach(key => {
     dst[key] = src[key];
@@ -218,8 +214,8 @@ function preloadLocale(dst, src) {
   return dst;
 }
 
-localesList.en = preloadLocale(defEn, customEn);
-localesList.ru = preloadLocale(defRu, customRu);
+localesList.en = preloadBlocklyLocale(defEn, customEn);
+localesList.ru = preloadBlocklyLocale(defRu, customRu);
 
 function setupDroplists(devices) {
   const enc = {
@@ -275,13 +271,18 @@ function setupDroplists(devices) {
   }
 }
 
-export function applyLocale(locName) {
+document.addEventListener('language', () => {
+  const locName = curLanguage();
   const loc = localesList[locName];
-  applyLocaleNow(loc);
+  Object.keys(loc).forEach(key => {
+    Blockly.Msg[key] = loc[key];
+  });
+  if (workspace) Blockly.svgResize(workspace);
   if (workspace) reinject();
-}
+});
 
-applyLocale(curLanguage());
+setLang(curLanguage());
+
 let devices = {};
 
 export function clearDevices() {
