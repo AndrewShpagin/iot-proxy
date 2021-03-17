@@ -41,7 +41,7 @@ class BotMessages {
       answer.push(JSON.stringify(msg));
     } else
     if (message === 'help') {
-      answer.push('Use commands:\ndevices - get list of devices\non deviceid - turn on the device\noff deviceid - turn off the device\nfull - complete info about devices as json\n');
+      answer.push('Use commands:\nchatid - display chat-id.\nlogin email password region - set login data, this is required before any other commands.\ndevices - get list of devices\non deviceid - turn on the device\noff deviceid - turn off the device\nfull - complete info about devices as json\n');
     } else if (message === 'chatid' || !this.userinfo[user].asked) {
       answer.push('Hello! Please copy this number and use as chat-id in the iot-proxy.com:');
       answer.push(`${user}`);
@@ -51,12 +51,15 @@ class BotMessages {
   }
 
   getAll(user) {
-    const u = this.users[user];
-    if (u) {
-      const res = JSON.stringify(u);
-      this.total -= u.length;
-      delete (this.users[user]);
-      return res.length > 2 ? res : '[]';
+    const uinf = this.userinfo[user];
+    if (uinf) {
+      const u = uinf.messages;
+      if (u) {
+        const res = JSON.stringify(u);
+        this.total -= u.length;
+        delete (this.users[user]);
+        return res.length > 2 ? res : '[]';
+      }
     }
     return '[]';
   }
