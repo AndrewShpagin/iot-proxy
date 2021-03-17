@@ -98,7 +98,8 @@ class BotMessages {
 
   bulkSend(array, fn) {
     if (array.length) {
-      fn(array[0].ToString());
+      console.log('array[0]', typeof array[0], array[0]);
+      fn(array[0]);
       setTimeout(() => {
         this.bulkSend(array.slice(1), fn);
       }, 500);
