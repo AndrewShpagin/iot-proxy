@@ -57,7 +57,7 @@ class BotMessages {
       if (u) {
         const res = JSON.stringify(u);
         this.total -= u.length;
-        delete (this.users[user]);
+        uinf.messages = [];
         return res.length > 2 ? res : '[]';
       }
     }
