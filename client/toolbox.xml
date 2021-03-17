@@ -60,6 +60,13 @@
         </shadow>
       </value>  
     </block>
+    <block type="gotmsg">
+      <value name="chatid">
+        <shadow type="text">
+          <field name="TEXT">Paste chat-id</field>
+        </shadow>
+      </value>
+    </block>
     <block type="sendmail">
       <value name="EMAIL">
         <shadow type="text">

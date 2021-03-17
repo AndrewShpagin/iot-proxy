@@ -66,8 +66,6 @@ export function uploadScript() {
           try {
             if ($('#ProjectFile').data('selected').length) {
               const xml = b64DecodeUnicode($('#ProjectFile').data('selected')[0].content);
-              console.log(xml);
-              console.log($('#ProjectFile').data('selected')[0].content);
               const empty = getEmptyIndex();
               let prjName = $('#ProjectFile').data('selected')[0].name;
               let end = prjName.indexOf('.ewelink (');

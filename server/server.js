@@ -19,7 +19,7 @@ const prod = require('../webpack.prod.js');
 const ViberBot = require('viber-bot').Bot;
 const BotEvents = require('viber-bot').Events;
 const TextMessage = require('viber-bot').Message.Text;
-const { UserProfile } = require('viber-bot');
+const { bom, BotMessages } = require('./botmessages');
 
 const viber_token = '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1';
 
@@ -30,8 +30,8 @@ const viber_bot = new ViberBot({
 });
 
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
-  response.send(new TextMessage(`Hello, ${response.userProfile.name}! Please copy the chat-id into clipboard and use it in the iot-proxy to get notifications:`));
-  setTimeout(() => response.send(new TextMessage(`${response.userProfile.id}`)), 500);
+  const chatid = response.userProfile.id;
+  bom.bulkSend(bom.addMsg(chatid, message.text), m => response.send(chatid, new TextMessage(m)));
 });
 
 const https_options = {
@@ -62,49 +62,55 @@ app.del('/products/:id', cors(), (req, res, next) => {
 
 app.use('/viber/webhook', viber_bot.middleware());
 
+function parsesimp(path, tag, res) {
+  if (path.substring(0, tag.length) == tag) {
+    const id = path.substring(tag.length);
+    const e = id.indexOf('/');
+    if (e > 0) {
+      res.chatid = id.substring(0, e);
+      res.text = id.substring(e + 1);
+      return true;
+    }
+  }
+}
 app.use(async (req, res, next) => {
   console.log('path:', req.path);
-  if (req.path.substring(0, 10) === '/viberbot/') {
-    const id = req.path.substring(10);
-    const e = id.indexOf('/');
-    if (e > 0) {
-      const chatid = id.substring(0, e);
-      const udec = id.substring(e + 1);
-      const sendobj = {
-        receiver: chatid,
-        min_api_version: 1,
-        sender: {
-          name: 'iotproxy',
-        },
-        tracking_data: 'tracking data',
-        type: 'text',
-        text: decodeURI(udec),
-      };
-      fetch('https://chatapi.viber.com/pa/send_message', {
-        method: 'post',
-        body: JSON.stringify(sendobj),
-        headers: {
-          'X-Viber-Auth-Token': viber_token,
-        },
-      }).catch(error => console.log('error', error));
-      res.writeHead(200, { 'Content-Type': 'text' });
-      res.write('ok');
-      res.end();
-      return;
-    }
+  const r = {};
+  if (parsesimp(req.path, '/story/', r)) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write(bom.getAll(r.chatid));
+    res.end();
+    return;
   } else
-  if (req.path.substring(0, 13) === '/telegrambot/') {
-    const id = req.path.substring(13);
-    const e = id.indexOf('/');
-    if (e > 0) {
-      const chatid = id.substring(0, e);
-      const udec = id.substring(e + 1);
-      fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatid}&text=${udec}`, { method: 'get' });
-      res.writeHead(200, { 'Content-Type': 'text' });
-      res.write('ok');
-      res.end();
-      return;
-    }
+  if (parsesimp(req.path, '/viberbot/', r)) {
+    const sendobj = {
+      receiver: r.chatid,
+      min_api_version: 1,
+      sender: {
+        name: 'iotproxy',
+      },
+      tracking_data: 'tracking data',
+      type: 'text',
+      text: decodeURI(r.text),
+    };
+    fetch('https://chatapi.viber.com/pa/send_message', {
+      method: 'post',
+      body: JSON.stringify(sendobj),
+      headers: {
+        'X-Viber-Auth-Token': viber_token,
+      },
+    }).catch(error => console.log('error', error));
+    res.writeHead(200, { 'Content-Type': 'text' });
+    res.write('ok');
+    res.end();
+    return;
+  } else
+  if (parsesimp(req.path, '/telegrambot/', r)) {
+    fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${r.chatid}&text=${r.text}`, { method: 'get' });
+    res.writeHead(200, { 'Content-Type': 'text' });
+    res.write('ok');
+    res.end();
+    return;
   } else
   if (req.path.substring(0, 9) === '/aSevT56x') {
     try {
@@ -172,16 +178,5 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
 bot.on('message', msg => {
   const chatId = msg.chat.id;
-  console.log('telegram-bot', chatId, msg);
-  if (msg.text === 'full') {
-
-  } else
-  if (msg.text === 'help') {
-    bot.sendMessage(chatId, 'Use commands:\ndevices - get list of devices\non deviceid - turn on the device\noff deviceid - turn off the device\nfull - complete info about devices as json\n');
-  } else {
-  // send a message to the chat acknowledging receipt of their message
-    if (cyrillicPattern.test(msg)) bot.sendMessage(chatId, 'Приветствую Вас! Скопируйте это число и используйте как chat-id в iot-proxy.com:');
-    else bot.sendMessage(chatId, 'Hello! Copy this number and use as chat-id in the iot-proxy.com:');
-    bot.sendMessage(chatId, chatId);
-  }
+  bom.bulkSend(bom.addMsg(chatId, msg.text), m => bot.sendMessage(chatId, m));
 });

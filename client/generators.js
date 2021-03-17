@@ -494,3 +494,14 @@ Blockly.JavaScript.insertcol = function (block) {
   const code = `${ewpreffix}insertEmptyColumn(${value_col});\n`;
   return code;
 };
+
+Blockly.JavaScript.gotmsg = function (block) {
+  const value_chatid = Blockly.JavaScript.valueToCode(block, 'chatid', Blockly.JavaScript.ORDER_ATOMIC);
+  const variable_msg = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('msg'), Blockly.Variables.NAME_TYPE);
+  const statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+  const code =
+    `${ewpreffix}forEachMessage(${value_chatid}, msg => {\n` +
+    `  ${variable_msg} = msg;\n` +
+    `${statements_name}});\n`;
+  return code;
+};

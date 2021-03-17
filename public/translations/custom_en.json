@@ -88,5 +88,6 @@
 	"SENDVIBER": "Send viber message, chat-id: %1 , message %2",
 	"GETEMPTYROWCOL": "Get empty row in column %1",
 	"INSERTROW": "Insert the empty row at %1",
-	"INSERTCOL": "Insert the empty column at %1"
+	"INSERTCOL": "Insert the empty column at %1",
+	"GOTMSG": "For each message, sent to bot, chat-id: %1 , place it to the variable %2 %3 do: %4"
 }

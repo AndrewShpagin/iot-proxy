@@ -573,7 +573,7 @@ function thisWeekDay() {
 }
 
 /**
- * Send the message to user via telegram. You need to get chat-id from the telegram bot 
+ * Send the message to user via telegram. You need to get chat-id from the telegram bot
  *
  * @param{string} chatid - chat identifier, get it at https://t.me/iotproxy_bot
  * @param{string} msg - text message
@@ -597,6 +597,23 @@ function sendViberMessage(chatid, msg) {
   let chat = chatid;
   if (chat && chat.length) {
     UrlFetchApp.fetch(`https://iot-proxy.com/viberbot/${chatid}/${encodeURIComponent(msg)}`, { method: 'get' });
+  }
+}
+
+/**
+ *
+ * @param {String} chatid - viber or telegram chat-id
+ * @param {callback} fn - function to call for each message
+ */
+function forEachMessage(chatid, fn) {
+  let chat = chatid;
+  if (chat && chat.length) {
+    const answ = JSON.parse(UrlFetchApp.fetch(`https://iot-proxy.com/story/${chatid}/`, { method: 'get' }));
+    if (answ && answ.length) {
+      for (let k = 0; k < answ.length; k++) {
+        if (answ[k])fn(answ[k]);
+      }
+    }
   }
 }
 

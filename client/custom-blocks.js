@@ -1330,5 +1330,34 @@ const customBlocks =
       tooltip: '',
       helpUrl: '',
     },
+    {
+      type: 'gotmsg',
+      message0: '%{BKY_GOTMSG}',
+      args0: [
+        {
+          type: 'input_value',
+          name: 'chatid',
+          check: 'String',
+        },
+        {
+          type: 'field_variable',
+          name: 'msg',
+          variable: 'message',
+        },
+        {
+          type: 'input_dummy',
+        },
+        {
+          type: 'input_statement',
+          name: 'NAME',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: 230,
+      tooltip: '',
+      helpUrl: '',
+    },
   ];
 module.exports = { customBlocks, defDevs };
