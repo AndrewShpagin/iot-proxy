@@ -36,7 +36,7 @@ viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
       console.log('viber-send', chatid, m);
       response.send(chatid, new TextMessage(m));
     }),
-  ).catch(error => console.lg(error));
+  ).catch(error => console.log(error));
 });
 
 const https_options = {
@@ -185,5 +185,5 @@ bot.on('message', msg => {
   const chatId = msg.chat.id;
   bom.addMsg(chatId, msg.text).then(
     res => bom.bulkSend(res, m => bot.sendMessage(chatId, m)),
-  ).catch(error => console.lg(error));
+  ).catch(error => console.log(error));
 });
