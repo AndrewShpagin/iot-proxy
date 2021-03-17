@@ -1,16 +1,17 @@
 class BotMessages {
   constructor() {
-    this.users = {};
     this.total = 0;
     this.limit = 10;
     this.userinfo = {};
   }
 
   addMsg(user, message) {
-    let msg = this.users[user];
+    if (!this.userinfo[user]) this.userinfo[user] = {};
+    const uinf = this.userinfo[user];
+    let msg = uinf.messages;
     if (!msg) {
-      this.users[user] = [];
-      msg = this.users[user];
+      uinf.messages = [];
+      msg = uinf.messages;
     }
     if (msg) {
       msg.push(message);
@@ -21,8 +22,18 @@ class BotMessages {
         msg = msg.slice(n);
       }
     }
-    if (!this.userinfo[user]) this.userinfo[user] = {};
     const answer = [];
+    if (message.substring(0, 5) === 'login') {
+      const arr = message.split(' ');
+      if (arr.length === 4) {
+        [uinf.email, uinf.password, uinf.region] = arr.slice(1);
+        answer.push('Login info accepded.');
+        answer.push(JSON.stringify(uinf));
+      }
+    } else
+    if (message === 'user') {
+      answer.push(JSON.stringify(this.userinfo[user]));
+    } else
     if (message === 'read') {
       answer.push(this.getAll(user));
     } else
