@@ -32,7 +32,10 @@ const viber_bot = new ViberBot({
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
   const chatid = response.userProfile.id;
   bom.addMsg(chatid, message.text).then(
-    res => bom.bulkSend(res, m => response.send(chatid, new TextMessage(m))),
+    res => bom.bulkSend(res, m => {
+      console.log('viber-send', chatid, m);
+      response.send(chatid, new TextMessage(m));
+    }),
   ).catch(error => console.lg(error));
 });
 
