@@ -31,7 +31,9 @@ const viber_bot = new ViberBot({
 
 viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
   const chatid = response.userProfile.id;
-  bom.bulkSend(bom.addMsg(chatid, message.text), m => response.send(chatid, new TextMessage(m)));
+  bom.addMsg(chatid, message.text).then(
+    res => bom.bulkSend(res, m => response.send(chatid, new TextMessage(m))),
+  ).catch(error => console.lg(error));
 });
 
 const https_options = {
@@ -178,5 +180,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 const cyrillicPattern = /^[\u0400-\u04FF]+$/;
 bot.on('message', msg => {
   const chatId = msg.chat.id;
-  bom.bulkSend(bom.addMsg(chatId, msg.text), m => bot.sendMessage(chatId, m));
+  bom.addMsg(chatId, msg.text).then(
+    res => bom.bulkSend(res, m => bot.sendMessage(chatId, m)),
+  ).catch(error => console.lg(error));
 });

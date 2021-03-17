@@ -181,4 +181,4 @@ async function ewRequest(req, res, next) {
   next();
 }
 
-module.exports = { ewRequest };
+module.exports = { ewRequest, proxyRequest };
