@@ -23,6 +23,25 @@ const { bom, BotMessages } = require('./botmessages');
 
 const viber_token = '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1';
 
+function sendToViber(chatid, text) {
+  const sendobj = {
+    receiver: chatid,
+    min_api_version: 1,
+    sender: {
+      name: 'iotproxy',
+    },
+    tracking_data: 'tracking data',
+    type: 'text',
+    text: decodeURI(text),
+  };
+  fetch('https://chatapi.viber.com/pa/send_message', {
+    method: 'post',
+    body: JSON.stringify(sendobj),
+    headers: {
+      'X-Viber-Auth-Token': viber_token,
+    },
+  }).catch(error => console.log('error', error));
+}
 const viber_bot = new ViberBot({
   authToken: viber_token,
   name: 'iotproxy',
@@ -34,7 +53,7 @@ viber_bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
   bom.addMsg(chatid, message.text).then(
     res => bom.bulkSend(res, m => {
       console.log('viber-send', chatid, typeof m, m);
-      response.send(chatid, new TextMessage(m));
+      sendToViber(chatid, m);
     }),
   ).catch(error => console.log(error));
 });
@@ -88,23 +107,7 @@ app.use(async (req, res, next) => {
     return;
   } else
   if (parsesimp(req.path, '/viberbot/', r)) {
-    const sendobj = {
-      receiver: r.chatid,
-      min_api_version: 1,
-      sender: {
-        name: 'iotproxy',
-      },
-      tracking_data: 'tracking data',
-      type: 'text',
-      text: decodeURI(r.text),
-    };
-    fetch('https://chatapi.viber.com/pa/send_message', {
-      method: 'post',
-      body: JSON.stringify(sendobj),
-      headers: {
-        'X-Viber-Auth-Token': viber_token,
-      },
-    }).catch(error => console.log('error', error));
+    sendToViber(r.chatid, r.text);
     res.writeHead(200, { 'Content-Type': 'text' });
     res.write('ok');
     res.end();
