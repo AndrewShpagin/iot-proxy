@@ -3,6 +3,7 @@ class BotMessages {
     this.users = {};
     this.total = 0;
     this.limit = 10;
+    this.userinfo = {};
   }
 
   addMsg(user, message) {
@@ -29,9 +30,10 @@ class BotMessages {
     } else
     if (message === 'help') {
       answer.push('Use commands:\ndevices - get list of devices\non deviceid - turn on the device\noff deviceid - turn off the device\nfull - complete info about devices as json\n');
-    } else {
+    } else if (!this.userinfo[user]) {
       answer.push('Hello! Please copy this number and use as chat-id in the iot-proxy.com:');
       answer.push(`${user}`);
+      this.userinfo = { asked: true };
     }
     return answer;
   }
