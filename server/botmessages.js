@@ -10,7 +10,6 @@ class BotMessages {
   async addMsg(user, message) {
     const answer = [];
     try {
-      console.log(user, message);
       if (!message) return [];
       if (!this.userinfo[user]) this.userinfo[user] = {};
       const uinf = this.userinfo[user];
@@ -98,7 +97,6 @@ class BotMessages {
 
   bulkSend(array, fn) {
     if (array.length) {
-      console.log('array[0]', typeof array[0], array[0]);
       fn(array[0]);
       setTimeout(() => {
         this.bulkSend(array.slice(1), fn);
