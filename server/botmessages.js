@@ -21,6 +21,7 @@ class BotMessages {
         msg = msg.slice(n);
       }
     }
+    if (!this.userinfo[user]) this.userinfo[user] = {};
     const answer = [];
     if (message === 'read') {
       answer.push(this.getAll(user));
@@ -30,10 +31,10 @@ class BotMessages {
     } else
     if (message === 'help') {
       answer.push('Use commands:\ndevices - get list of devices\non deviceid - turn on the device\noff deviceid - turn off the device\nfull - complete info about devices as json\n');
-    } else if (!this.userinfo[user]) {
+    } else if (message === 'chatid' || !this.userinfo[user].asked) {
       answer.push('Hello! Please copy this number and use as chat-id in the iot-proxy.com:');
       answer.push(`${user}`);
-      this.userinfo = { asked: true };
+      this.userinfo[user].asked = true;
     }
     return answer;
   }
