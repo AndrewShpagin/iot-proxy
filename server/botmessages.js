@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable class-methods-use-this */
 const path = require('path');
 const fs = require('fs');
@@ -118,7 +119,15 @@ class BotMessages {
       if (message === '/devices') {
         if (check()) {
           const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/devices`);
-          answer.push(res);
+          let answ = '';
+          for (const [key, value] of res) {
+            const nm = `${value.name }                         `;
+            answ += `**${key}**: ${nm.slice(20)} : ${value.online ? '**ONLINE**' : '~~OFFLINE~~'}, ${value.switch === 'on' ? '**ON**' : '~~OFF~~'}`;
+            if ('currentTemperature' in value) answ += `, Temperature = ${value.currentTemperature}`;
+            if ('currentHumidity' in value) answ += `, Temperature = ${value.currentHumidity}`;
+            answ = `${answ}\n`;
+          }
+          answer.push(answ);
         }
       } else
       if (message === '/user') {
