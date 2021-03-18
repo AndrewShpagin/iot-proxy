@@ -121,18 +121,15 @@ class BotMessages {
           try {
             const res = JSON.parse(await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/devices`));
             let answ = '';
-            console.log(Object.entries(res));
             for (const [key, value] of Object.entries(res)) {
-              console.log(key, value);
-              const nm = `${value.name}                         `;
-              answ += `**${key}**: ${nm.slice(20)} : ${value.online ? '**ONLINE**' : '~~OFFLINE~~'}, ${value.switch === 'on' ? '**ON**' : '~~OFF~~'}`;
-              if ('currentTemperature' in value) answ += `, Temperature = ${value.currentTemperature}`;
-              if ('currentHumidity' in value) answ += `, Temperature = ${value.currentHumidity}`;
+              answ += `${value.name}:\n${key}: ${nm} : ${value.online ? 'ONLINE' : 'OFFLINE'}, ${value.switch === 'on' ? 'ON' : 'OFF'}`;
+              if ('currentTemperature' in value) answ += `, T = ${value.currentTemperature}`;
+              if ('currentHumidity' in value) answ += `, H = ${value.currentHumidity}`;
               answ = `${answ}\n`;
             }
             answer.push(answ);
           } catch (error) {
-            answ.push('Unable to get list of devices');
+            answer.push('Unable to get list of devices');
           }
         }
       } else
