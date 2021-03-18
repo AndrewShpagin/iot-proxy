@@ -1,10 +1,52 @@
+const path = require('path');
+const fs = require('fs');
 const { proxyRequest } = require('./serverless');
 
 class BotMessages {
   constructor() {
+    this.directoryPath = path.join(__dirname, 'users');
+    fs.mkdirSync(this.directoryPath, { recursive: true });
     this.total = 0;
     this.limit = 10;
     this.userinfo = {};
+    this.loadDone = false;
+    fs.readdir(this.directoryPath, (err, files) => {
+      if (err) {
+        return console.log(`Unable to scan directory: ${err}`);
+      }
+      const promises = [];
+      files.forEach(file => {
+        promises.push(fs.readFile(path.join(__dirname, `users/${file}`), { encoding: 'utf8' }, (err1, content) => {
+          if (err1) {
+            console.error(err1);
+          } else {
+            try {
+              const user = file;
+              console.log(`read user ${user}`);
+              this.userinfo[user] = JSON.parse(content);
+            } catch (error) {
+              console.log(error);
+              try {
+                fs.unlink(path);
+              } catch (e) {
+                console.log(e);
+              }
+            }
+          }
+        }));
+      });
+      Promise.all(promises).then(() => {
+        console.log('Loading finished');
+        this.loadDone = true;
+      });
+    });
+  }
+
+  saveUser(user) {
+    const fn = path.join(__dirname, `users/${user}`);
+    fs.writeFile(fn, JSON.stringify(this.userinfo[user]), () => {
+      // console.log(`saved user ${user} to ${fn}`);
+    });
   }
 
   async addMsg(user, message) {
@@ -26,6 +68,7 @@ class BotMessages {
           this.total -= n;
           msg = msg.slice(n);
         }
+        this.saveUser(user);
       }
       const check = () => {
         if ('email' in uinf && 'password' in uinf && 'region' in uinf) {
@@ -41,6 +84,7 @@ class BotMessages {
           [uinf.email, uinf.password, uinf.region] = arr.slice(1);
           answer.push('Login info accepded.');
           answer.push(JSON.stringify(uinf));
+          this.saveUser(user);
         } else {
           answer.push('Type to login to eWeLink:\nlogin your_email your_password your_region');
         }
