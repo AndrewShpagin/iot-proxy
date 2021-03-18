@@ -138,6 +138,7 @@ async function proxyRequest(path0) {
             some = true;
           }
           if (device && deviceid.length) {
+            if (key === 'rawinfo') accumulate(JSON.stringify(device, null, '\t'));
             if (key === 'info') accumulate(JSON.stringify(state, null, '\t'));
             if (key === 'toggle') {
               connection.toggleDevice(deviceid);
