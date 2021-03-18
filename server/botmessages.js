@@ -107,7 +107,10 @@ class BotMessages {
       if (message === 'logs') {
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-out.log');
-          answer.push(text.slice(-1000));
+          const idx = text.lastIndexOf('node server/server.js');
+          if (idx > 0) {
+            answer.push(text.slice(idx));
+          }
         } catch (err) {
           console.log(err);
         }
