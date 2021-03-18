@@ -52,6 +52,7 @@ class BotMessages {
   async addMsg(user, message) {
     const answer = [];
     try {
+      console.log('msg', typeof user, user, message);
       if (!message) return [];
       if (!this.userinfo[user]) this.userinfo[user] = {};
       const uinf = this.userinfo[user];
@@ -104,7 +105,7 @@ class BotMessages {
       if (message === 'story') {
         answer.push(JSON.stringify(msg));
       } else
-      if (message === 'errors') {
+      if (message === 'errors' && user === '505585494') {
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-error.log');
           const idx = text.lastIndexOf('Errors logging started.');
