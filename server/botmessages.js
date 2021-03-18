@@ -121,6 +121,7 @@ class BotMessages {
           const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/devices`);
           let answ = '';
           for (const [key, value] of res) {
+              console.log(key, value);
             const nm = `${value.name }                         `;
             answ += `**${key}**: ${nm.slice(20)} : ${value.online ? '**ONLINE**' : '~~OFFLINE~~'}, ${value.switch === 'on' ? '**ON**' : '~~OFF~~'}`;
             if ('currentTemperature' in value) answ += `, Temperature = ${value.currentTemperature}`;
