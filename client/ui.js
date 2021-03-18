@@ -468,7 +468,7 @@ $(() => {
     padding: 4,
     panels: [
       { type: 'main',
-        size: isMobile.any() ? '100%' : '70%',
+        size: '70%',
         resizable: true,
         style: `${pstyle}border-top: 0px;`,
         content: '',
@@ -550,7 +550,7 @@ $(() => {
           },
         },
       },
-      { type: 'right', size: '30%', resizable: true, style: pstyle, name: 'devices', title: 'Devices:' },
+      { type: 'right', size: isMobile.any() ? '75%' : '30%', resizable: true, style: pstyle, name: 'devices', title: 'Devices:' },
     ],
   });
   const grid1 = {
