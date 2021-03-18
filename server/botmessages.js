@@ -100,14 +100,13 @@ class BotMessages {
         if (check()) {
           const dev = this.extractDevice(message.substring(3));
           const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/device=${dev}/on`);
-          answer.push(res);
         }
       } else
       if (message.substring(0, 4) === '/off') {
         if (check()) {
           const dev = this.extractDevice(message.substring(3));
+          console.log('off', dev);
           const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/device=${dev}/off`);
-          answer.push(res);
         }
       } else
       if (message === '/full') {
