@@ -154,7 +154,9 @@ class BotMessages {
       if (u) {
         const res = JSON.stringify(u);
         this.total -= u.length;
+        const L0 = u.length;
         uinf.messages = [];
+        if (L0 > 0) this.saveUser(user);
         return res.length > 2 ? res : '[]';
       }
     }
