@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable func-names */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
@@ -16,11 +17,11 @@ export function helpShown() {
 export function triggerHelpMode(mode) {
   helpTriggered = mode;
   if (mode) {
-    const item = w2ui.layout_main_toolbar.items[0];
+    const item = w2ui.layout_bottom_toolbar.items[0];
     item.text = ticon('#000000', 'arrow-circle-left', 'TOPROJECTS');
     item.tooltip = '';
-    w2ui.layout_main_toolbar.hide('%ID_COPYOPEN');
-    w2ui.layout_main_toolbar.refresh();
+    w2ui.layout_bottom_toolbar.hide('%ID_COPYOPEN');
+    w2ui.layout_bottom_toolbar.refresh();
   }
 }
 
@@ -71,10 +72,10 @@ export function uploadScript() {
               let end = prjName.indexOf('.ewelink (');
               if (end === -1)end = prjName.indexOf('.ewelink.');
               if (end !== -1)prjName = prjName.substring(0, end);
-              w2ui.layout_top_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
+              w2ui.layout_main_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
               window.localStorage.setItem(`name_${empty}`, prjName);
               setTimeout(() => {
-                w2ui.layout_top_tabs.click(`workspace_${empty}`);
+                w2ui.layout_main_tabs.click(`workspace_${empty}`);
                 setTimeout(() => {
                   assignProject(xml);
                   checkClosable();
@@ -230,10 +231,10 @@ function askNewTabName() {
           const prjName = w2ui.newTab.record.Project;
           w2popup.close();
           const empty = getEmptyIndex();
-          w2ui.layout_top_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
+          w2ui.layout_main_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
           window.localStorage.setItem(`name_${empty}`, prjName);
           setTimeout(() => {
-            w2ui.layout_top_tabs.click(`workspace_${empty}`);
+            w2ui.layout_main_tabs.click(`workspace_${empty}`);
             setTimeout(() => {
               assignProject('<xml></xml>');
               checkClosable();
@@ -281,9 +282,9 @@ function renameCurrentTab() {
         Rename() {
           const prjName = w2ui.renameTab.record['New name'];
           w2popup.close();
-          const tab = w2ui.layout_top_tabs.tabs.find(el => el.id === w2ui.layout_top_tabs.active);
+          const tab = w2ui.layout_main_tabs.tabs.find(el => el.id === w2ui.layout_main_tabs.active);
           if (tab)tab.text = prjName;
-          w2ui.layout_top_tabs.refresh(w2ui.layout_top_tabs.active);
+          w2ui.layout_main_tabs.refresh(w2ui.layout_main_tabs.active);
           window.localStorage.setItem(`name_${currentContentTab}`, prjName);
         },
         Cancel() { w2popup.close(); },
@@ -333,31 +334,31 @@ function downloadTab(i) {
 }
 function restoreTab(i) {
   const name = window.localStorage.getItem(`name_${i}`);
-  w2ui.layout_top_tabs.insert('new', { id: `workspace_${i}`, text: name || `Project ${i}`, closable: true });
+  w2ui.layout_main_tabs.insert('new', { id: `workspace_${i}`, text: name || `Project ${i}`, closable: true });
   checkClosable();
 }
 window.downloadTab = downloadTab;
 window.restoreTab = restoreTab;
 
 function checkClosableImmediately() {
-  if (w2ui.layout_top_tabs.tabs.length < 3) {
-    w2ui.layout_top_tabs.tabs.forEach(element => {
+  if (w2ui.layout_main_tabs.tabs.length < 3) {
+    w2ui.layout_main_tabs.tabs.forEach(element => {
       if (element.closable) {
         element.closable = false;
-        w2ui.layout_top_tabs.refresh(element.id);
+        w2ui.layout_main_tabs.refresh(element.id);
       }
     });
   } else {
-    w2ui.layout_top_tabs.tabs.forEach(element => {
+    w2ui.layout_main_tabs.tabs.forEach(element => {
       if (element.id !== 'new' && !element.closable) {
         element.closable = true;
-        w2ui.layout_top_tabs.refresh(element.id);
+        w2ui.layout_main_tabs.refresh(element.id);
       }
     });
   }
 }
 function checkClosable() {
-  if (w2ui.layout_top_tabs.tabs) {
+  if (w2ui.layout_main_tabs.tabs) {
     setTimeout(() => {
       checkClosableImmediately();
     }, 100);
@@ -371,10 +372,10 @@ function checkClosable() {
 }
 function closeTab(tabId) {
   checkClosable();
-  // w2ui.layout_top_tabs.click(`workspace_${i}`);
-  if (w2ui.layout_top_tabs.active === tabId) {
-    const tab = w2ui.layout_top_tabs.tabs.find(t => t.id !== tabId);
-    w2ui.layout_top_tabs.click(tab.id);
+  // w2ui.layout_main_tabs.click(`workspace_${i}`);
+  if (w2ui.layout_main_tabs.active === tabId) {
+    const tab = w2ui.layout_main_tabs.tabs.find(t => t.id !== tabId);
+    w2ui.layout_main_tabs.click(tab.id);
   }
   const idx = tabId.substring(10);
   const content = window.localStorage.getItem(tabId);
@@ -415,18 +416,18 @@ function addNewLayoutTab() {
   askNewTabName();
 }
 function restoreToolbar() {
-  const item = w2ui.layout_main_toolbar.items[0];
+  const item = w2ui.layout_bottom_toolbar.items[0];
   item.text = ticon('#000000', 'copy', 'COPYGS');
   item.hint = textByID('COPYGSHINT');
-  w2ui.layout_main_toolbar.show('%ID_COPYOPEN');
-  w2ui.layout_main_toolbar.refresh();
+  w2ui.layout_bottom_toolbar.show('%ID_COPYOPEN');
+  w2ui.layout_bottom_toolbar.refresh();
 }
 function copyCode() {
   if (helpTriggered)removeHelp();
   else {
     const r = document.createRange();
     updateCodeCompletely();
-    r.selectNode(w2ui.layout.el('main'));
+    r.selectNode(w2ui.layout.el('bottom'));
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(r);
     document.execCommand('copy');
@@ -451,13 +452,15 @@ function showSheetsMessage(panel) {
 }
 
 /// Setup the layout
+let jsShown = false;
+let devShown = false;
 $(() => {
   const pstyle = 'padding: 0px;';
   $('#layout').w2layout({
     name: 'layout',
     padding: 4,
     panels: [
-      { type: 'top',
+      { type: 'main',
         size: isMobile.any() ? '100%' : '70%',
         resizable: true,
         style: `${pstyle}border-top: 0px;`,
@@ -466,9 +469,12 @@ $(() => {
           items: [
             { type: 'button', id: '%ID_SAVESCENE', caption: ticon('#000000', 'download', 'SAVESCENE'), hint: textByID('SAVESCENE_HINT') },
             { type: 'button', id: '%ID_OPENSCENE', caption: ticon('#000000', 'upload', 'OPENSCENE'), hint: textByID('OPENSCENE_HINT') },
-            { type: 'button', id: '%ID_RUNSCRIPT', caption: ticon('#4CAF50', 'play', 'RUNSCRIPT'), hint: textByID('RUNSCRIPT_HINT') },
-            { type: 'button', id: '%ID_SHEDULE', caption: ticon('#000000', 'tasks', 'SHEDULE'), hint: textByID('SHEDULE_HINT') },
+            // { type: 'button', id: '%ID_RUNSCRIPT', caption: ticon('#4CAF50', 'play', 'RUNSCRIPT'), hint: textByID('RUNSCRIPT_HINT') },
+            // { type: 'button', id: '%ID_SHEDULE', caption: ticon('#000000', 'tasks', 'SHEDULE'), hint: textByID('SHEDULE_HINT') },
             { type: 'button', id: '%ID_GSHEETS', caption: ticon('#4CAF50', 'table', 'GSHEETS'), hint: textByID('GSHEETS_HINT') },
+            { type: 'button', id: '%ID_ACTIVES', caption: ticon('#504CAF', 'cloud', 'ACTIVES'), hint: textByID('ACTIVES_HINT') },
+            { type: 'button', id: '%ID_JS', caption: ticon('#000000', 'code', 'JS'), hint: textByID('JS_HINT') },
+            { type: 'button', id: '%ID_DEVICES', caption: ticon('#000000', 'microchip', 'DEVICES'), hint: textByID('DEVICES_HINT') },
           ],
           onClick(event) {
             if (event.target === '%ID_SAVESCENE') {
@@ -481,8 +487,21 @@ $(() => {
               localRunScript();
             }
             if (event.target === '%ID_GSHEETS') {
-              showSheetsMessage('top');
+              showSheetsMessage('main');
               copyCode();
+            }
+            if (event.target === '%ID_ACTIVES') {
+              window.open('https://script.google.com/home/triggers', '_blank');
+            }
+            if (event.target === '%ID_JS') {
+              if (jsShown) w2ui.layout.hide('bottom');
+              else w2ui.layout.show('bottom');
+              jsShown = !jsShown;
+            }
+            if (event.target === '%ID_DEVICES') {
+              if (devShown) w2ui.layout.hide('right');
+              else w2ui.layout.show('right');
+              devShown = !devShown;
             }
           },
         },
@@ -505,8 +524,8 @@ $(() => {
           },
         },
       },
-      { type: 'main',
-        size: '70%',
+      { type: 'bottom',
+        size: '30%',
         resizable: true,
         style: pstyle,
         toolbar: {
@@ -519,7 +538,7 @@ $(() => {
               copyCode();
             }
             if (event.target === '%ID_COPYOPEN') {
-              showSheetsMessage('main');
+              showSheetsMessage('bottom');
             }
           },
         },
@@ -540,6 +559,8 @@ $(() => {
     records: [],
   };
   w2ui.layout.content('right', $().w2grid(grid1));
+  w2ui.layout.hide('bottom', true);
+  w2ui.layout.hide('right', true);
   const uData = getUserData();
   if (uData) {
     reinject();
@@ -555,7 +576,7 @@ $(() => {
       nn = 0;
       if (el.length > 80) {
         const name = window.localStorage.getItem(`name_${i}`);
-        w2ui.layout_top_tabs.insert('new', { id: `workspace_${i}`, text: name || `Project ${i}`, closable: true });
+        w2ui.layout_main_tabs.insert('new', { id: `workspace_${i}`, text: name || `Project ${i}`, closable: true });
       } else {
         window.localStorage.removeItem(ws);
       }
@@ -577,31 +598,37 @@ function removeHelp() {
       }, 2000);
       reinject();
     }
-    w2ui.layout.el('main').style['white-space'] = 'pre';
+    w2ui.layout.el('bottom').style['white-space'] = 'pre';
     helpTriggered = false;
     restoreToolbar();
     updateCode();
-    w2ui.layout.show('right');
-    w2ui.layout.show('top');
+    w2ui.layout.sizeTo('main', '70%', true);
+    w2ui.layout.sizeTo('bottom', '30%', true);
+    w2ui.layout.hide('right', true);
+    w2ui.layout.hide('bottom', true);
+    w2ui.layout.show('main');
   }
 }
 function scriptInfo() {
   if (!helpTriggered) {
     triggerHelpMode(true);
-    w2ui.layout.hide('right');
-    w2ui.layout.hide('top');
-    w2ui.layout.el('main').style['white-space'] = 'nowrap';
-    w2ui.layout.load('main', 'slides/slideshow.html');
+    w2ui.layout.hide('right', true);
+    w2ui.layout.hide('main', true);
+    w2ui.layout.show('bottom', true);
+    w2ui.layout.sizeTo('main', '0%', true);
+    w2ui.layout.sizeTo('bottom', '100%', true);
+    w2ui.layout.el('bottom').style['white-space'] = 'nowrap';
+    w2ui.layout.load('bottom', 'slides/slideshow.html');
   }
 }
 
 export function forceSlideshow() {
-  w2ui.layout.load('main', 'slides/slideshow.html');
+  w2ui.layout.load('bottom', 'slides/slideshow.html');
 }
 
 document.addEventListener('language', () => {
+  if (w2ui.layout_bottom_toolbar) translateToolbar(w2ui.layout_bottom_toolbar);
   if (w2ui.layout_main_toolbar) translateToolbar(w2ui.layout_main_toolbar);
-  if (w2ui.layout_top_toolbar) translateToolbar(w2ui.layout_top_toolbar);
   if (helpShown()) {
     forceSlideshow();
   }

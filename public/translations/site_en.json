@@ -41,5 +41,11 @@
     "POSSB1": "1) Download the project from the tab and close it forever.",
     "POSSB2": "2) Just close it, but it will it will appear again when you will refresh the page or visit us again.",
     "POSSB3": "3) Close and delete forever.",
-    "POSSB4": "4) Keep the tab."
+    "POSSB4": "4) Keep the tab.",
+    "DEVICES": "Devices",
+    "DEVICES_HINT": "Show/Hide the list of devices.",
+    "JS": "JavaScript",
+    "JS_HINT": "Show/Hide the generated JavaScript code.",
+    "ACTIVES": "Active triggers",
+    "ACTIVES_HINT": "Show the list of active triggers. Don't run much triggers! Whenever possible it is better to edit old tasks than add new ones."
 }

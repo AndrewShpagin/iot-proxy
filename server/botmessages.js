@@ -175,7 +175,8 @@ class BotMessages {
           '/devices - get list of devices\n' +
           '/on deviceid - turn on the device\n' +
           '/off deviceid - turn off the device\n' +
-          '/full - complete info about devices as json\n',
+          '/full - show complete raw info about the device, syntax: /full device_id' +
+          '/name - give short name to the device. for example /name 1000269525 fito, later you may use it to shorten commands, like /on fito, /off fito, /full fito'
         );
       } else if (message === '/chatid' || !this.userinfo[user].asked) {
         answer.push('Hello! Please copy this number and use as chat-id in the iot-proxy.com:');

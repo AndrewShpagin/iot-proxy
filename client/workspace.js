@@ -139,19 +139,19 @@ let workspace = null;
 let consoleText = '';
 function logCallback(msg) {
   consoleText += `${msg}\n`;
-  w2ui.layout.el('main').textContent = consoleText;
-  hljs.highlightBlock(w2ui.layout.el('main'));
-  w2ui.layout.el('main').scrollTop += 50;
+  w2ui.layout.el('bottom').textContent = consoleText;
+  hljs.highlightBlock(w2ui.layout.el('bottom'));
+  w2ui.layout.el('bottom').scrollTop += 50;
 }
 function appendTable(box) {
-  const page = `${w2ui.layout.el('main').innerHTML}<div id="MyTableAppended" style="height: 400px"></div>`;
-  w2ui.layout.content('main', page);
+  const page = `${w2ui.layout.el('bottom').innerHTML}<div id="MyTableAppended" style="height: 400px"></div>`;
+  w2ui.layout.content('bottom', page);
   const theGrid = w2ui.Result;
   if (theGrid)theGrid.destroy();
   const res = box.createTable();
   $('#MyTableAppended').w2grid(res);
   document.getElementById('grid_Result_records').scrollTop = 10000;
-  w2ui.layout.el('main').scrollTop = 10000;
+  w2ui.layout.el('bottom').scrollTop = 10000;
 }
 export function localRunScript() {
   const user = getUserData();
@@ -160,13 +160,13 @@ export function localRunScript() {
   const region = extract(user, '/region=');
   if (workspace && email.length && password.length && region.length) {
     triggerHelpMode(true);
-    w2ui.layout.hide('top');
+    w2ui.layout.hide('main');
     curSandBox = new SandBox(email, password, region, currentProjectName(), 60000, false);
     setPreffix('myObject.');
     startCodeGeneration();
     const code = endCodeGeneration(Blockly.JavaScript.workspaceToCode(workspace));
     setPreffix('');
-    w2ui.layout.el('main').textContent = '';
+    w2ui.layout.el('bottom').textContent = '';
     consoleText = '';
     setTimeout(() => curSandBox.run(code, logCallback, box => appendTable(box)), 500);
   }
@@ -190,7 +190,7 @@ export function updateCodeCompletely() {
   wholecode = wholecode.replace('userpassword', password);
   wholecode = wholecode.replace('userregion', region);
 
-  w2ui.layout.el('main').textContent = wholecode;
+  w2ui.layout.el('bottom').textContent = wholecode;
 }
 export function updateCode() {
   if (workspace) {
@@ -198,9 +198,9 @@ export function updateCode() {
     const code = endCodeGeneration(Blockly.JavaScript.workspaceToCode(workspace));
     if (!helpShown()) {
       const wholecode = getWholeCode(code);
-      w2ui.layout.el('main').textContent = wholecode;
-      hljs.highlightBlock(w2ui.layout.el('main'));
-      w2ui.layout.el('main').innerHTML = `<span class="notranslate">${w2ui.layout.el('main').innerHTML}`;
+      w2ui.layout.el('bottom').textContent = wholecode;
+      hljs.highlightBlock(w2ui.layout.el('bottom'));
+      w2ui.layout.el('bottom').innerHTML = `<span class="notranslate">${w2ui.layout.el('bottom').innerHTML}`;
     }
   }
 }
@@ -340,10 +340,10 @@ function explainChatID(message, url) {
 }
 
 export function reinject() {
-  const blocklyDiv = w2ui.layout.el('top');
+  const blocklyDiv = w2ui.layout.el('main');
   blocklyDiv.innerHTML = '';
   blocklyDiv.style.padding = '0px';
-  if (!helpShown())w2ui.layout.el('main').style['white-space'] = 'pre';
+  if (!helpShown())w2ui.layout.el('bottom').style['white-space'] = 'pre';
   w2ui.layout.el('right').style['white-space'] = 'pre';
 
   localStorage.setItem(`dev_${getUserEmail()}`, JSON.stringify(devices));
