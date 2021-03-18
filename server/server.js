@@ -21,6 +21,8 @@ const BotEvents = require('viber-bot').Events;
 const TextMessage = require('viber-bot').Message.Text;
 const { bom, BotMessages } = require('./botmessages');
 
+console.error('Errors logging started.');
+
 const viber_token = '4d09bcc23327d145-cd3e1bef9657fe6a-6279f875aff1bee1';
 
 function sendToViber(chatid, text) {

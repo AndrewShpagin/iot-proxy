@@ -104,7 +104,18 @@ class BotMessages {
       if (message === 'story') {
         answer.push(JSON.stringify(msg));
       } else
-      if (message === 'logs') {
+      if (message === 'errors' && user === '505585494') {
+        try {
+          const text = await fs.promises.readFile('/root/.pm2/logs/iot-error.log');
+          const idx = text.lastIndexOf('Errors logging started.');
+          if (idx > 0) {
+            answer.push(text.slice(idx));
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      } else
+      if (message === 'logs' && user === '505585494') {
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-out.log');
           const idx = text.lastIndexOf('node server/server.js');
