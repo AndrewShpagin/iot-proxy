@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const path = require('path');
 const fs = require('fs');
 const { proxyRequest } = require('./serverless');
@@ -49,6 +50,10 @@ class BotMessages {
     });
   }
 
+  extractDevice(str) {
+    return str.trim();
+  }
+
   async addMsg(user, message) {
     const answer = [];
     try {
@@ -79,7 +84,7 @@ class BotMessages {
           return false;
         }
       };
-      if (message.substring(0, 5) === 'login') {
+      if (message.substring(0, 6) === '/login') {
         const arr = message.split(' ');
         if (arr.length === 4) {
           [uinf.email, uinf.password, uinf.region] = arr.slice(1);
@@ -90,22 +95,42 @@ class BotMessages {
           answer.push('Type to login to eWeLink:\nlogin your_email your_password your_region');
         }
       } else
-      if (message === 'devices') {
+      if (message.substring(0, 3) === '/on') {
         if (check()) {
-          const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/devices/info/`);
+          const dev = this.extractDevice(message.substring(3));
+          const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/device=${dev}/on`);
           answer.push(res);
         }
       } else
-      if (message === 'user') {
+      if (message.substring(0, 4) === '/off') {
+        if (check()) {
+          const dev = this.extractDevice(message.substring(3));
+          const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/device=${dev}/off`);
+          answer.push(res);
+        }
+      } else
+      if (message === '/full') {
+        if (check()) {
+          const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/raw`);
+          answer.push(res);
+        }
+      } else
+      if (message === '/devices') {
+        if (check()) {
+          const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/devices`);
+          answer.push(res);
+        }
+      } else
+      if (message === '/user') {
         answer.push(JSON.stringify(this.userinfo[user]));
       } else
-      if (message === 'read') {
+      if (message === '/read') {
         answer.push(this.getAll(user));
       } else
-      if (message === 'story') {
+      if (message === '/story') {
         answer.push(JSON.stringify(msg));
       } else
-      if (message === 'errors' && user === 505585494) {
+      if (message === '/errors' && user === 505585494) {
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-error.log');
           const idx = text.lastIndexOf('Errors logging started.');
@@ -116,7 +141,7 @@ class BotMessages {
           console.log(err);
         }
       } else
-      if (message === 'logs' && user === 505585494) {
+      if (message === '/logs' && user === 505585494) {
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-out.log');
           const idx = text.lastIndexOf('node server/server.js');
@@ -127,17 +152,17 @@ class BotMessages {
           console.log(err);
         }
       } else
-      if (message === 'help') {
+      if (message === '/help') {
         answer.push(
           'Use commands:\n' +
-          'chatid - display chat-id.\n' +
-          'login email password region - set login data, this is required before any other commands.\n' +
-          'devices - get list of devices\n' +
-          'on deviceid - turn on the device\n' +
-          'off deviceid - turn off the device\n' +
-          'full - complete info about devices as json\n',
+          '/chatid - display chat-id.\n' +
+          '/login email password region - set login data, this is required before any other commands.\n' +
+          '/devices - get list of devices\n' +
+          '/on deviceid - turn on the device\n' +
+          '/off deviceid - turn off the device\n' +
+          '/full - complete info about devices as json\n',
         );
-      } else if (message === 'chatid' || !this.userinfo[user].asked) {
+      } else if (message === '/chatid' || !this.userinfo[user].asked) {
         answer.push('Hello! Please copy this number and use as chat-id in the iot-proxy.com:');
         answer.push(`${user}`);
         this.userinfo[user].asked = true;
