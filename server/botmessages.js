@@ -100,7 +100,7 @@ class BotMessages {
         if (check()) {
           const dev = this.extractDevice(message.substring(3));
           const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/device=${dev}/on`);
-          answer.push(res.toString());
+          answer.push(`result: ${res.toString()}`);
         }
       } else
       if (message.substring(0, 4) === '/off') {
@@ -108,10 +108,10 @@ class BotMessages {
           const dev = this.extractDevice(message.substring(3));
           console.log('off', dev);
           const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/device=${dev}/off`);
-          answer.push(res.toString());
+          answer.push(`result: ${res.toString()}`);
         }
       } else
-      if (message === '/full') {
+      if (message.substring(0, 5) === '/full') {
         if (check()) {
           const dev = this.extractDevice(message.substring(3));
           const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/device=${dev}/raw`);
@@ -131,7 +131,7 @@ class BotMessages {
             }
             answer.push(answ);
           } catch (error) {
-              console.log(error);
+            console.log(error);
             answer.push('Unable to get list of devices');
           }
         }
