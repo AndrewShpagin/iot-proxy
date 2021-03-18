@@ -120,6 +120,7 @@ class BotMessages {
         if (check()) {
           const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/devices`);
           let answ = '';
+          console.log(Object.entries(res));
           for (const [key, value] of Object.entries(res)) {
               console.log(key, value);
             const nm = `${value.name }                         `;
