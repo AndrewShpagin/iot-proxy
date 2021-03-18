@@ -425,6 +425,8 @@ function restoreToolbar() {
 function copyCode() {
   if (helpTriggered)removeHelp();
   else {
+    w2ui.layout.show('bottom', true);
+    jsShown = true;
     const r = document.createRange();
     updateCodeCompletely();
     r.selectNode(w2ui.layout.el('bottom'));
@@ -438,16 +440,21 @@ function copyCode() {
 function ticon(color, icon, message) {
   return `<i style="color: ${color}; transform: scale(1.3);" class="fa fa-${icon}" aria-hidden="true"></i>  ${textByID(message)}`;
 }
+function hideJs(){
+  w2ui.layout.hide('bottom');
+  jsShown = false;
+}
 function showSheetsMessage(panel) {
   const text = textByID('PLDONATE').replace('<a>', '<a href="https://www.patreon.com/AndrewShpagin" target="_blank">');
   w2ui.layout.message(panel, {
     body: `<div style="text-align: center">${text}</div>`,
-    width: 400,
+    width: 650,
     height: 70,
     buttons:
-      `<button class="w2ui-btn" onclick="w2ui.layout.message('${panel}'); scriptInfo();">${ticon('#000000', 'info', 'INSTRUCTIONS')}</button>` +
-      `<button class="w2ui-btn" onclick="w2ui.layout.message('${panel}'); window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');">${ticon('#4CAF50', 'table', 'OPENGSHEETS')}</button>` +
-      `<button class="w2ui-btn" onclick="w2ui.layout.message('${panel}')">${textByID('CANCEL')}</button>`,
+      `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}'); scriptInfo();">${ticon('#000000', 'info', 'INSTRUCTIONS')}</button>` +
+      `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}');">${ticon('#4CAF50', 'copy', 'COPYGS')}</button>` +
+      `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}'); window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');">${ticon('#4CAF50', 'table', 'OPENGSHEETS')}</button>` +
+      `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}')">${textByID('CANCEL')}</button>`,
   });
 }
 
@@ -641,3 +648,5 @@ window.scriptInfo = scriptInfo;
 window.removeHelp = removeHelp;
 window.logoutPopup = logoutPopup;
 window.delTabForever = delTabForever;
+window.copyCode = copyCode;
+window.hideJs = hideJs;
