@@ -474,9 +474,9 @@ $(() => {
         content: '',
         toolbar: {
           items: [
+            { type: 'button', id: '%ID_DEVICES', caption: ticon('#000000', 'microchip', 'DEVICES'), hint: textByID('DEVICES_HINT') },
             { type: 'button', id: '%ID_SAVESCENE', caption: ticon('#000000', 'download', 'SAVESCENE'), hint: textByID('SAVESCENE_HINT') },
             { type: 'button', id: '%ID_OPENSCENE', caption: ticon('#000000', 'upload', 'OPENSCENE'), hint: textByID('OPENSCENE_HINT') },
-            { type: 'button', id: '%ID_DEVICES', caption: ticon('#000000', 'microchip', 'DEVICES'), hint: textByID('DEVICES_HINT') },
             // { type: 'button', id: '%ID_RUNSCRIPT', caption: ticon('#4CAF50', 'play', 'RUNSCRIPT'), hint: textByID('RUNSCRIPT_HINT') },
             // { type: 'button', id: '%ID_SHEDULE', caption: ticon('#000000', 'tasks', 'SHEDULE'), hint: textByID('SHEDULE_HINT') },
             { type: 'button', id: '%ID_GSHEETS', caption: ticon('#4CAF50', 'table', 'GSHEETS'), hint: textByID('GSHEETS_HINT') },
