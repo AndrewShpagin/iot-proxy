@@ -106,7 +106,7 @@ class BotMessages {
       } else
       if (message === 'logs') {
         try {
-          const text = await fs.readFile('/root/.pm2/logs/iot-out.log');
+          const text = await fs.promises.readFile('/root/.pm2/logs/iot-out.log');
           answer.push(text.slice(-1000));
         } catch (err) {
           console.log(err);
