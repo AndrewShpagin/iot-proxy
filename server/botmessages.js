@@ -114,7 +114,7 @@ class BotMessages {
       if (message.substring(0, 5) === '/full') {
         if (check()) {
           const dev = this.extractDevice(message.substring(3));
-          const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/device=${dev}/raw`);
+          const res = await proxyRequest(`/email=${uinf.email}/password=${uinf.password}/region=${uinf.region}/device=${dev}/info`);
           answer.push(res);
         }
       } else
