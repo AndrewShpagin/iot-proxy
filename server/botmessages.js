@@ -104,7 +104,7 @@ class BotMessages {
       if (message === 'story') {
         answer.push(JSON.stringify(msg));
       } else
-      if (message === 'errors' && user === '505585494') {
+      if (message === 'errors') {
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-error.log');
           const idx = text.lastIndexOf('Errors logging started.');
@@ -115,7 +115,7 @@ class BotMessages {
           console.log(err);
         }
       } else
-      if (message === 'logs' && user === '505585494') {
+      if (message === 'logs') {
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-out.log');
           const idx = text.lastIndexOf('node server/server.js');
