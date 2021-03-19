@@ -206,30 +206,32 @@ class BotMessages {
   }
 
   splitLines(array) {
+    const maxlen = 2048;
+    if (array.length === 1 && array[0].length <= maxlen) return;
     const out = [];
-    const maxlen = 64;
     let changes = false;
     for (const v of array) {
-      if (v.length > 2048) {
-        console.log('v.length', v.length);
+      if (v.length > maxlen) {
         const temp = [];
         let src = v;
         let dst = '';
         do {
-          const p = src.lastIndexOf('\r');
+          const p = src.lastIndexOf('\n');
           if (p >= 0) {
             dst = src.substring(p) + dst;
             src = src.substring(0, p);
-          } else break;
-          if (dst.length >= maxlen) {
-            temp.unshift(dst);
-            dst = '';
-          }
-          if (src.length <= maxlen) {
-            if (dst.length)temp.unshift(dst);
-            temp.unshift(src);
+            if (dst.length >= maxlen) {
+              temp.unshift(dst);
+              dst = '';
+            }
+            if (src.length <= maxlen) {
+              if (dst.length)temp.unshift(dst);
+              if (src.length)temp.unshift(src);
+              src = '';
+            }
+          } else {
+            if (src.length)temp.unshift(src);
             src = '';
-            break;
           }
         } while (src.length);
         out.push(...temp);
@@ -247,7 +249,7 @@ class BotMessages {
   bulkSend(array, fn) {
     if (array.length) {
       this.splitLines(array);
-      fn(array[0]);
+      if (array[0].length)fn(array[0]);
       setTimeout(() => {
         this.bulkSend(array.slice(1), fn);
       }, 500);
