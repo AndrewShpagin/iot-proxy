@@ -124,19 +124,19 @@
       console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
       console.log('Scopes:', googleUser.getGrantedScopes());
       console.log('Auth response:', googleUser.getAuthResponse(true));
-    }
-    var startApp = function() {
-    gapi.load('auth2', function(){
-      // Retrieve the singleton for the GoogleAuth library and set up the client.
-      auth2 = gapi.auth2.init({
-        client_id: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
-        cookiepolicy: 'single_host_origin',
-        // Request scopes in addition to 'profile' and 'email'
-        scope: 'https://www.googleapis.com/auth/spreadsheets'
+
+      const option = new gapi.auth2.SigninOptionsBuilder();
+      option.setScope('email https://www.googleapis.com/auth/drive');
+
+      googleUser.grant(options).then(
+      function(success){
+        console.log(JSON.stringify({message: "success", value: success}));
+      },
+      function(fail){
+        alert(JSON.stringify({message: "fail", value: fail}));
       });
-    });
-    startApp();
-  };
+    };
+    
   </script>
   
   <!--div class="g-signin2" data-onsuccess="onSignIn"></div-->
