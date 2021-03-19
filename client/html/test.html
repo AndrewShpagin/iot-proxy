@@ -135,7 +135,7 @@
           console.log(element.id);
           auth2.attachClickHandler(element, {},
               function(googleUser) {
-                document.getElementById('name').innerText = "Signed in: " +
+                document.getElementById('my-signin2').innerText = "Signed in: " +
                     googleUser.getBasicProfile().getName();
               }, function(error) {
                 alert(JSON.stringify(error, undefined, 2));
@@ -176,7 +176,6 @@
     <a tid="SETLANG" onclick="setLang()"><i class="fas fa-globe"></i> RU</a>
     <a tid="T" href="https://script.googleapis.com/v1/processes"><i class="fas fa-globe"></i> TEST</a>
     <div id="my-signin2"></div>
-    <div id="name"></div>
   <script>
     function onSuccess(googleUser) {
       console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
