@@ -125,7 +125,20 @@
       console.log('Scopes:', googleUser.getGrantedScopes());
       console.log('Auth response:', googleUser.getAuthResponse(true));
     }
+    var startApp = function() {
+    gapi.load('auth2', function(){
+      // Retrieve the singleton for the GoogleAuth library and set up the client.
+      auth2 = gapi.auth2.init({
+        client_id: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
+        cookiepolicy: 'single_host_origin',
+        // Request scopes in addition to 'profile' and 'email'
+        scope: 'https://www.googleapis.com/auth/spreadsheets'
+      });
+    });
+    startApp();
+  };
   </script>
+  
   <!--div class="g-signin2" data-onsuccess="onSignIn"></div-->
   <div id="mainmenu" class="topnav">
     <a tid="HEADER" class="active" href="#home">Manage eWeLink devices via Blockly and GoogleSheets</a>
