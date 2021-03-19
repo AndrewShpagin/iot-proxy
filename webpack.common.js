@@ -49,6 +49,10 @@ module.exports = {
       template: 'client/html/frame.html',
     }),
     new HtmlWebpackPlugin({
+      filename: 'test.html',
+      template: 'client/html/test.html',
+    }),
+    new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'client/html/index.html',
     }),
