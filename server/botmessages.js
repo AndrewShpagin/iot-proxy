@@ -176,7 +176,7 @@ class BotMessages {
           '/on deviceid - turn on the device\n' +
           '/off deviceid - turn off the device\n' +
           '/full - show complete raw info about the device, syntax: /full device_id' +
-          '/name - give short name to the device. for example /name 1000269525 fito, later you may use it to shorten commands, like /on fito, /off fito, /full fito'
+          '/name - give short name to the device. for example /name 1000269525 fito, later you may use it to shorten commands, like /on fito, /off fito, /full fito',
         );
       } else if (message === '/chatid' || !this.userinfo[user].asked) {
         answer.push('Hello! Please copy this number and use as chat-id in the iot-proxy.com:');
@@ -205,8 +205,46 @@ class BotMessages {
     return '[]';
   }
 
+  splitLines(array) {
+    const out = [];
+    const maxlen = 64;
+    let changes = false;
+    for (const v of array) {
+      if (v.length > 2048) {
+        const temp = [];
+        let src = v;
+        let dst = '';
+        do {
+          const p = src.lastIndexOf('\n');
+          if (p >= 0) {
+            dst = src.substring(p) + dst;
+            src = src.substring(0, p);
+          } else break;
+          if (dst.length >= maxlen) {
+            temp.unshift(dst);
+            dst = '';
+          }
+          if (src.length <= maxlen) {
+            temp.unshift(src);
+            src = '';
+            break;
+          }
+        } while (src.length);
+        out.push(...temp);
+        changes = true;
+      } else {
+        out.push(v);
+      }
+    }
+    if (changes) {
+      array.splice(0);
+      array.push(...out);
+    }
+  }
+
   bulkSend(array, fn) {
     if (array.length) {
+      this.splitLines(array);
       fn(array[0]);
       setTimeout(() => {
         this.bulkSend(array.slice(1), fn);
