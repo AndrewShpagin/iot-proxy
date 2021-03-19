@@ -211,11 +211,12 @@ class BotMessages {
     let changes = false;
     for (const v of array) {
       if (v.length > 2048) {
+        console.log('v.length', v.length);
         const temp = [];
         let src = v;
         let dst = '';
         do {
-          const p = src.lastIndexOf('\n');
+          const p = src.lastIndexOf('\r');
           if (p >= 0) {
             dst = src.substring(p) + dst;
             src = src.substring(0, p);
@@ -225,6 +226,7 @@ class BotMessages {
             dst = '';
           }
           if (src.length <= maxlen) {
+            if (dst.length)temp.unshift(dst);
             temp.unshift(src);
             src = '';
             break;
