@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script>
+    'use strict';
+  </script>
+
+  <meta charset="utf-8">
+  <title>iot-proxy: Devices smart management</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+      overflow: hidden;
+      background: #4CAF50;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+    }
+
+    .topnav a {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .topnav a.active {
+      height: 100%;
+      background-color: #4CAF50;
+      text-shadow: 0px 1px 0px #2f6627;
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function fsend(message){
+      document.getElementById('mainFrame').contentWindow.postMessage(message, '*');
+    }
+  </script>
+  <div id="mainmenu" class="topnav">
+    <a tid="HEADER" class="active" href="#home">Manage eWeLink devices via Blockly and GoogleSheets</a>
+    <a tid = "HOWITWORKS" onclick="fsend('scriptInfo')"><i class="fa fa-info"></i> How it works?</a>
+    <a tid = "SAVEPROJECT" onclick="fsend('downloadScript')"><i class="fa fa-download"></i> Save project</a>
+    <a tid = "OPENPROJECT" onclick="fsend('uploadScript')")><i class="fa fa-upload"></i> Open</a>
+    <a tid = "DEVLOGIN" onclick="fsend('openLoginPopup')"><i class="fa fa-user"></i> Login</a>
+    <a tid = "SETLANG" onclick="fsend('setLang')"><i class="fas fa-globe"></i> RU</a>
+  </div>
+  <iframe id="mainFrame" style="border: 0;width: 100%; height: 94%;" src="https://46.101.222.66/frame.html"></iframe>
+</body>
+
+</html>
