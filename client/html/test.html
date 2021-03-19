@@ -19,6 +19,7 @@
   <script src="blocks_compressed.js"></script>
   <script src="messages.js"></script>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="https://apis.google.com/js/api:client.js"></script>
   <meta name="google-signin-client_id" content="438813897634-3eublfrh0d6a9vfpbj1pml0o1fciud1t.apps.googleusercontent.com">
 
   <script>
@@ -115,6 +116,32 @@
 </head>
 
 <body>
+    <script>
+        var googleUser = {};
+        var startApp = function() {
+          gapi.load('auth2', function(){
+            // Retrieve the singleton for the GoogleAuth library and set up the client.
+            auth2 = gapi.auth2.init({
+              client_id: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
+              cookiepolicy: 'single_host_origin',
+              // Request scopes in addition to 'profile' and 'email'
+              //scope: 'additional_scope'
+            });
+            attachSignin(document.getElementById('customBtn'));
+          });
+        };
+      
+        function attachSignin(element) {
+          console.log(element.id);
+          auth2.attachClickHandler(element, {},
+              function(googleUser) {
+                document.getElementById('name').innerText = "Signed in: " +
+                    googleUser.getBasicProfile().getName();
+              }, function(error) {
+                alert(JSON.stringify(error, undefined, 2));
+              });
+        }
+        </script>
   <script>
     function onSignIn(googleUser) {
       var profile = googleUser.getBasicProfile();
@@ -170,6 +197,7 @@
   </script>
 
   <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+  <script>startApp();</script>
     
   </div>
   <div id="layout" style="width: 100%; height: 95%;"></div>
