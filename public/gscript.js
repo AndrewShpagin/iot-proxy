@@ -178,7 +178,7 @@ function ewGetDeviceState(device, field) {
   if (res) {
     if (field in res) result = res[field];
     if ('params' in res && field in res.params) result = res.params[field];
-    console.log(`Got device ${device} (${device.name}), field ${field}, got state: ${result}`);
+    console.log(`Got device ${device} (${res.name}), field ${field}, got state: ${result}`);
   }
   return result;
 }
@@ -661,7 +661,7 @@ function forAllRecentUnreadMails(from, subject, body, todo) {
 
 function getProperty(key) {
   const value = scriptProperties.getProperty(key);
-  if (verbose && !key.includes('auth_'))console.log(`getProperty(${key}) => ${value}`);
+  // if (verbose && !key.includes('auth_'))console.log(`getProperty(${key}) => ${value}`);
   return value;
 }
 
@@ -673,7 +673,7 @@ function getProperty(key) {
  */
 
 function setProperty(key, value) {
-  if (verbose && !key.includes('auth_'))console.log(`setProperty(${key}) => ${value}`);
+  // if (verbose && !key.includes('auth_'))console.log(`setProperty(${key}) => ${value}`);
   return scriptProperties.setProperty(key, value);
 }
 
