@@ -18,7 +18,7 @@ let email = 'useremail';
 let password = 'userpassword';
 let region = 'userregion';
 let devices = null;
-let verbose = true;
+let verbose = false;
 let verboseLogin = false;
 const devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
@@ -27,6 +27,7 @@ const scriptProperties = PropertiesService.getScriptProperties();
 const prevRunTime = getProperty('prevTime');
 const passedSinceLastRun = prevRunTime ? (new Date() - new Date(prevRunTime)) / 1000.0 : 0.0;
 setProperty('prevTime', new Date());
+verbose = true;
 
 /**
  * Provide email, password and region to control the eWeLink devices through the script.
@@ -659,7 +660,7 @@ function forAllRecentUnreadMails(from, subject, body, todo) {
 
 function getProperty(key) {
   const value = scriptProperties.getProperty(key);
-  if (verbose)console.log(`getProperty(${key}) => ${value}`);
+  if (verbose && !key.includes('auth_'))console.log(`getProperty(${key}) => ${value}`);
   return value;
 }
 
