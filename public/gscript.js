@@ -18,6 +18,7 @@ let email = 'useremail';
 let password = 'userpassword';
 let region = 'userregion';
 let devices = null;
+let verbose = true;
 const devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
 let lastUnusedRow = mySheet.getLastRow() + 1;
@@ -281,6 +282,7 @@ function storeDeviceState(id, field) {
 function stateChanged(id, field) {
   const pstate = getProperty(`device_${id}_${field}`);
   const state = deviceGet(id, field).toString();
+  console.log(``)
   return pstate !== state;
 }
 
@@ -510,7 +512,9 @@ function findUnusedRowInColumn(column) {
   let rng = mySheet.getRange(mySheet.getLastRow(), column);
   if (rng.isBlank()) rng = rng.getNextDataCell(SpreadsheetApp.Direction.UP);
   const row = rng.getLastRow();
-  return getCell(row, column) === '' ? row : row + 1;
+  const result = getCell(row, column) === '' ? row : row + 1;
+  if (verbose) console.log(`findUnusedRowInColumn(${column}) => ${result}`);
+  return result;
 }
 
 /**
@@ -518,6 +522,7 @@ function findUnusedRowInColumn(column) {
  * @param {number} row - the row to insert empty line
  */
 function insertEmptyRow(row) {
+  if (verbose) console.log(`insertEmptyRow(${row})`);
   mySheet.insertRowBefore(row);
 }
 
@@ -525,8 +530,9 @@ function insertEmptyRow(row) {
  *
  * @param {number} column - the column to insert empty one
  */
-function insertEmptyColumn(row) {
-  mySheet.insertColumnBefore(row);
+function insertEmptyColumn(column) {
+  if (verbose) console.log(`insertEmptyColumn(${column})`);
+  mySheet.insertColumnBefore(column);
 }
 
 /// Date and time
@@ -582,6 +588,7 @@ function thisWeekDay() {
 function sendTelegramMessage(chatid, msg) {
   let chat = chatid;
   if (chat && chat.length) {
+    if (verbose)console.log(`sendTelegramMessage(${chadid}, ${msg})`);
     UrlFetchApp.fetch(`https://iot-proxy.com/telegrambot/${chatid}/${encodeURIComponent(msg)}`, { method: 'get' });
   }
 }
@@ -596,6 +603,7 @@ function sendTelegramMessage(chatid, msg) {
 function sendViberMessage(chatid, msg) {
   let chat = chatid;
   if (chat && chat.length) {
+    if (verbose)console.log(`sendViberMessage(${chadid}, ${msg})`);
     UrlFetchApp.fetch(`https://iot-proxy.com/viberbot/${chatid}/${encodeURIComponent(msg)}`, { method: 'get' });
   }
 }
@@ -649,7 +657,9 @@ function forAllRecentUnreadMails(from, subject, body, todo) {
  */
 
 function getProperty(key) {
-  return scriptProperties.getProperty(key);
+  const value = scriptProperties.getProperty(key);
+  if (verbose)console.log(`getProperty(${key}) => ${value}`);
+  return value;
 }
 
 /**
@@ -660,6 +670,7 @@ function getProperty(key) {
  */
 
 function setProperty(key, value) {
+  if (verbose)console.log(`setProperty(${key}) => ${value}`);
   return scriptProperties.setProperty(key, value);
 }
 
