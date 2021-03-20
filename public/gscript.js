@@ -19,6 +19,7 @@ let password = 'userpassword';
 let region = 'userregion';
 let devices = null;
 let verbose = true;
+let verboseLogin = false;
 const devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
 let lastUnusedRow = mySheet.getLastRow() + 1;
@@ -65,15 +66,15 @@ function tryfn(fn) {
 function tryEw(fn) {
   let obj = tryfn(fn);
   if (!obj) {
-    console.log('Pass1. Failed with token', token);
+    if (verboseLogin)console.log('Pass1. Failed with token', token);
     token = getGlobalProperty(`auth_${email}`);
-    console.log('trying with token', token);
+    if (verboseLogin)console.log('trying with token', token);
     obj = tryfn(fn);
     if (!obj) {
-      console.log('Pass2. Failed with token', token);
+      if (verboseLogin)console.log('Pass2. Failed with token', token);
       token = null;
       if (ewLogin()) {
-        console.log('Pass3. Logged, got token', token);
+        if (verboseLogin)console.log('Pass3. Logged, got token', token);
         return tryfn(fn);
       }
     } else {
@@ -588,7 +589,7 @@ function thisWeekDay() {
 function sendTelegramMessage(chatid, msg) {
   let chat = chatid;
   if (chat && chat.length) {
-    if (verbose)console.log(`sendTelegramMessage(${chadid}, ${msg})`);
+    if (verbose)console.log(`sendTelegramMessage(${chatid}, ${msg})`);
     UrlFetchApp.fetch(`https://iot-proxy.com/telegrambot/${chatid}/${encodeURIComponent(msg)}`, { method: 'get' });
   }
 }
@@ -603,7 +604,7 @@ function sendTelegramMessage(chatid, msg) {
 function sendViberMessage(chatid, msg) {
   let chat = chatid;
   if (chat && chat.length) {
-    if (verbose)console.log(`sendViberMessage(${chadid}, ${msg})`);
+    if (verbose)console.log(`sendViberMessage(${chatid}, ${msg})`);
     UrlFetchApp.fetch(`https://iot-proxy.com/viberbot/${chatid}/${encodeURIComponent(msg)}`, { method: 'get' });
   }
 }
@@ -670,7 +671,7 @@ function getProperty(key) {
  */
 
 function setProperty(key, value) {
-  if (verbose)console.log(`setProperty(${key}) => ${value}`);
+  if (verbose && !key.includes('auth_'))console.log(`setProperty(${key}) => ${value}`);
   return scriptProperties.setProperty(key, value);
 }
 
