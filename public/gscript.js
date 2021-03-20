@@ -282,7 +282,7 @@ function storeDeviceState(id, field) {
 function stateChanged(id, field) {
   const pstate = getProperty(`device_${id}_${field}`);
   const state = deviceGet(id, field).toString();
-  console.log(``)
+  if (verbose)console.log(`stateChanged(${id}, ${field}) : ${pstate} => ${state} : ${pstate !== state ? 'CHANGED!' : 'no changes'}`);
   return pstate !== state;
 }
 
