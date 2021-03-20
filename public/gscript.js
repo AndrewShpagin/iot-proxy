@@ -511,7 +511,8 @@ function deviationInCells(r0, c0, r1, c1) {
  * @param {number} column - the column to find the empty cell.
  */
 function findUnusedRowInColumn(column) {
-  let rng = mySheet.getRange(mySheet.getLastRow(), column);
+  let lrow = mySheet.getLastRow();
+  let rng = mySheet.getRange(lrow > 0 ? lrow : 1, column);
   if (rng.isBlank()) rng = rng.getNextDataCell(SpreadsheetApp.Direction.UP);
   const row = rng.getLastRow();
   const result = getCell(row, column) === '' ? row : row + 1;
