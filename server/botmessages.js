@@ -213,7 +213,7 @@ class BotMessages {
     for (const v of array) {
       if (v.length > maxlen) {
         const temp = [];
-        let src = v;
+        let src = v.toString();
         let dst = '';
         do {
           const p = src.lastIndexOf('\n');
