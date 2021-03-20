@@ -5,7 +5,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 
-import { reinject, assignProject, getUserData, clearDevices, updateCode, storeUser, updateCodeCompletely, localRunScript, updateDevices } from './workspace';
+import { reinject, assignProject, getUserData, clearDevices, updateCode, storeUser, updateCodeCompletely, localRunScript, updateDevices, setupDevicesGrid } from './workspace';
 import { correctHeader, isMobile } from './index';
 import { textByID, translateToolbar } from './languages';
 
@@ -440,7 +440,7 @@ function copyCode() {
 function ticon(color, icon, message) {
   return `<i style="color: ${color}; transform: scale(1.3);" class="fa fa-${icon}" aria-hidden="true"></i>  ${textByID(message)}`;
 }
-function hideJs(){
+function hideJs() {
   w2ui.layout.hide('bottom');
   jsShown = false;
 }
@@ -507,7 +507,10 @@ $(() => {
             }
             if (event.target === '%ID_DEVICES') {
               if (devShown) w2ui.layout.hide('right');
-              else w2ui.layout.show('right');
+              else {
+                w2ui.layout.show('right');
+                setupDevicesGrid();
+              }
               devShown = !devShown;
             }
           },
@@ -553,19 +556,6 @@ $(() => {
       { type: 'right', size: isMobile.any() ? '75%' : '30%', resizable: true, style: pstyle, name: 'devices', title: 'Devices:' },
     ],
   });
-  const grid1 = {
-    name: 'devGrid',
-    columns: [
-      { field: 'deviceid', caption: 'DeviceID', size: '20%' },
-      { field: 'deviceName', caption: 'Name', size: '40%' },
-      { field: 'temperature', caption: 'Temperature', size: '13%' },
-      { field: 'humidity', caption: 'Humidity', size: '13%' },
-      { field: 'online', caption: 'Online', size: '60px' },
-      { field: 'state', caption: 'Switched ON', size: '60px' },
-    ],
-    records: [],
-  };
-  w2ui.layout.content('right', $().w2grid(grid1));
   w2ui.layout.hide('bottom', true);
   w2ui.layout.hide('right', true);
   const uData = getUserData();

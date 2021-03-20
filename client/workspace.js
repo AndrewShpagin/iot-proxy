@@ -244,20 +244,7 @@ function setupDroplists(devices) {
         });
       }
     });
-    w2ui.devGrid.clear();
     let i = 1;
-    Object.entries(devices).forEach(element => {
-      w2ui.devGrid.add({
-        recid: i,
-        deviceid: element[1].deviceid,
-        deviceName: element[1].name,
-        temperature: element[1].currentTemperature,
-        humidity: element[1].currentHumidity,
-        online: element[1].online ? 'YES' : 'NO',
-        state: element[1].switch === 'on' ? 'YES' : 'NO',
-      });
-      i++;
-    });
   } else {
     customBlocks.forEach(block => {
       if (block.hasOwnProperty('args0')) {
@@ -291,6 +278,37 @@ export function clearDevices() {
     devices = {};
     if (workspace) reinject();
   }
+}
+
+export function setupDevicesGrid() {
+  $().w2destroy('devGrid');
+  const grid1 = {
+    name: 'devGrid',
+    columns: [
+      { field: 'deviceid', caption: 'DeviceID', size: '20%' },
+      { field: 'deviceName', caption: 'Name', size: '40%' },
+      { field: 'temperature', caption: 'Temperature', size: '13%' },
+      { field: 'humidity', caption: 'Humidity', size: '13%' },
+      { field: 'online', caption: 'Online', size: '60px' },
+      { field: 'state', caption: 'Switched ON', size: '60px' },
+    ],
+    records: [],
+  };
+  w2ui.layout.content('right', $().w2grid(grid1));
+  w2ui.devGrid.clear();
+  let i = 1;
+  Object.entries(devices).forEach(element => {
+    w2ui.devGrid.add({
+      recid: i,
+      deviceid: element[1].deviceid,
+      deviceName: element[1].name,
+      temperature: element[1].currentTemperature,
+      humidity: element[1].currentHumidity,
+      online: element[1].online ? 'YES' : 'NO',
+      state: element[1].switch === 'on' ? 'YES' : 'NO',
+    });
+    i++;
+  });
 }
 
 export function updateDevices(successCallback, failCallback) {
