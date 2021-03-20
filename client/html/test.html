@@ -121,11 +121,13 @@
         var startApp = function() {
           gapi.load('auth2', function(){
             // Retrieve the singleton for the GoogleAuth library and set up the client.
+            console.log('pre-auth');
             auth2 = gapi.auth2.init({
               client_id: '438813897634-3eublfrh0d6a9vfpbj1pml0o1fciud1t.apps.googleusercontent.com',
               cookiepolicy: 'single_host_origin',
               scope: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/script.processes'
             });
+            console.log('post-auth');
             attachSignin(document.getElementById('my-signin2'));
           });
         };
