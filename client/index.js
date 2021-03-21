@@ -4,9 +4,9 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
-// import './css/bootstrap-reboot.css';
-// import './css/main.css';
+
 import { getUserData } from './workspace';
+import { GoogleSignIn } from './google';
 
 export const isMobile = {
   Android() {
@@ -29,7 +29,7 @@ export const isMobile = {
   },
 };
 
-function show(el, state) {
+export function show(el, state) {
   document.getElementById(el).style.display = state ? 'inherit' : 'none';
 }
 export function correctHeader() {
