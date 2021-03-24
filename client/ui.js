@@ -5,15 +5,53 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 
+import { Spinner } from 'spin.js';
 import { reinject, assignProject, getUserData, clearDevices, updateCode, storeUser, updateCodeCompletely, localRunScript, updateDevices, setupDevicesGrid } from './workspace';
 import { correctHeader, isMobile } from './index';
 import { textByID, translateToolbar } from './languages';
+import { deployScript, deepRemoveByGuid } from './gsprojects';
 
 let helpTriggered = false;
 
 export function helpShown() {
   return helpTriggered;
 }
+
+window.spinner = null;
+
+export function startSpin() {
+  if (!window.spinner) {
+    window.spinner = new Spinner({
+      lines: 9, // The number of lines to draw
+      length: 8, // The length of each line
+      width: 6, // The line thickness
+      radius: 12, // The radius of the inner circle
+      scale: 1, // Scales overall size of the spinner
+      corners: 1, // Corner roundness (0..1)
+      speed: 1, // Rounds per second
+      rotate: 0, // The rotation offset
+      animation: 'spinner-line-fade-quick', // The CSS animation name for the lines
+      direction: 1, // 1: clockwise, -1: counterclockwise
+      color: '#4CAF50', // CSS color or array of colors
+      fadeColor: 'transparent', // CSS color or array of colors
+      top: '50%', // Top position relative to parent
+      left: '50%', // Left position relative to parent
+      shadow: '0 0 1px transparent', // Box-shadow for the lines
+      zIndex: 2000000000, // The z-index (defaults to 2e9)
+      className: 'spinner', // The CSS class to assign to the spinner
+      position: 'absolute', // Element positioning
+    });
+  }
+  window.spinner.spin(document.documentElement);
+  setTimeout(() => {
+    stopSpin();
+  }, 8000);
+}
+
+export function stopSpin() {
+  spinner.stop();
+}
+
 export function triggerHelpMode(mode) {
   helpTriggered = mode;
   if (mode) {
@@ -205,6 +243,10 @@ export function currentTabContentTag() {
   return `workspace_${currentContentTab}`;
 }
 
+export function currentPageIndex() {
+  return currentContentTab;
+}
+
 export function switchToTabContent(tabName) {
   if (tabName.includes('workspace_')) {
     const tab = parseInt(tabName.substring(10), 10);
@@ -314,8 +356,11 @@ function renameCurrentTab() {
   });
 }
 function delTabForever(i) {
+  const guid = window.localStorage.getItem(`Guid_${i}`);
+  if (guid)deepRemoveByGuid(guid);
   window.localStorage.removeItem(`workspace_${i}`);
   window.localStorage.removeItem(`name_${i}`);
+  window.localStorage.removeItem(`Guid_${i}`);
 }
 
 function downloadTab(i) {
@@ -331,6 +376,7 @@ function downloadTab(i) {
   document.body.removeChild(element);
   window.localStorage.removeItem(`workspace_${i}`);
   window.localStorage.removeItem(`name_${i}`);
+  window.localStorage.removeItem(`Guid_${i}`);
 }
 function restoreTab(i) {
   const name = window.localStorage.getItem(`name_${i}`);
@@ -444,16 +490,21 @@ function hideJs() {
   w2ui.layout.hide('bottom');
   jsShown = false;
 }
+function deploy() {
+  deployScript(currentContentTab, updateCodeCompletely());
+}
+window.deploy = deploy;
+
 function showSheetsMessage(panel) {
   const text = textByID('PLDONATE').replace('<a>', '<a href="https://www.patreon.com/AndrewShpagin" target="_blank">');
   w2ui.layout.message(panel, {
     body: `<div style="text-align: center">${text}</div>`,
-    width: 650,
+    width: 450,
     height: 70,
     buttons:
       `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}'); scriptInfo();">${ticon('#000000', 'info', 'INSTRUCTIONS')}</button>` +
-      `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}');">${ticon('#4CAF50', 'copy', 'COPYGS')}</button>` +
-      `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}'); window.open('https://docs.google.com/spreadsheets/u/0/', '_blank');">${ticon('#4CAF50', 'table', 'OPENGSHEETS')}</button>` +
+      // `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}');">${ticon('#4CAF50', 'copy', 'COPYGS')}</button>` +
+      `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}'); deploy();">${ticon('#4CAF50', 'table', 'OPENGSHEETS')}</button>` +
       `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}')">${textByID('CANCEL')}</button>`,
   });
 }

@@ -10,6 +10,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" type="text/css" href="w2ui-1.5.rc1.min.css" />
+  <link rel="stylesheet" type="text/css" href="spin.css" />
   <script src="jquery.min.js"></script>
   <script type="text/javascript" src="w2ui-1.5.rc1.min.js"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
@@ -18,7 +19,7 @@
   <script src="javascript_compressed.js"></script>
   <script src="blocks_compressed.js"></script>
   <script src="messages.js"></script>
-  <!--script src="https://apis.google.com/js/platform.js" async defer></script-->
+  <script src="https://apis.google.com/js/api.js"></script>
 
   <script>
     'use strict';
@@ -122,6 +123,9 @@
     <a id="LOGOUT" tid="LOGOUT" onclick="logoutPopup()" style = "display: none;"><i class="fas fa-user"></i> Log out</a>
     <a tid="AUTHOR" href="https://www.patreon.com/AndrewShpagin" target="_blank"><i class="fab fa-patreon"></i> About</a>
     <a tid="SETLANG" onclick="setLang()"><i class="fas fa-globe"></i> RU</a>
+
+    <a id="gsignin" style = "display: none;"><i class="fab fa-google"></i> Sign in</a>
+    <a id="gsignout" style = "display: none;"><i class="fab fa-google"></i> Sign out</a>
     
   </div>
   <div id="layout" style="width: 100%; height: 95%;"></div>

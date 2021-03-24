@@ -2,18 +2,24 @@
 /* eslint-disable class-methods-use-this */
 import { show } from './index';
 import keys from './keys.json';
+import { getDriveFiles, updateDriveFileByName, removeDriveFileByName } from './gdrive';
 
 export class GoogleSignIn {
   constructor(CLIENT_ID, API_KEY, SCOPES, statusCallback, errorCallback) {
     console.log('GoogleSignIn');
     this.CLIENT_ID = CLIENT_ID;
     this.API_KEY = API_KEY;
-    this.DISCOVERY_DOCS = ['https://script.googleapis.com/$discovery/rest?version=v1'];
+    this.DISCOVERY_DOCS = [
+      'https://script.googleapis.com/$discovery/rest?version=v1',
+      'https://sheets.googleapis.com/$discovery/rest?version=v4',
+      'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+    ];
     this.ready = false;
     this.signed = false;
     this.SCOPES = SCOPES;
     this.statusCallback = statusCallback;
     this.errorCallback = errorCallback;
+    this.onSignedTempCallback = null;
 
     window.gapi.load('client:auth2', () => {
       console.log('client:auth2');
@@ -29,6 +35,8 @@ export class GoogleSignIn {
           console.log('gapi.auth2.getAuthInstance().isSignedIn.listen', state);
           this.signed = state;
           this.statusCallback(state);
+          if (state && this.onSignedTempCallback) this.onSignedTempCallback();
+          this.onSignedTempCallback = null;
         });
         // Handle the initial sign-in state.
         this.signed = window.gapi.auth2.getAuthInstance().isSignedIn.get();
@@ -38,6 +46,7 @@ export class GoogleSignIn {
       }, error => {
         console.log(JSON.stringify(error, null, 2));
         this.errorCallback(error);
+        this.onSignedTempCallback = null;
       });
     });
   }
@@ -63,50 +72,14 @@ export class GoogleSignIn {
   readyToSignOut() {
     return !this.signed && this.ready;
   }
-
-  createOrUpdateScript(name, scriptText, readyCallback, errorCallback) {
-    if (this.authorized()) {
-      window.gapi.client.script.projects.create({
-        resource: {
-          title: name,
-        },
-      }).then(resp => window.gapi.client.script.projects.updateContent({
-        scriptId: resp.result.scriptId,
-        resource: {
-          files: [{
-            name,
-            type: 'SERVER_JS',
-            source: scriptText,
-          }, {
-            name: 'appsscript',
-            type: 'JSON',
-            source: '{"timeZone":"America/New_York","' +
-                 'exceptionLogging":"CLOUD"}',
-          }],
-        },
-      })).then(resp => {
-        const { result } = resp;
-        if (result.error) {
-          errorCallback(result.error);
-          return;
-        }
-        console.log(`https://script.google.com/d/${result.scriptId}/edit`);
-        readyCallback({
-          scriptId: result.scriptId,
-          uri: `https://script.google.com/d/${result.scriptId}/edit`,
-        });
-      }).catch(error => {
-        // The API encountered a problem.
-        errorCallback(error);
-      });
-    }
-  }
 }
 
-const googleApi = new GoogleSignIn(
+export const googleApi = new GoogleSignIn(
   keys.CLIENT_ID,
   keys.API_KEY,
-  'https://www.googleapis.com/auth/script.projects',
+  'https://www.googleapis.com/auth/script.projects ' +
+  'https://www.googleapis.com/auth/spreadsheets ' +
+  'https://www.googleapis.com/auth/drive',
   signed => {
     console.log('signed', signed);
     if (signed) {
@@ -116,13 +89,6 @@ const googleApi = new GoogleSignIn(
         console.log('sign out click');
         googleApi.clickedSignOut();
       });
-      googleApi.createOrUpdateScript('testscript', 'function fn(){}',
-        res => {
-          console.log(res);
-        },
-        err => {
-          console.log(err);
-        });
     } else {
       show('gsignin', true);
       show('gsignout', false);

@@ -460,7 +460,7 @@ Blockly.JavaScript.sendtelegram = function (block) {
   const value_msg = Blockly.JavaScript.valueToCode(block, 'msg', Blockly.JavaScript.ORDER_ATOMIC);
   const code = `${ewpreffix}sendTelegramMessage(${value_chatid}, ${value_msg});\n`;
   if (value_chatid.length >= 11 && value_chatid.length < 20) {
-    console.log(value_chatid.substring(1, value_chatid.length - 1));
+    // console.log(value_chatid.substring(1, value_chatid.length - 1));
     localStorage.setItem('telegramChatID', value_chatid.substring(1, value_chatid.length - 1));
   }
   return code;
@@ -471,7 +471,7 @@ Blockly.JavaScript.sendviber = function (block) {
   const value_msg = Blockly.JavaScript.valueToCode(block, 'msg', Blockly.JavaScript.ORDER_ATOMIC);
   const code = `${ewpreffix}sendViberMessage(${value_chatid}, ${value_msg});\n`;
   if (value_chatid.length >= 11 && value_chatid.length < 20) {
-    console.log(value_chatid.substring(1, value_chatid.length - 1));
+    // console.log(value_chatid.substring(1, value_chatid.length - 1));
     localStorage.setItem('viberChatID', value_chatid.substring(1, value_chatid.length - 1));
   }
   return code;

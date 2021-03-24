@@ -47,5 +47,6 @@
     "JS": "JavaScript",
     "JS_HINT": "Show/Hide the generated JavaScript code.",
     "ACTIVES": "Active triggers",
-    "ACTIVES_HINT": "Show the list of active triggers. Don't run much triggers! Whenever possible it is better to edit old tasks than add new ones."
+    "ACTIVES_HINT": "Show the list of active triggers. Don't run much triggers! Whenever possible it is better to edit old tasks than add new ones.",
+    "ENABLEAPI": "You need to enable Google Apps Script API to be able to deploy the script. Press OK, then in the page set the Google Apps Script API to be ON. Then repeat scripts uploading."
 }

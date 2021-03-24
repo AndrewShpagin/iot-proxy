@@ -13,10 +13,11 @@ import javascript from 'highlight.js/lib/languages/javascript';
 import { setPreffix, startCodeGeneration, endCodeGeneration } from './generators';
 import 'highlight.js/styles/github.css';
 import { download } from './assets';
-import { currentTabContentTag, helpShown, triggerHelpMode, currentProjectName } from './ui';
+import { currentTabContentTag, helpShown, triggerHelpMode, currentProjectName, currentPageIndex } from './ui';
 import { customBlocks, defDevs } from './custom-blocks';
 import customToolbox from './toolbox.xml';
 import { SandBox } from '../common/sandbox';
+import { storeCompletelyToGDrive } from './gsprojects';
 
 import defEn from '../public/translations/en.json';
 import customEn from '../public/translations/custom_en.json';
@@ -180,7 +181,7 @@ export function updateCodeCompletely() {
   startCodeGeneration();
   const code = endCodeGeneration(Blockly.JavaScript.workspaceToCode(workspace));
   let wholecode = getWholeCode(code);
-  wholecode += `\n\n\n\n\n\n\n\n\n\n\n\n${gscript}`;
+  wholecode += `\n${gscript}`;
 
   const user = getUserData();
   const email = extract(user, '/email=');
@@ -191,6 +192,7 @@ export function updateCodeCompletely() {
   wholecode = wholecode.replace('userregion', region);
 
   w2ui.layout.el('bottom').textContent = wholecode;
+  return wholecode;
 }
 export function updateCode() {
   if (workspace) {
@@ -244,7 +246,7 @@ function setupDroplists(devices) {
         });
       }
     });
-    let i = 1;
+    const i = 1;
   } else {
     customBlocks.forEach(block => {
       if (block.hasOwnProperty('args0')) {
@@ -377,6 +379,7 @@ export function reinject() {
     const xml = Blockly.Xml.workspaceToDom(workspace);
     const xmlText = Blockly.Xml.domToText(xml);
     window.localStorage.setItem(currentTabContentTag(), xmlText);
+    storeCompletelyToGDrive(currentPageIndex());
   }
   w2ui.layout.on('resize', event => {
     setTimeout(() => Blockly.svgResize(workspace), 100);
