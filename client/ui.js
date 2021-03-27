@@ -2,14 +2,14 @@
 /* eslint-disable func-names */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
+/* eslint-env jquery */
 
 import { Spinner } from 'spin.js';
 import { reinject, assignProject, getUserData, clearDevices, updateCode, storeUser, updateCodeCompletely, localRunScript, updateDevices, setupDevicesGrid } from './workspace';
 import { correctHeader, isMobile } from './index';
 import { textByID, translateToolbar } from './languages';
-import { deployScript, deepRemoveByGuid } from './gsprojects';
+import { proj } from './gsprojects';
 
 let helpTriggered = false;
 
@@ -45,27 +45,28 @@ export function startSpin() {
   window.spinner.spin(document.documentElement);
   setTimeout(() => {
     stopSpin();
-  }, 8000);
+  }, 15000);
 }
 
 export function stopSpin() {
-  spinner.stop();
+  window.spinner.stop();
 }
 
 export function triggerHelpMode(mode) {
   helpTriggered = mode;
   if (mode) {
-    const item = w2ui.layout_bottom_toolbar.items[0];
+    const item = window.w2ui.layout_bottom_toolbar.items[0];
     item.text = ticon('#000000', 'arrow-circle-left', 'TOPROJECTS');
     item.tooltip = '';
-    w2ui.layout_bottom_toolbar.hide('%ID_COPYOPEN');
-    w2ui.layout_bottom_toolbar.refresh();
+    window.w2ui.layout_bottom_toolbar.hide('%ID_COPYOPEN');
+    window.w2ui.layout_bottom_toolbar.refresh();
   }
 }
 
 export function downloadScript() {
   const element = document.createElement('a');
-  element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(window.localStorage.getItem(currentTabContentTag()))}`);
+  const project = proj.getCurrentProject();
+  element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(project.blocks)}`);
   element.setAttribute('download', `${currentTabContentTagName()}.ewelink.xml`);
   element.style.display = 'none';
   document.body.appendChild(element);
@@ -79,7 +80,7 @@ function b64DecodeUnicode(str) {
 }
 
 export function uploadScript() {
-  if (!w2ui.upload) {
+  if (!window.w2ui.upload) {
     $().w2form({
       name: 'upload',
       style: 'border: 0px; background-color: transparent;',
@@ -110,12 +111,13 @@ export function uploadScript() {
               let end = prjName.indexOf('.ewelink (');
               if (end === -1)end = prjName.indexOf('.ewelink.');
               if (end !== -1)prjName = prjName.substring(0, end);
-              w2ui.layout_main_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
-              window.localStorage.setItem(`name_${empty}`, prjName);
+              window.w2ui.layout_main_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
               setTimeout(() => {
-                w2ui.layout_main_tabs.click(`workspace_${empty}`);
+                window.w2ui.layout_main_tabs.click(`workspace_${empty}`);
                 setTimeout(() => {
+                  proj.getCurrentProject().name = prjName;
                   assignProject(xml);
+                  proj.storeCurrentProject();
                   checkClosable();
                 }, 200);
               }, 600);
@@ -123,10 +125,10 @@ export function uploadScript() {
           } catch (error) {
             console.log(error);
           }
-          w2popup.close();
+          window.w2popup.close();
         },
         close() {
-          w2popup.close();
+          window.w2popup.close();
         },
       },
     });
@@ -141,10 +143,10 @@ export function uploadScript() {
     width: 480,
     height: 190,
     onToggle(event) {
-      $(w2ui.upload.box).hide();
+      $(window.w2ui.upload.box).hide();
       event.onComplete = function () {
-        $(w2ui.upload.box).show();
-        w2ui.upload.resize();
+        $(window.w2ui.upload.box).show();
+        window.w2ui.upload.resize();
       };
     },
     onOpen(event) {
@@ -162,7 +164,7 @@ export function logoutPopup() {
 }
 
 export function openLoginPopup() {
-  if (!w2ui.foo) {
+  if (!window.w2ui.foo) {
     $().w2form({
       name: 'foo',
       style: 'border: 0px; background-color: transparent;',
@@ -184,20 +186,20 @@ export function openLoginPopup() {
       ],
       actions: {
         Login() {
-          storeUser(`/email=${w2ui.foo.get('Email').$el[0].value}/password=${w2ui.foo.get('Password').$el[0].value}/region=${w2ui.foo.get('Server').$el[0].value}`);
-          w2popup.close();
+          storeUser(`/email=${window.w2ui.foo.get('Email').$el[0].value}/password=${window.w2ui.foo.get('Password').$el[0].value}/region=${window.w2ui.foo.get('Server').$el[0].value}`);
+          window.w2popup.close();
           updateDevices(() => {
-            w2alert(textByID('LOOGEDSUCCESSFULLY'));
+            window.w2alert(textByID('LOOGEDSUCCESSFULLY'));
           },
           () => {
-            w2alert(textByID('LOGINFAILED'));
+            window.w2alert(textByID('LOGINFAILED'));
           });
           // reinject();
           correctHeader();
         },
         Cancel() {
           // window.localStorage.removeItem('userlogindata');
-          w2popup.close();
+          window.w2popup.close();
           reinject();
         },
       },
@@ -211,10 +213,10 @@ export function openLoginPopup() {
     height: 230,
     showMax: true,
     onToggle(event) {
-      $(w2ui.foo.box).hide();
+      $(window.w2ui.foo.box).hide();
       event.onComplete = function () {
-        $(w2ui.foo.box).show();
-        w2ui.foo.resize();
+        $(window.w2ui.foo.box).show();
+        window.w2ui.foo.resize();
       };
     },
     onOpen(event) {
@@ -227,23 +229,14 @@ export function openLoginPopup() {
 
 let currentContentTab = 0;
 function getEmptyIndex() {
-  for (let i = 1; i < 10000; i++) {
-    const ws = `workspace_${i}`;
-    const el = window.localStorage.getItem(ws);
-    if (!el) return i;
-  }
-  return 10000;
+  return proj.getEmptyPageIndex();
 }
 export function currentTabContentTagName() {
-  const name = window.localStorage.getItem(`name_${currentContentTab}`);
-  return name || 'Project';
-}
-
-export function currentTabContentTag() {
-  return `workspace_${currentContentTab}`;
+  return proj.getCurrentProject().name;
 }
 
 export function currentPageIndex() {
+  if (typeof currentContentTab !== 'number') console.error(typeof currentContentTab);
   return currentContentTab;
 }
 
@@ -253,15 +246,17 @@ export function switchToTabContent(tabName) {
     if (tab === currentContentTab) {
       renameCurrentTab();
     } else {
-      const text = window.localStorage.getItem(tabName);
+      currentContentTab = tab;
+      const project = proj.getProjectByPageIndex(tab);
+      const text = project.blocks;
       assignProject(text || '<xml></xml>');
     }
-    currentContentTab = tab;
   }
 }
+
 function askNewTabName() {
   const newName = `Project ${getEmptyIndex()}`;
-  if (!w2ui.newTab) {
+  if (!window.w2ui.newTab) {
     $().w2form({
       name: 'newTab',
       style: 'border: 0px; background-color: transparent;',
@@ -270,20 +265,21 @@ function askNewTabName() {
       ],
       actions: {
         Create() {
-          const prjName = w2ui.newTab.record.Project;
-          w2popup.close();
+          const prjName = window.w2ui.newTab.record.Project;
+          window.w2popup.close();
           const empty = getEmptyIndex();
-          w2ui.layout_main_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
-          window.localStorage.setItem(`name_${empty}`, prjName);
+          window.w2ui.layout_main_tabs.animateInsert('new', { id: `workspace_${empty}`, text: prjName, closable: true });
+          const project = proj.getProjectByPageIndex(empty);
+          project.name = prjName;
           setTimeout(() => {
-            w2ui.layout_main_tabs.click(`workspace_${empty}`);
+            window.w2ui.layout_main_tabs.click(`workspace_${empty}`);
             setTimeout(() => {
               assignProject('<xml></xml>');
               checkClosable();
             }, 200);
           }, 600);
         },
-        Cancel() { w2popup.close(); },
+        Cancel() { window.w2popup.close(); },
       },
     });
   }
@@ -295,25 +291,27 @@ function askNewTabName() {
     height: 170,
     showMax: true,
     onToggle(event) {
-      $(w2ui.newTab.box).hide();
+      $(window.w2ui.newTab.box).hide();
       event.onComplete = function () {
-        $(w2ui.newTab.box).show();
-        w2ui.newTab.resize();
+        $(window.w2ui.newTab.box).show();
+        window.w2ui.newTab.resize();
       };
     },
     onOpen(event) {
-      w2ui.newTab.record.Project = newName;
+      window.w2ui.newTab.record.Project = newName;
       event.onComplete = function () {
         $('#w2ui-popup #form').w2render('newTab');
       };
     },
   });
 }
+
 export function currentProjectName() {
-  return window.localStorage.getItem(`name_${currentContentTab}`);
+  return proj.getCurrentProject().name;
 }
+
 function renameCurrentTab() {
-  if (!w2ui.renameTab) {
+  if (!window.w2ui.renameTab) {
     $().w2form({
       name: 'renameTab',
       style: 'border: 0px; background-color: transparent;',
@@ -322,14 +320,15 @@ function renameCurrentTab() {
       ],
       actions: {
         Rename() {
-          const prjName = w2ui.renameTab.record['New name'];
-          w2popup.close();
-          const tab = w2ui.layout_main_tabs.tabs.find(el => el.id === w2ui.layout_main_tabs.active);
+          const prjName = window.w2ui.renameTab.record['New name'];
+          window.w2popup.close();
+          const tab = window.w2ui.layout_main_tabs.tabs.find(el => el.id === window.w2ui.layout_main_tabs.active);
           if (tab)tab.text = prjName;
-          w2ui.layout_main_tabs.refresh(w2ui.layout_main_tabs.active);
-          window.localStorage.setItem(`name_${currentContentTab}`, prjName);
+          window.w2ui.layout_main_tabs.refresh(window.w2ui.layout_main_tabs.active);
+          proj.getCurrentProject().name = prjName;
+          proj.storeCurrentProject();
         },
-        Cancel() { w2popup.close(); },
+        Cancel() { window.w2popup.close(); },
       },
     });
   }
@@ -341,32 +340,35 @@ function renameCurrentTab() {
     height: 170,
     showMax: true,
     onToggle(event) {
-      $(w2ui.renameTab.box).hide();
+      $(window.w2ui.renameTab.box).hide();
       event.onComplete = function () {
-        $(w2ui.renameTab.box).show();
-        w2ui.newTab.resize();
+        $(window.w2ui.renameTab.box).show();
+        window.w2ui.newTab.resize();
       };
     },
     onOpen(event) {
-      w2ui.renameTab.record['New name'] = currentTabContentTagName();
+      window.w2ui.renameTab.record['New name'] = currentTabContentTagName();
       event.onComplete = function () {
         $('#w2ui-popup #form').w2render('renameTab');
       };
     },
   });
 }
+
 function delTabForever(i) {
-  const guid = window.localStorage.getItem(`Guid_${i}`);
-  if (guid)deepRemoveByGuid(guid);
+  console.log('delTabForever', i, proj);
+  const guid = proj.getGuidForPageIndex(i);
+  console.log('delTabForever', guid);
+  if (guid)proj.removeCompletelyByGuid(guid);
   window.localStorage.removeItem(`workspace_${i}`);
   window.localStorage.removeItem(`name_${i}`);
   window.localStorage.removeItem(`Guid_${i}`);
 }
 
 function downloadTab(i) {
-  let name = window.localStorage.getItem(`name_${i}`);
-  if (!name)name = 'Project';
-  const content = window.localStorage.getItem(`workspace_${i}`);
+  const project = proj.getProjectByPageIndex(i);
+  const name = project.name || 'Project';
+  const content = project.blocks || '<xml></xml>';
   const element = document.createElement('a');
   element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(content)}`);
   element.setAttribute('download', `${name}.ewelink.xml`);
@@ -374,37 +376,38 @@ function downloadTab(i) {
   document.body.appendChild(element);
   element.click();
   document.body.removeChild(element);
-  window.localStorage.removeItem(`workspace_${i}`);
-  window.localStorage.removeItem(`name_${i}`);
-  window.localStorage.removeItem(`Guid_${i}`);
 }
+
 function restoreTab(i) {
-  const name = window.localStorage.getItem(`name_${i}`);
-  w2ui.layout_main_tabs.insert('new', { id: `workspace_${i}`, text: name || `Project ${i}`, closable: true });
+  const project = proj.getProjectByPageIndex(i);
+  const { name } = project;
+  window.w2ui.layout_main_tabs.insert('new', { id: `workspace_${i}`, text: name || `Project ${i}`, closable: true });
   checkClosable();
 }
+
 window.downloadTab = downloadTab;
 window.restoreTab = restoreTab;
 
 function checkClosableImmediately() {
-  if (w2ui.layout_main_tabs.tabs.length < 3) {
-    w2ui.layout_main_tabs.tabs.forEach(element => {
+  if (window.w2ui.layout_main_tabs.tabs.length < 3) {
+    window.w2ui.layout_main_tabs.tabs.forEach(element => {
       if (element.closable) {
         element.closable = false;
-        w2ui.layout_main_tabs.refresh(element.id);
+        window.w2ui.layout_main_tabs.refresh(element.id);
       }
     });
   } else {
-    w2ui.layout_main_tabs.tabs.forEach(element => {
+    window.w2ui.layout_main_tabs.tabs.forEach(element => {
       if (element.id !== 'new' && !element.closable) {
         element.closable = true;
-        w2ui.layout_main_tabs.refresh(element.id);
+        window.w2ui.layout_main_tabs.refresh(element.id);
       }
     });
   }
 }
+
 function checkClosable() {
-  if (w2ui.layout_main_tabs.tabs) {
+  if (window.w2ui.layout_main_tabs.tabs) {
     setTimeout(() => {
       checkClosableImmediately();
     }, 100);
@@ -416,15 +419,19 @@ function checkClosable() {
     }, 700);
   }
 }
+
 function closeTab(tabId) {
   checkClosable();
   // w2ui.layout_main_tabs.click(`workspace_${i}`);
-  if (w2ui.layout_main_tabs.active === tabId) {
-    const tab = w2ui.layout_main_tabs.tabs.find(t => t.id !== tabId);
-    w2ui.layout_main_tabs.click(tab.id);
+  if (window.w2ui.layout_main_tabs.active === tabId) {
+    const tab = window.w2ui.layout_main_tabs.tabs.find(t => t.id !== tabId);
+    window.w2ui.layout_main_tabs.click(tab.id);
   }
-  const idx = tabId.substring(10);
-  const content = window.localStorage.getItem(tabId);
+  const idx = Number.parseInt(tabId.substring(10), 10);
+  console.log('closeTab', tabId, idx);
+  const project = proj.getProjectByPageIndex(idx);
+  const content = project.blocks;
+  console.log('closed content:', project);
   if (content.length > 100) {
     $().w2popup('open', {
       title: 'Close the tab',
@@ -438,16 +445,16 @@ function closeTab(tabId) {
       buttons:
             `<button class="w2ui-btn" onclick="downloadTab('${idx}');w2popup.close();">${textByID('CLOSEDOWNLOAD')}</button> ` +
             `<button class="w2ui-btn" onclick="w2popup.close();">${textByID('JUSTCLOSE')}</button>` +
-            `<button class="w2ui-btn" onclick="delTabForever('${idx}');w2popup.close();">${textByID('DELFOREVER')}</button>` +
+            `<button class="w2ui-btn" onclick="delTabForever(${idx});w2popup.close();">${textByID('DELFOREVER')}</button>` +
             `<button class="w2ui-btn" onclick="restoreTab('${idx}');w2popup.close();">${textByID('KEEPTAB')}</button>`,
       style: 'padding: 15px 20px 20px 20px',
       width: 580,
       height: 250,
       onToggle(event) {
-        $(w2ui.renameTab.box).hide();
+        $(window.w2ui.renameTab.box).hide();
         event.onComplete = function () {
-          $(w2ui.closeTab.box).show();
-          w2ui.newTab.resize();
+          $(window.w2ui.closeTab.box).show();
+          window.w2ui.newTab.resize();
         };
       },
       onOpen(event) {
@@ -458,24 +465,30 @@ function closeTab(tabId) {
     });
   }
 }
+
 function addNewLayoutTab() {
   askNewTabName();
 }
+
 function restoreToolbar() {
-  const item = w2ui.layout_bottom_toolbar.items[0];
+  const item = window.w2ui.layout_bottom_toolbar.items[0];
   item.text = ticon('#000000', 'copy', 'COPYGS');
   item.hint = textByID('COPYGSHINT');
-  w2ui.layout_bottom_toolbar.show('%ID_COPYOPEN');
-  w2ui.layout_bottom_toolbar.refresh();
+  window.w2ui.layout_bottom_toolbar.show('%ID_COPYOPEN');
+  window.w2ui.layout_bottom_toolbar.refresh();
 }
+
+let jsShown = false;
+let devShown = false;
+
 function copyCode() {
   if (helpTriggered)removeHelp();
   else {
-    w2ui.layout.show('bottom', true);
+    window.w2ui.layout.show('bottom', true);
     jsShown = true;
     const r = document.createRange();
     updateCodeCompletely();
-    r.selectNode(w2ui.layout.el('bottom'));
+    r.selectNode(window.w2ui.layout.el('bottom'));
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(r);
     document.execCommand('copy');
@@ -487,17 +500,17 @@ function ticon(color, icon, message) {
   return `<i style="color: ${color}; transform: scale(1.3);" class="fa fa-${icon}" aria-hidden="true"></i>  ${textByID(message)}`;
 }
 function hideJs() {
-  w2ui.layout.hide('bottom');
+  window.w2ui.layout.hide('bottom');
   jsShown = false;
 }
 function deploy() {
-  deployScript(currentContentTab, updateCodeCompletely());
+  proj.deployScript(currentContentTab, updateCodeCompletely());
 }
 window.deploy = deploy;
 
 function showSheetsMessage(panel) {
   const text = textByID('PLDONATE').replace('<a>', '<a href="https://www.patreon.com/AndrewShpagin" target="_blank">');
-  w2ui.layout.message(panel, {
+  window.w2ui.layout.message(panel, {
     body: `<div style="text-align: center">${text}</div>`,
     width: 450,
     height: 70,
@@ -510,8 +523,7 @@ function showSheetsMessage(panel) {
 }
 
 /// Setup the layout
-let jsShown = false;
-let devShown = false;
+
 $(() => {
   const pstyle = 'padding: 0px;';
   $('#layout').w2layout({
@@ -552,14 +564,14 @@ $(() => {
               window.open('https://script.google.com/home/triggers', '_blank');
             }
             if (event.target === '%ID_JS') {
-              if (jsShown) w2ui.layout.hide('bottom');
-              else w2ui.layout.show('bottom');
+              if (jsShown) window.w2ui.layout.hide('bottom');
+              else window.w2ui.layout.show('bottom');
               jsShown = !jsShown;
             }
             if (event.target === '%ID_DEVICES') {
-              if (devShown) w2ui.layout.hide('right');
+              if (devShown) window.w2ui.layout.hide('right');
               else {
-                w2ui.layout.show('right');
+                window.w2ui.layout.show('right');
                 setupDevicesGrid();
               }
               devShown = !devShown;
@@ -569,7 +581,7 @@ $(() => {
         tabs: {
           active: 'workspace_0',
           tabs: [
-            { id: 'workspace_0', text: currentTabContentTagName(), closable: true },
+            { id: 'workspace_0', text: 'Project', closable: true },
             { id: 'new', text: '+', closable: false },
           ],
           onClick(event) {
@@ -607,76 +619,81 @@ $(() => {
       { type: 'right', size: isMobile.any() ? '75%' : '30%', resizable: true, style: pstyle, name: 'devices', title: 'Devices:' },
     ],
   });
-  w2ui.layout.hide('bottom', true);
-  w2ui.layout.hide('right', true);
+  window.w2ui.layout.hide('bottom', true);
+  window.w2ui.layout.hide('right', true);
+
+  proj.preloadProjectsFromLocalStorage();
+  proj.convertOldProjects();
+
   const uData = getUserData();
-  if (uData) {
-    reinject();
-  } else {
-    reinject();
+  if (!uData) {
     setTimeout(scriptInfo(), 800);
   }
-  let nn = 0;
-  for (let i = 1; i < 1000; i++) {
-    const ws = `workspace_${i}`;
-    const el = window.localStorage.getItem(ws);
-    if (el) {
-      nn = 0;
-      if (el.length > 80) {
-        const name = window.localStorage.getItem(`name_${i}`);
-        w2ui.layout_main_tabs.insert('new', { id: `workspace_${i}`, text: name || `Project ${i}`, closable: true });
-      } else {
-        window.localStorage.removeItem(ws);
-      }
-    } else {
-      nn++;
-      if (nn > 10) break;
-    }
-  }
+  reinject();
   checkClosable();
 });
 
-function removeHelp() {
+export function insertPageIntoLayout(pidx) {
+  const project = proj.getProjectByPageIndex(pidx);
+  const { name } = project;
+  const pid = `workspace_${pidx}`;
+  if (proj.isEmpty) {
+    window.w2ui.layout_main_tabs.tabs[0].id = pid;
+    window.w2ui.layout_main_tabs.tabs[0].text = project.name;
+    window.w2ui.layout_main_tabs.refresh();
+    proj.isEmpty = false;
+  } else {
+    const exist = window.w2ui.layout_main_tabs.tabs.find(el => el.id === pid);
+    if (!exist) {
+      window.w2ui.layout_main_tabs.insert('new', { id: pid, text: name || `Project ${pidx}`, closable: true });
+    }
+    if (pidx === currentContentTab) {
+      reinject();
+    }
+  }
+}
+
+export function removeHelp() {
   if (helpTriggered) {
     if (!getUserData()) {
       setTimeout(() => {
-        w2alert(textByID('LOGINHINT')).ok(() => {
+        window.w2alert(textByID('LOGINHINT')).ok(() => {
           setTimeout(() => openLoginPopup(), 2000);
         });
       }, 2000);
       reinject();
     }
-    w2ui.layout.el('bottom').style['white-space'] = 'pre';
+    window.w2ui.layout.el('bottom').style['white-space'] = 'pre';
     helpTriggered = false;
     restoreToolbar();
     updateCode();
-    w2ui.layout.sizeTo('main', '70%', true);
-    w2ui.layout.sizeTo('bottom', '30%', true);
-    w2ui.layout.hide('right', true);
-    w2ui.layout.hide('bottom', true);
-    w2ui.layout.show('main');
+    window.w2ui.layout.sizeTo('main', '70%', true);
+    window.w2ui.layout.sizeTo('bottom', '30%', true);
+    window.w2ui.layout.hide('right', true);
+    window.w2ui.layout.hide('bottom', true);
+    window.w2ui.layout.show('main');
   }
 }
 function scriptInfo() {
   if (!helpTriggered) {
     triggerHelpMode(true);
-    w2ui.layout.hide('right', true);
-    w2ui.layout.hide('main', true);
-    w2ui.layout.show('bottom', true);
-    w2ui.layout.sizeTo('main', '0%', true);
-    w2ui.layout.sizeTo('bottom', '100%', true);
-    w2ui.layout.el('bottom').style['white-space'] = 'nowrap';
-    w2ui.layout.load('bottom', 'slides/slideshow.html');
+    window.w2ui.layout.hide('right', true);
+    window.w2ui.layout.hide('main', true);
+    window.w2ui.layout.show('bottom', true);
+    window.w2ui.layout.sizeTo('main', '0%', true);
+    window.w2ui.layout.sizeTo('bottom', '100%', true);
+    window.w2ui.layout.el('bottom').style['white-space'] = 'nowrap';
+    window.w2ui.layout.load('bottom', 'slides/slideshow.html');
   }
 }
 
 export function forceSlideshow() {
-  w2ui.layout.load('bottom', 'slides/slideshow.html');
+  window.w2ui.layout.load('bottom', 'slides/slideshow.html');
 }
 
 document.addEventListener('language', () => {
-  if (w2ui.layout_bottom_toolbar) translateToolbar(w2ui.layout_bottom_toolbar);
-  if (w2ui.layout_main_toolbar) translateToolbar(w2ui.layout_main_toolbar);
+  if (window.w2ui.layout_bottom_toolbar) translateToolbar(window.w2ui.layout_bottom_toolbar);
+  if (window.w2ui.layout_main_toolbar) translateToolbar(window.w2ui.layout_main_toolbar);
   if (helpShown()) {
     forceSlideshow();
   }

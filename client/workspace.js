@@ -1,23 +1,22 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/extensions */
-/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
-/* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
+/* eslint-env jquery */
 
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import { setPreffix, startCodeGeneration, endCodeGeneration } from './generators';
 import 'highlight.js/styles/github.css';
 import { download } from './assets';
-import { currentTabContentTag, helpShown, triggerHelpMode, currentProjectName, currentPageIndex } from './ui';
+import { helpShown, triggerHelpMode, currentProjectName, currentPageIndex, currentTabContentTagName } from './ui';
 import { customBlocks, defDevs } from './custom-blocks';
 import customToolbox from './toolbox.xml';
 import { SandBox } from '../common/sandbox';
-import { storeCompletelyToGDrive } from './gsprojects';
+import { proj } from './gsprojects';
+import { textByID, curLanguage, setLang } from './languages';
 
 import defEn from '../public/translations/en.json';
 import customEn from '../public/translations/custom_en.json';
@@ -26,8 +25,8 @@ import customRu from '../public/translations/custom_ru.json';
 
 // eslint-disable-next-line import/no-unresolved
 import baseJs from '!raw-loader!../public/base';
+// eslint-disable-next-line import/no-unresolved
 import gscript0 from '!raw-loader!../public/gscript';
-import { curLanguage, setLang } from './languages';
 
 const CryptoJS = require('crypto-js');
 
@@ -48,7 +47,6 @@ export function decStr(str) {
 const gscript = gscript0.substring(gscript0.indexOf('///'));
 
 hljs.registerLanguage('javascript', javascript);
-const side = 'start';
 const rtl = false;
 const options = {
   comments: true,
@@ -140,19 +138,19 @@ let workspace = null;
 let consoleText = '';
 function logCallback(msg) {
   consoleText += `${msg}\n`;
-  w2ui.layout.el('bottom').textContent = consoleText;
-  hljs.highlightBlock(w2ui.layout.el('bottom'));
-  w2ui.layout.el('bottom').scrollTop += 50;
+  window.w2ui.layout.el('bottom').textContent = consoleText;
+  hljs.highlightBlock(window.w2ui.layout.el('bottom'));
+  window.w2ui.layout.el('bottom').scrollTop += 50;
 }
 function appendTable(box) {
-  const page = `${w2ui.layout.el('bottom').innerHTML}<div id="MyTableAppended" style="height: 400px"></div>`;
-  w2ui.layout.content('bottom', page);
-  const theGrid = w2ui.Result;
+  const page = `${window.w2ui.layout.el('bottom').innerHTML}<div id="MyTableAppended" style="height: 400px"></div>`;
+  window.w2ui.layout.content('bottom', page);
+  const theGrid = window.w2ui.Result;
   if (theGrid)theGrid.destroy();
   const res = box.createTable();
   $('#MyTableAppended').w2grid(res);
   document.getElementById('grid_Result_records').scrollTop = 10000;
-  w2ui.layout.el('bottom').scrollTop = 10000;
+  window.w2ui.layout.el('bottom').scrollTop = 10000;
 }
 export function localRunScript() {
   const user = getUserData();
@@ -161,25 +159,25 @@ export function localRunScript() {
   const region = extract(user, '/region=');
   if (workspace && email.length && password.length && region.length) {
     triggerHelpMode(true);
-    w2ui.layout.hide('main');
+    window.w2ui.layout.hide('main');
     curSandBox = new SandBox(email, password, region, currentProjectName(), 60000, false);
     setPreffix('myObject.');
     startCodeGeneration();
-    const code = endCodeGeneration(Blockly.JavaScript.workspaceToCode(workspace));
+    const code = endCodeGeneration(window.Blockly.JavaScript.workspaceToCode(workspace));
     setPreffix('');
-    w2ui.layout.el('bottom').textContent = '';
+    window.w2ui.layout.el('bottom').textContent = '';
     consoleText = '';
     setTimeout(() => curSandBox.run(code, logCallback, box => appendTable(box)), 500);
   }
 }
 
 export function assignProject(text) {
-  Blockly.Xml.clearWorkspaceAndLoadFromXml(Blockly.Xml.textToDom(text), workspace);
+  window.Blockly.Xml.clearWorkspaceAndLoadFromXml(window.Blockly.Xml.textToDom(text), workspace);
 }
 
 export function updateCodeCompletely() {
   startCodeGeneration();
-  const code = endCodeGeneration(Blockly.JavaScript.workspaceToCode(workspace));
+  const code = endCodeGeneration(window.Blockly.JavaScript.workspaceToCode(workspace));
   let wholecode = getWholeCode(code);
   wholecode += `\n${gscript}`;
 
@@ -191,18 +189,18 @@ export function updateCodeCompletely() {
   wholecode = wholecode.replace('userpassword', password);
   wholecode = wholecode.replace('userregion', region);
 
-  w2ui.layout.el('bottom').textContent = wholecode;
+  window.w2ui.layout.el('bottom').textContent = wholecode;
   return wholecode;
 }
 export function updateCode() {
   if (workspace) {
     startCodeGeneration();
-    const code = endCodeGeneration(Blockly.JavaScript.workspaceToCode(workspace));
+    const code = endCodeGeneration(window.Blockly.JavaScript.workspaceToCode(workspace));
     if (!helpShown()) {
       const wholecode = getWholeCode(code);
-      w2ui.layout.el('bottom').textContent = wholecode;
-      hljs.highlightBlock(w2ui.layout.el('bottom'));
-      w2ui.layout.el('bottom').innerHTML = `<span class="notranslate">${w2ui.layout.el('bottom').innerHTML}`;
+      window.w2ui.layout.el('bottom').textContent = wholecode;
+      hljs.highlightBlock(window.w2ui.layout.el('bottom'));
+      window.w2ui.layout.el('bottom').innerHTML = `<span class="notranslate">${window.w2ui.layout.el('bottom').innerHTML}`;
     }
   }
 }
@@ -228,14 +226,14 @@ function setupDroplists(devices) {
   };
   if (devices && Object.keys(devices).length) {
     customBlocks.forEach(block => {
-      if (block.hasOwnProperty('args0')) {
+      if ('args0' in block) {
         block.args0.forEach(arg => {
           if (arg.type === 'field_dropdown' && arg.name.substring(0, 3) === 'EW_') {
             arg.options = [];
             const check = enc[arg.name];
             Object.entries(devices).forEach(el => {
               const device = el[1];
-              if (device.hasOwnProperty(check)) {
+              if (check in device) {
                 arg.options.push([device.name, `'${device.deviceid}'/*${device.name}*/`]);
               }
             });
@@ -246,10 +244,9 @@ function setupDroplists(devices) {
         });
       }
     });
-    const i = 1;
   } else {
     customBlocks.forEach(block => {
-      if (block.hasOwnProperty('args0')) {
+      if ('args0' in block) {
         block.args0.forEach(arg => {
           if (arg.type === 'field_dropdown' && arg.name.substring(0, 3) === 'EW_') {
             arg.options = [[defDevs, '0']];
@@ -264,9 +261,9 @@ document.addEventListener('language', () => {
   const locName = curLanguage();
   const loc = localesList[locName];
   Object.keys(loc).forEach(key => {
-    Blockly.Msg[key] = loc[key];
+    window.Blockly.Msg[key] = loc[key];
   });
-  if (workspace) Blockly.svgResize(workspace);
+  if (workspace) window.Blockly.svgResize(workspace);
   if (workspace) reinject();
 });
 
@@ -296,11 +293,11 @@ export function setupDevicesGrid() {
     ],
     records: [],
   };
-  w2ui.layout.content('right', $().w2grid(grid1));
-  w2ui.devGrid.clear();
+  window.w2ui.layout.content('right', $().w2grid(grid1));
+  window.w2ui.devGrid.clear();
   let i = 1;
   Object.entries(devices).forEach(element => {
-    w2ui.devGrid.add({
+    window.w2ui.devGrid.add({
       recid: i,
       deviceid: element[1].deviceid,
       deviceName: element[1].name,
@@ -354,40 +351,39 @@ export function updateDevices(successCallback, failCallback) {
 updateDevices();
 
 function explainChatID(message, url) {
-  w2alert(textByID(message)).ok(() => {
+  window.w2alert(textByID(message)).ok(() => {
     window.open(url, '_blank');
   });
 }
 
 export function reinject() {
-  const blocklyDiv = w2ui.layout.el('main');
+  const blocklyDiv = window.w2ui.layout.el('main');
   blocklyDiv.innerHTML = '';
   blocklyDiv.style.padding = '0px';
-  if (!helpShown())w2ui.layout.el('bottom').style['white-space'] = 'pre';
-  w2ui.layout.el('right').style['white-space'] = 'pre';
+  if (!helpShown())window.w2ui.layout.el('bottom').style['white-space'] = 'pre';
+  window.w2ui.layout.el('right').style['white-space'] = 'pre';
 
   localStorage.setItem(`dev_${getUserEmail()}`, JSON.stringify(devices));
   setupDroplists(devices);
-  workspace = Blockly.inject(blocklyDiv, options);
+  workspace = window.Blockly.inject(blocklyDiv, options);
   workspace.registerButtonCallback('viberCallback', () => explainChatID('BOTVIBER', 'viber://pa?chatURI=iotproxy'));
   workspace.registerButtonCallback('telegramCallback', () => explainChatID('BOTTELEGRAM', 'https://t.me/iotproxy_bot'));
-  Blockly.defineBlocksWithJsonArray(customBlocks);
+  window.Blockly.defineBlocksWithJsonArray(customBlocks);
   // assignGenerators();
 
-  function myUpdateFunction(event) {
+  function myUpdateFunction() {
     updateCode();
-    const xml = Blockly.Xml.workspaceToDom(workspace);
-    const xmlText = Blockly.Xml.domToText(xml);
-    window.localStorage.setItem(currentTabContentTag(), xmlText);
-    storeCompletelyToGDrive(currentPageIndex());
+    const xml = window.Blockly.Xml.workspaceToDom(workspace);
+    const xmlText = window.Blockly.Xml.domToText(xml);
+    proj.storeProjectCompletely(currentPageIndex(), currentTabContentTagName(), xmlText);
   }
-  w2ui.layout.on('resize', event => {
-    setTimeout(() => Blockly.svgResize(workspace), 100);
+  window.w2ui.layout.on('resize', () => {
+    setTimeout(() => window.Blockly.svgResize(workspace), 100);
   });
   workspace.addChangeListener(myUpdateFunction);
-  const workspaceBlocks = window.localStorage.getItem(currentTabContentTag());
-  if (workspaceBlocks) {
-    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceBlocks), workspace);
+  const workspaceBlocks = proj.getCurrentProject().blocks;
+  if (workspaceBlocks && workspaceBlocks.length) {
+    window.Blockly.Xml.domToWorkspace(window.Blockly.Xml.textToDom(workspaceBlocks), workspace);
   }
-  Blockly.svgResize(workspace);
+  window.Blockly.svgResize(workspace);
 }

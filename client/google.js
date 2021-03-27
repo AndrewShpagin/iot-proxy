@@ -1,8 +1,10 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable class-methods-use-this */
+/* eslint-env jquery */
+
 import { show } from './index';
 import keys from './keys.json';
-import { getDriveFiles, updateDriveFileByName, removeDriveFileByName } from './gdrive';
 
 export class GoogleSignIn {
   constructor(CLIENT_ID, API_KEY, SCOPES, statusCallback, errorCallback) {
@@ -19,7 +21,6 @@ export class GoogleSignIn {
     this.SCOPES = SCOPES;
     this.statusCallback = statusCallback;
     this.errorCallback = errorCallback;
-    this.onSignedTempCallback = null;
 
     window.gapi.load('client:auth2', () => {
       console.log('client:auth2');
@@ -35,8 +36,8 @@ export class GoogleSignIn {
           console.log('gapi.auth2.getAuthInstance().isSignedIn.listen', state);
           this.signed = state;
           this.statusCallback(state);
-          if (state && this.onSignedTempCallback) this.onSignedTempCallback();
-          this.onSignedTempCallback = null;
+          const event = new Event(state ? 'loggedInGoogle' : 'loggedOutGoogle');
+          document.dispatchEvent(event);
         });
         // Handle the initial sign-in state.
         this.signed = window.gapi.auth2.getAuthInstance().isSignedIn.get();
@@ -46,7 +47,8 @@ export class GoogleSignIn {
       }, error => {
         console.log(JSON.stringify(error, null, 2));
         this.errorCallback(error);
-        this.onSignedTempCallback = null;
+        const event = new CustomEvent('loginFailed', { detail: error });
+        document.dispatchEvent(event);
       });
     });
   }
@@ -79,7 +81,9 @@ export const googleApi = new GoogleSignIn(
   keys.API_KEY,
   'https://www.googleapis.com/auth/script.projects ' +
   'https://www.googleapis.com/auth/spreadsheets ' +
-  'https://www.googleapis.com/auth/drive',
+  // 'https://www.googleapis.com/auth/drive ' +
+  'https://www.googleapis.com/auth/drive.appdata ' +
+  'https://www.googleapis.com/auth/drive.file ',
   signed => {
     console.log('signed', signed);
     if (signed) {
@@ -100,5 +104,7 @@ export const googleApi = new GoogleSignIn(
   },
   error => {
     console.log('Error:', JSON.stringify(error));
+    const event = new CustomEvent('loginFailed', { detail: error });
+    document.dispatchEvent(event);
   },
 );

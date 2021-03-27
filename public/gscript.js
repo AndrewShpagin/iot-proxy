@@ -117,7 +117,7 @@ function ewLogin() {
 function ewGetDevice(device) {
   if (ewLogin()) {
     if (device in devcache) return devcache[device];
-    const uri = `${baseUrl()}/device/${device}?deviceid=${device}&appid=${APP_ID}&version=8`;
+    const uri = `${baseUrl()}/device/${device}?deviceid=${device}&version=8`;
     const object = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }));
     if (object) {
       devcache[device] = object;
@@ -133,7 +133,7 @@ function ewGetDevice(device) {
 function ewGetDevices() {
   if (devices) return devices;
   if (ewLogin()) {
-    const uri = `${baseUrl()}/device?lang=en&appid=${APP_ID}&version=8&getTags=1`;
+    const uri = `${baseUrl()}/device?lang=en&version=8&getTags=1`;
     devices = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` } }));
     if (devices) {
       console.log(`Got devices list successvully, ${devices.devicelist.length} devices found.`);
@@ -202,7 +202,7 @@ function deviceSet(device, state) {
       }
       if (any) {
         const uri = `${baseUrl()}/device/status`;
-        const data = `{"deviceid":"${device}","params":${JSON.stringify(state)},"appid":"${APP_ID}","version":8}`;
+        const data = `{"deviceid":"${device}","params":${JSON.stringify(state)},"version":8}`;
         const response = tryEw(() => UrlFetchApp.fetch(uri, { headers: { Authorization: `Bearer ${token}` }, method: 'post', contentType: 'application/json', payload: data }));
         console.log(`Sent request to change state ${device}: ${JSON.stringify(state)}, got responce: ${JSON.stringify(response)}, ${response.error === 0 ? 'no errors' : 'error returned!'}`);
         if (response.error === 0) {
@@ -314,8 +314,8 @@ function valid(x) {
   return x < 10000000000 && x > -10000000000 ? x : 0;
 }
 
-function toInt(str) {
-  const v = Number.parseInt(str, 10);
+function toInt(val) {
+  const v = typeof (str) === 'string' ? Number.parseInt(val, 10) : val;
   if (!valid(v)) return 0;
   return v;
 }

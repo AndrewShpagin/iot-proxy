@@ -80,6 +80,8 @@ server.listen(port, () => {
   //  .catch(err => console.log('ERROR!', err));
 });
 
+// app.listen(8081);
+
 app.options('*', cors());
 app.del('/products/:id', cors(), (req, res, next) => {
   res.json({ msg: 'This is CORS-enabled for all origins!' });
