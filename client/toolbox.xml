@@ -5,6 +5,8 @@
     <block type="isonline"></block>
     <block type="temperature"></block>
     <block type="humidity"></block>
+    <block type="battery"></block>
+    <block type="motion"></block>
     <block type="power"></block>
     <block type="onlineofflinepassed"></block>
     <block type="statechanged"></block>

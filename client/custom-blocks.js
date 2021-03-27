@@ -137,6 +137,38 @@ const customBlocks =
       helpUrl: '',
     },
     {
+      type: 'battery',
+      message0: '%{BKY_BATTERY1}',
+      args0: [
+        {
+          type: 'field_dropdown',
+          name: 'EW_BATTERY',
+          options: [[defDevs, '0']],
+        },
+      ],
+      inputsInline: true,
+      output: 'Number',
+      colour: 240,
+      tooltip: '%{BKY_REPORTT}',
+      helpUrl: '',
+    },
+    {
+      type: 'motion',
+      message0: '%{BKY_MOTION1}',
+      args0: [
+        {
+          type: 'field_dropdown',
+          name: 'EW_MOTION',
+          options: [[defDevs, '0']],
+        },
+      ],
+      inputsInline: true,
+      output: 'Boolean',
+      colour: 240,
+      tooltip: '%{BKY_REPORTT}',
+      helpUrl: '',
+    },
+    {
       type: 'humidity',
       message0: '%{BKY_HUMIDITY1}',
       args0: [

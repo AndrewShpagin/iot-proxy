@@ -219,10 +219,12 @@ localesList.ru = preloadBlocklyLocale(defRu, customRu);
 
 function setupDroplists(devices) {
   const enc = {
-    EW_POWER: 'power',
-    EW_TEMPERATURE: 'currentTemperature',
-    EW_HUMIDITY: 'currentHumidity',
-    EW_DEVICE: 'deviceid',
+    EW_POWER: ['power'],
+    EW_TEMPERATURE: ['currentTemperature', 'temperature'],
+    EW_HUMIDITY: ['currentHumidity', 'humidity'],
+    EW_DEVICE: ['deviceid'],
+    EW_MOTION: ['motion'],
+    EW_BATTERY: ['battery'],
   };
   if (devices && Object.keys(devices).length) {
     customBlocks.forEach(block => {
@@ -233,7 +235,7 @@ function setupDroplists(devices) {
             const check = enc[arg.name];
             Object.entries(devices).forEach(el => {
               const device = el[1];
-              if (check in device) {
+              if (check.some(prop => prop in device)) {
                 arg.options.push([device.name, `'${device.deviceid}'/*${device.name}*/`]);
               }
             });
@@ -271,6 +273,10 @@ setLang(curLanguage());
 
 let devices = {};
 
+export function getDevice(dev) {
+  return devices[dev];
+}
+
 export function clearDevices() {
   if (getUserData()) {
     localStorage.removeItem(`dev_${getUserEmail()}`);
@@ -296,16 +302,24 @@ export function setupDevicesGrid() {
   window.w2ui.layout.content('right', $().w2grid(grid1));
   window.w2ui.devGrid.clear();
   let i = 1;
+  console.log(devices);
   Object.entries(devices).forEach(element => {
-    window.w2ui.devGrid.add({
+    const el = element[1];
+    const obj = {
       recid: i,
-      deviceid: element[1].deviceid,
-      deviceName: element[1].name,
-      temperature: element[1].currentTemperature,
-      humidity: element[1].currentHumidity,
-      online: element[1].online ? 'YES' : 'NO',
-      state: element[1].switch === 'on' ? 'YES' : 'NO',
-    });
+      deviceid: el.deviceid,
+      deviceName: el.name,
+      online: el.online ? 'YES' : 'NO',
+      state: el.switch === 'on' ? 'YES' : 'NO',
+    };
+    if (el) {
+      if ('temperature' in el) obj.temperature = el.temperature / 100.0;
+      if ('currentTemperature' in el) obj.temperature = el.currentTemperature;
+      if ('humidity' in el) obj.humidity = el.humidity / 100.0;
+      if ('currentHumidity' in el) obj.humidity = el.currentHumidity;
+    }
+
+    window.w2ui.devGrid.add(obj);
     i++;
   });
 }

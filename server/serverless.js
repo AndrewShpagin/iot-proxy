@@ -88,13 +88,18 @@ function deviceInfo(element) {
       if (element.params[property] !== 'unavailable')object[property] = element.params[property];
     }
   };
-  opt('name');
-  opt('online');
-  opt('deviceid');
-  opt('power');
-  opt('switch');
   opt('currentTemperature');
   opt('currentHumidity');
+  opt('temperature');
+  opt('humidity');
+  opt('deviceid');
+  opt('trigTime');
+  opt('battery');
+  opt('motion');
+  opt('switch');
+  opt('online');
+  opt('power');
+  opt('name');
   return object;
 }
 

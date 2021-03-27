@@ -17,6 +17,8 @@
 	"TURNON1": "Turn ON %1",
 	"TURNOFF1": "Turn OFF %1",
 	"TEMPERATURE1": "Temperature %1",
+	"BATTERY1": "Battery level of %1",
+	"MOTION1": "Motion detected at %1",
 	"REPORTT": "Returns the temperature reported by the device.",
 	"REPORTH": "Returns the humidity reported by the device.",
 	"HUMIDITY1": "Humidity %1",

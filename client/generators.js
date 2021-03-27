@@ -1,12 +1,13 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-vars */
 /* eslint-disable func-names */
 /* eslint-disable no-extend-native */
 /* eslint-disable camelcase */
 // import Blockly from 'blockly';
-import { hashStrShort } from './workspace';
+
+import { hashStrShort, getDevice } from './workspace';
 
 let accumCode = '';
 let tempArray = [];
@@ -76,13 +77,31 @@ Blockly.JavaScript.turnoff = function (block) {
 
 Blockly.JavaScript.temperature = function (block) {
   const value_device = block.getFieldValue('EW_TEMPERATURE');
-  const code = `${ewpreffix}deviceGet(${value_device}, 'currentTemperature')`;
+  const dev = getDevice[value_device];
+  let code = '';
+  if ('temperature' in dev)code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'temperature')) / 100.0`;
+  else code = `${ewpreffix}deviceGet(${value_device}, 'currentTemperature')`;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.battery = function (block) {
+  const value_device = block.getFieldValue('EW_BATTERY');
+  const code = `${ewpreffix}deviceGet(${value_device}, 'battery')`;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.motion = function (block) {
+  const value_device = block.getFieldValue('EW_MOTION');
+  const code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'motion')) === 1`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.humidity = function (block) {
   const value_device = block.getFieldValue('EW_HUMIDITY');
-  const code = `${ewpreffix}deviceGet(${value_device}, 'currentHumidity')`;
+  const dev = getDevice[value_device];
+  let code = '';
+  if ('humidity' in dev)code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'humidity')) / 100.0`;
+  else code = `${ewpreffix}deviceGet(${value_device}, 'currentHumidity')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
@@ -92,10 +111,6 @@ Blockly.JavaScript.power = function (block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-function sheet(value_sheet) {
-  if (value_sheet === 'undefined' || value_sheet === '') return 'mySheet';
-  return value_sheet;
-}
 Blockly.JavaScript.getcellvalue = function (block) {
   const value_column = Blockly.JavaScript.valueToCode(block, 'column', Blockly.JavaScript.ORDER_ATOMIC);
   const value_row = Blockly.JavaScript.valueToCode(block, 'row', Blockly.JavaScript.ORDER_ATOMIC);
@@ -120,7 +135,7 @@ Blockly.JavaScript.accamulatecell = function (block) {
   return code;
 };
 
-Blockly.JavaScript.getlastrow = function (block) {
+Blockly.JavaScript.getlastrow = function () {
   const code = `${ewpreffix}lastUnusedRow`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
@@ -134,7 +149,7 @@ Blockly.JavaScript.namedsheet = function (block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-Blockly.JavaScript.currenttime = function (block) {
+Blockly.JavaScript.currenttime = function () {
   const code = `${ewpreffix}now()`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
@@ -332,7 +347,7 @@ Blockly.JavaScript.gotnewmessage = function (block) {
   return code;
 };
 
-Blockly.JavaScript.getfrom = function (block) {
+Blockly.JavaScript.getfrom = function () {
   // TODO: Assemble JavaScript into code variable.
   const code = 'message.getFrom()';
   // TODO: Change ORDER_NONE to the correct strength.
@@ -415,7 +430,7 @@ Blockly.JavaScript.sincelastrun = function (block) {
 Blockly.JavaScript.accumtime = function (block) {
   const value_value = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
   const value_limit = Blockly.JavaScript.valueToCode(block, 'LIMIT', Blockly.JavaScript.ORDER_ATOMIC);
-  const units = Number.parseInt(block.getFieldValue('UNITS'));
+  const units = Number.parseInt(block.getFieldValue('UNITS'), 10);
   let statements_todo = Blockly.JavaScript.statementToCode(block, 'TODO');
   const hash = hashStrShort(value_value);
   const varname = `prev_state_${hash}`;
