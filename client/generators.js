@@ -79,7 +79,7 @@ Blockly.JavaScript.temperature = function (block) {
   const value_device = block.getFieldValue('EW_TEMPERATURE');
   const dev = getDevice[value_device];
   let code = '';
-  if ('temperature' in dev)code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'temperature')) / 100.0`;
+  if (dev && 'temperature' in dev)code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'temperature')) / 100.0`;
   else code = `${ewpreffix}deviceGet(${value_device}, 'currentTemperature')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
@@ -100,7 +100,7 @@ Blockly.JavaScript.humidity = function (block) {
   const value_device = block.getFieldValue('EW_HUMIDITY');
   const dev = getDevice[value_device];
   let code = '';
-  if ('humidity' in dev)code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'humidity')) / 100.0`;
+  if (dev && 'humidity' in dev)code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'humidity')) / 100.0`;
   else code = `${ewpreffix}deviceGet(${value_device}, 'currentHumidity')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };

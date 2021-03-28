@@ -18925,7 +18925,7 @@ Blockly.defineBlocksWithJsonArray = function(a) {
 		var c = a[b];
 		if (c) {
 			var d = c.type;
-			null == d || "" === d ? console.warn("Block definition #" + b + " in JSON array is missing a type attribute. Skipping.") : (Blockly.Blocks[d] && console.warn("Block definition #" + b + ' in JSON array overwrites prior definition of "' + d + '".'), Blockly.Blocks[d] = {
+			null == d || "" === d ? console.warn("Block definition #" + b + " in JSON array is missing a type attribute. Skipping.") : (Blockly.Blocks[d] = {
 				init: Blockly.jsonInitFactory_(c)
 			})
 		} else console.warn("Block definition #" + b + " in JSON array is " + c + ". Skipping.")
