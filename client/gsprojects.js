@@ -4,7 +4,7 @@
 
 import { googleApi } from './google';
 import { removeDriveFileByName, getDriveFilesLike, readDriveFile, updateDriveFileByName, removeDriveFile } from './gdrive';
-import { currentPageIndex, startSpin, stopSpin, insertPageIntoLayout } from './ui';
+import { currentPageIndex, startSpin, stopSpin, insertPageIntoLayout, showPage } from './ui';
 import { GsProject } from './gsproject';
 import { reinject } from './workspace';
 
@@ -205,6 +205,7 @@ export class Projects {
         console.log(project.scriptUri);
         window.open(project.spreadsheet.spreadsheetUrl, project.spreadsheet.spreadsheetUrl);
         window.open(project.scriptUri, project.scriptUri);
+        // showPage(project.scriptUri, 60);
       };
       project.createOrUpdateGoogleScript(project.name, scriptText);
     }

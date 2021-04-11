@@ -512,12 +512,12 @@ function showSheetsMessage(panel) {
   const text = textByID('PLDONATE').replace('<a>', '<a href="https://www.patreon.com/AndrewShpagin" target="_blank">');
   window.w2ui.layout.message(panel, {
     body: `<div style="text-align: center">${text}</div>`,
-    width: 450,
+    width: 600,
     height: 70,
     buttons:
       `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}'); scriptInfo();">${ticon('#000000', 'info', 'INSTRUCTIONS')}</button>` +
-      // `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}');">${ticon('#4CAF50', 'copy', 'COPYGS')}</button>` +
       `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}'); deploy();">${ticon('#4CAF50', 'table', 'OPENGSHEETS')}</button>` +
+      `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}');">${ticon('#4CAF50', 'copy', 'COPYGS')}</button>` +
       `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}')">${textByID('CANCEL')}</button>`,
   });
 }
@@ -684,6 +684,19 @@ function scriptInfo() {
     window.w2ui.layout.sizeTo('bottom', '100%', true);
     window.w2ui.layout.el('bottom').style['white-space'] = 'nowrap';
     window.w2ui.layout.load('bottom', 'slides/slideshow.html');
+  }
+}
+
+export function showPage(uri, percent) {
+  if (!helpTriggered) {
+    triggerHelpMode(true);
+    window.w2ui.layout.hide('right', true);
+    window.w2ui.layout.show('bottom', true);
+    window.w2ui.layout.sizeTo('main', `${100 - percent}%`, true);
+    window.w2ui.layout.sizeTo('bottom', `${percent}%`, true);
+    window.w2ui.layout.el('bottom').style['white-space'] = 'nowrap';
+    console.log('showPage, uri', uri);
+    window.w2ui.layout.load('bottom', uri);
   }
 }
 
