@@ -512,7 +512,7 @@ function showSheetsMessage(panel) {
   const text = textByID('PLDONATE').replace('<a>', '<a href="https://www.patreon.com/AndrewShpagin" target="_blank">');
   window.w2ui.layout.message(panel, {
     body: `<div style="text-align: center">${text}</div>`,
-    width: 600,
+    width: 700,
     height: 70,
     buttons:
       `<button class="w2ui-btn" onclick="hideJs(); w2ui.layout.message('${panel}'); scriptInfo();">${ticon('#000000', 'info', 'INSTRUCTIONS')}</button>` +
