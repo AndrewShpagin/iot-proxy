@@ -99,11 +99,14 @@ export class GsProject {
         });
         console.log('createOrUpdateGoogleScript, request sent');
         request.then(response => {
+          console.log('got response', response);
           this.spreadsheet = response.result;
           this.createScriptForExistingSpeadsheet(name, scriptText);
         }, error => {
+          console.log('got error', error);
           this.check403(error);
         }).catch(error => {
+          console.log('got error1', error);
           this.check403(error);
         });
       } else if (!this.script) {
