@@ -22,6 +22,14 @@ export class GsProject {
     this.page = proj.getEmptyPageIndex();
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  check403(error) {
+    if (('status' in error && error.status === 403) || ('code' in error && error.code === 403)) {
+      // eslint-disable-next-line no-undef
+      w2alert(textByID('ENABLEAPI')).ok(() => window.open('https://script.google.com/home/usersettings', '_blank'));
+    }
+  }
+
   updateScriptContentInGboogleScripts(scriptText) {
     if (this.script) {
       window.gapi.client.script.projects.updateContent({
@@ -49,10 +57,7 @@ export class GsProject {
       }).catch(error => {
         console.error('API error', error);
         // The API encountered a problem.
-        if (('status' in error && error.status === 403) || ('code' in error && error.code === 403)) {
-          // eslint-disable-next-line no-undef
-          w2alert(textByID('ENABLEAPI')).ok(() => window.open('https://script.google.com/home/usersettings', '_blank'));
-        }
+        this.check403(error);
         if (this.errorsCallback) this.errorsCallback(error);
       });
     }
@@ -94,6 +99,8 @@ export class GsProject {
         request.then(response => {
           this.spreadsheet = response.result;
           this.createScriptForExistingSpeadsheet(name, scriptText);
+        }).error(error => {
+          this.check403(error);
         });
       } else if (!this.script) {
         this.createScriptForExistingSpeadsheet(name, scriptText);
