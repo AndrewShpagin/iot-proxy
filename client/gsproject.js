@@ -24,6 +24,7 @@ export class GsProject {
 
   // eslint-disable-next-line class-methods-use-this
   check403(error) {
+    console.log('check403', error);
     if (('status' in error && error.status === 403) || ('code' in error && error.code === 403)) {
       // eslint-disable-next-line no-undef
       w2alert(textByID('ENABLEAPI')).ok(() => window.open('https://script.google.com/home/usersettings', '_blank'));
@@ -99,7 +100,7 @@ export class GsProject {
         request.then(response => {
           this.spreadsheet = response.result;
           this.createScriptForExistingSpeadsheet(name, scriptText);
-        }).catch(error => {
+        }, error => {
           this.check403(error);
         });
       } else if (!this.script) {
