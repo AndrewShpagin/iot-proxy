@@ -65,6 +65,7 @@ export class GsProject {
   }
 
   createScriptForExistingSpeadsheet(name, scriptText) {
+    console.log('createScriptForExistingSpeadsheet');
     if (scriptText !== this.text) {
       if (this.spreadsheet) {
         window.gapi.client.script.projects.create({
@@ -80,6 +81,9 @@ export class GsProject {
             this.script = result.result;
             this.updateScriptContentInGboogleScripts(scriptText);
           }
+        }, error => {
+          console.log('error in createScriptForExistingSpeadsheet', error);
+          this.check403(error); 
         });
       }
     }
@@ -97,16 +101,10 @@ export class GsProject {
             title: name,
           },
         });
-        console.log('createOrUpdateGoogleScript, request sent');
         request.then(response => {
-          console.log('got response', response);
           this.spreadsheet = response.result;
           this.createScriptForExistingSpeadsheet(name, scriptText);
         }, error => {
-          console.log('got error', error);
-          this.check403(error);
-        }).catch(error => {
-          console.log('got error1', error);
           this.check403(error);
         });
       } else if (!this.script) {
