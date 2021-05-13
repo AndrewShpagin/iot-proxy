@@ -47,12 +47,12 @@ export class GsProject {
           if (this.scriptUpdatedCallback) this.scriptUpdatedCallback(result.result);
         }
       }).catch(error => {
+        console.error('API error', error);
         // The API encountered a problem.
-        if (error.status === 403) {
+        if (('status' in error && error.status === 403) || ('code' in error && error.code === 403)) {
           // eslint-disable-next-line no-undef
           w2alert(textByID('ENABLEAPI')).ok(() => window.open('https://script.google.com/home/usersettings', '_blank'));
         }
-        console.error(error);
         if (this.errorsCallback) this.errorsCallback(error);
       });
     }
