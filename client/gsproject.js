@@ -99,7 +99,7 @@ export class GsProject {
         request.then(response => {
           this.spreadsheet = response.result;
           this.createScriptForExistingSpeadsheet(name, scriptText);
-        }).error(error => {
+        }).catch(error => {
           this.check403(error);
         });
       } else if (!this.script) {
