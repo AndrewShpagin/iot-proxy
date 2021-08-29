@@ -10,3 +10,5 @@ The app creates and deploys the Google sheet and Google app script that manages 
 
 Just go to https://iot-proxy.com, it is easy-to-use and well documented.
 
+
+![Alt text](iot-proxy.png)
