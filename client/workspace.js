@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/extensions */
 /* eslint-disable no-param-reassign */
@@ -236,7 +237,11 @@ function setupDroplists(devices) {
             Object.entries(devices).forEach(el => {
               const device = el[1];
               if (check.some(prop => prop in device)) {
-                arg.options.push([device.name, `'${device.deviceid}'/*${device.name}*/`]);
+                if (arg.name === 'EW_DEVICE' && device.switches) {
+                  for (const s of device.switches) {
+                    arg.options.push([`${device.name} [OUTLET:${s.outlet}]`, `'${device.deviceid}'/*${device.name}*/`]);
+                  }
+                } else arg.options.push([device.name, `'${device.deviceid}'/*${device.name}*/`]);
               }
             });
             if (arg.options.length === 0) {
