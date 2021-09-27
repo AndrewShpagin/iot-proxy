@@ -237,8 +237,8 @@ function setupDroplists(devices) {
             Object.entries(devices).forEach(el => {
               const device = el[1];
               if (check.some(prop => prop in device)) {
-                if (arg.name === 'EW_DEVICE' && device.switches) {
-                  for (const s of device.switches) {
+                if (arg.name === 'EW_DEVICE' && device.params && device.params.switches) {
+                  for (const s of device.params.switches) {
                     arg.options.push([`${device.name} [OUTLET:${s.outlet}]`, `'${device.deviceid}'/*${device.name}*/`]);
                   }
                 } else arg.options.push([device.name, `'${device.deviceid}'/*${device.name}*/`]);
