@@ -44,6 +44,10 @@ export class GoogleSignIn {
         console.log('this.signed', this.signed);
         this.statusCallback(this.signed);
         this.ready = true;
+        if (this.signed) {
+          const event = new Event('loggedInGoogle');
+          document.dispatchEvent(event);
+        }
       }, error => {
         console.log(JSON.stringify(error, null, 2));
         this.errorCallback(error);
