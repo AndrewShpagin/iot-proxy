@@ -129,8 +129,6 @@ Blockly.JavaScript.humidity = function (block) {
   const value_device = block.getFieldValue('EW_HUMIDITY');
   const dev = getDevice(value_device);
   let code = '';
-  console.log(value_device);
-  console.log(dev);
   if (dev && 'humidity' in dev)code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'humidity')) / 100.0`;
   else code = `${ewpreffix}deviceGet(${value_device}, 'currentHumidity')`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
