@@ -20,6 +20,7 @@ export class GsProject {
     this.version = 0;
     this.guid = nanoid();
     this.page = proj.getEmptyPageIndex();
+    this.shouldSave = false;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -79,11 +80,12 @@ export class GsProject {
             if (this.errorsCallback) this.errorsCallback(result.error);
           } else {
             this.script = result.result;
+            this.shouldSave = true;
             this.updateScriptContentInGboogleScripts(scriptText);
           }
         }, error => {
           console.log('error in createScriptForExistingSpeadsheet', error);
-          this.check403(error); 
+          this.check403(error);
         });
       }
     }
@@ -103,6 +105,7 @@ export class GsProject {
         });
         request.then(response => {
           this.spreadsheet = response.result;
+          this.shouldSave = true;
           this.createScriptForExistingSpeadsheet(name, scriptText);
         }, error => {
           this.check403(error);

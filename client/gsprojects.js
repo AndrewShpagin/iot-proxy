@@ -220,7 +220,8 @@ export class Projects {
     const project = this.getProjectByGuid(guid);
     const L1 = project.blocks ? project.blocks.length : -1;
     const L2 = blocks.length;
-    if (L1 !== L2 || pagename !== project.name || force) {
+    if (L1 !== L2 || pagename !== project.name || force || project.shouldSave) {
+      project.shouldSave = false;
       project.blocks = blocks;
       if ('version' in project && typeof (project.version) === 'number')project.version++;
       else project.version = 0;
