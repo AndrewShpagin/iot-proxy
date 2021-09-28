@@ -82,6 +82,7 @@ export class GsProject {
             this.script = result.result;
             this.shouldSave = true;
             this.updateScriptContentInGboogleScripts(scriptText);
+            proj.storeCurrentProject();
           }
         }, error => {
           console.log('error in createScriptForExistingSpeadsheet', error);
@@ -107,6 +108,7 @@ export class GsProject {
           this.spreadsheet = response.result;
           this.shouldSave = true;
           this.createScriptForExistingSpeadsheet(name, scriptText);
+          proj.storeCurrentProject();
         }, error => {
           this.check403(error);
         });
