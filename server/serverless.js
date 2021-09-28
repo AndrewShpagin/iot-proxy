@@ -106,7 +106,7 @@ function deviceInfo(element) {
 }
 
 async function proxyRequest(path0) {
-  console.log('proxyRequest', path0);
+  // console.log('proxyRequest', path0);
   let path = path0;
   let answer = '';
   const connection = await ewconnect(path);

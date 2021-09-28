@@ -280,7 +280,14 @@ setLang(curLanguage());
 let devices = {};
 
 export function getDevice(dev) {
-  return devices[dev];
+  let d = dev;
+  const p = dev.indexOf('/*');
+  if (p > 0) d = dev.slice(0, p);
+  if (d.length > 2) {
+    if (d[0] === '\'')d = d.slice(1);
+    if (d[d.length - 1] === '\'')d = d.slice(0, d.length - 1);
+  }
+  return devices[d];
 }
 
 export function clearDevices() {
