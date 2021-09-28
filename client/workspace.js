@@ -226,6 +226,7 @@ function setupDroplists(devices) {
     EW_DEVICE: ['deviceid'],
     EW_MOTION: ['motion'],
     EW_BATTERY: ['battery'],
+    EW_BRIGHTNESS: ['brightness'],
   };
   if (devices && Object.keys(devices).length) {
     customBlocks.forEach(block => {
@@ -237,9 +238,9 @@ function setupDroplists(devices) {
             Object.entries(devices).forEach(el => {
               const device = el[1];
               if (check.some(prop => prop in device)) {
-                if (arg.name === 'EW_DEVICE' && device.params && device.params.switches) {
-                  for (const s of device.params.switches) {
-                    arg.options.push([`${device.name} [OUTLET:${s.outlet}]`, `'${device.deviceid}'/*${device.name}*/`]);
+                if (arg.name === 'EW_DEVICE' && device.switches) {
+                  for (const s of device.switches) {
+                    arg.options.push([`${device.name} [${s.outlet}]`, `'${device.deviceid}'/*${device.name}, [outlet:${s.outlet}]*/`]);
                   }
                 } else arg.options.push([device.name, `'${device.deviceid}'/*${device.name}*/`]);
               }
@@ -350,7 +351,7 @@ export function updateDevices(successCallback, failCallback) {
         try {
           const dev1 = JSON.parse(res);
           if (JSON.stringify(dev1) !== JSON.stringify(devices)) {
-            console.log('Devices list updated!');
+            console.log('Devices list updated!', dev1);
             devices = dev1;
             localStorage.setItem(`dev_${getUserEmail()}`, res);
             reinject();

@@ -27,6 +27,16 @@ export function setPreffix(prf) {
   ewpreffix = prf;
 }
 
+function gang(name) {
+  if (name.length > 8) {
+    const c3 = name.indexOf('[outlet:');
+    if (c3 >= 0) {
+      const c4 = name.indexOf(']', c3 + 8);
+      return parseInt(name.slice(c3 + 8, c4), 10);
+    }
+  }
+  return -1;
+}
 Blockly.JavaScript.switchedOn = function (block) {
   const value_device = block.getFieldValue('EW_DEVICE');
   const code = `${ewpreffix}deviceGet(${value_device}, 'switch') === 'on'`;
@@ -67,12 +77,24 @@ Blockly.JavaScript.pause = function (block) {
 
 Blockly.JavaScript.turnon = function (block) {
   const value_device = block.getFieldValue('EW_DEVICE');
-  return `${ewpreffix}deviceSet(${value_device}, {switch: 'on', pulse: 'off'});\n`;
+  const g = gang(value_device);
+  return g === -1 ?
+    `${ewpreffix}deviceSet(${value_device}, {switch: 'on', pulse: 'off'});\n` :
+    `${ewpreffix}deviceSet(${value_device}, {switches:[{switch: "on", outlet: ${g} }]});\n`;
 };
 
 Blockly.JavaScript.turnoff = function (block) {
   const value_device = block.getFieldValue('EW_DEVICE');
-  return `${ewpreffix}deviceSet(${value_device}, {switch: 'off', pulse: 'off'});\n`;
+  const g = gang(value_device);
+  return g === -1 ?
+    `${ewpreffix}deviceSet(${value_device}, {switch: 'off', pulse: 'off'});\n` :
+    `${ewpreffix}deviceSet(${value_device}, {switches:[{switch: "off", outlet: ${g} }]});\n`;
+};
+
+Blockly.JavaScript.setbrightness = function (block) {
+  const value_device = block.getFieldValue('EW_BRIGHTNESS');
+  const value_value = Blockly.JavaScript.valueToCode(block, 'Value', Blockly.JavaScript.ORDER_ATOMIC);
+  return `${ewpreffix}deviceSet(${value_device}, {brightness: ${value_value}});\n`;
 };
 
 Blockly.JavaScript.temperature = function (block) {
@@ -81,6 +103,13 @@ Blockly.JavaScript.temperature = function (block) {
   let code = '';
   if (dev && 'temperature' in dev)code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'temperature')) / 100.0`;
   else code = `${ewpreffix}deviceGet(${value_device}, 'currentTemperature')`;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.brightness = function (block) {
+  const value_device = block.getFieldValue('EW_BRIGHTNESS');
+  let code = '';
+  code = `${ewpreffix}toInt(${ewpreffix}deviceGet(${value_device}, 'brightness'))`;
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
@@ -223,20 +252,29 @@ Blockly.JavaScript.operaterange = function (block) {
 Blockly.JavaScript.turnontemporary = function (block) {
   const value_device = block.getFieldValue('EW_DEVICE');
   const value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `${ewpreffix}deviceSet(${value_device}, {switch: 'on', pulse: 'on', pulseWidth: ${value_time}*1000});\n`;
+  const g = gang(value_device);
+  const code = g === -1 ?
+    `${ewpreffix}deviceSet(${value_device}, {switch: 'on', pulse: 'on', pulseWidth: ${value_time}*1000});\n` :
+    `${ewpreffix}deviceSet(${value_device}, {switches: [{switch: 'on', outlet: ${g}}], pulses: [{pulse: 'on', width: ${value_time}*1000, outlet: ${g}}]});\n`;
   return code;
 };
 
 Blockly.JavaScript.turnonpulsemode = function (block) {
   const value_device = block.getFieldValue('EW_DEVICE');
+  const g = gang(value_device);
   const value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `${ewpreffix}deviceSet(${value_device}, {pulse: 'on', pulseWidth: ${value_time}*1000});\n`;
+  const code = g === -1 ?
+    `${ewpreffix}deviceSet(${value_device}, {pulse: 'on', pulseWidth: ${value_time}*1000});\n` :
+    `${ewpreffix}deviceSet(${value_device}, {pulses: [{pulse: 'on', width: ${value_time}*1000, outlet: ${g}}]});\n`;
   return code;
 };
 
 Blockly.JavaScript.turnoffpulsemode = function (block) {
   const value_device = block.getFieldValue('EW_DEVICE');
-  const code = `${ewpreffix}deviceSet(${value_device}, {pulse: 'off'});\n`;
+  const g = gang(value_device);
+  const code = g === -1 ?
+    `${ewpreffix}deviceSet(${value_device}, {pulse: 'off'});\n` :
+    `${ewpreffix}deviceSet(${value_device}, {pulses: [{pulse: 'off', outlet: ${g}}]});\n`;
   return code;
 };
 
@@ -399,18 +437,31 @@ Blockly.JavaScript.onlineofflinepassed = function (block) {
 
 Blockly.JavaScript.isonline = function (block) {
   const value_device = block.getFieldValue('EW_DEVICE');
+  const g = gang(value_device);
   const dropdown_state = block.getFieldValue('STATE');
   let code = '';
   if (dropdown_state === 'ONLINE') code = `${ewpreffix}deviceGet(${value_device}, 'online')`;
   if (dropdown_state === 'OFFLINE')code = `!${ewpreffix}deviceGet(${value_device}, 'online')`;
-  if (dropdown_state === 'ON')code = `${ewpreffix}deviceGet(${value_device}, 'switch') === 'on'`;
-  if (dropdown_state === 'OFF')code = `${ewpreffix}deviceGet(${value_device}, 'switch') === 'off'`;
+  if (dropdown_state === 'ON') {
+    code = g === -1 ?
+      `${ewpreffix}deviceGet(${value_device}, 'switch') === 'on'` :
+      `${ewpreffix}deviceGet(${value_device})', 'params.switches[${g}].switch') === 'on'`;
+  }
+  if (dropdown_state === 'OFF') {
+    code = g === -1 ?
+      `${ewpreffix}deviceGet(${value_device}, 'switch') === 'off'` :
+      `${ewpreffix}deviceGet(${value_device}, 'params.switches[${g}].switch') === 'off'`;
+  }
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript.statechanged = function (block) {
   const dropdown_ew_device = block.getFieldValue('EW_DEVICE');
-  const dropdown_state = block.getFieldValue('STATE');
+  const g = gang(dropdown_ew_device);
+  let dropdown_state = block.getFieldValue('STATE');
+  if (g !== -1 && dropdown_state === 'switch') {
+    dropdown_state = `params.switches[${g}].switch`;
+  }
   const statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
   const code = `if (${ewpreffix}stateChanged(${dropdown_ew_device}, '${dropdown_state}')) {\n${statements_name}}\n`;
   const s = `${dropdown_ew_device}+${dropdown_state}`;

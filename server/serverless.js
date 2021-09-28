@@ -97,9 +97,11 @@ function deviceInfo(element) {
   opt('battery');
   opt('motion');
   opt('switch');
+  opt('switches');
   opt('online');
   opt('power');
   opt('name');
+  opt('brightness');
   return object;
 }
 

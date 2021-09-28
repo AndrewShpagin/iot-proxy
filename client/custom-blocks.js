@@ -137,6 +137,44 @@ const customBlocks =
       helpUrl: '',
     },
     {
+      type: 'brightness',
+      message0: '%{BKY_BRIGHTNESS1}',
+      args0: [
+        {
+          type: 'field_dropdown',
+          name: 'EW_BRIGHTNESS',
+          options: [[defDevs, '0']],
+        },
+      ],
+      inputsInline: true,
+      output: 'Number',
+      colour: 240,
+      tooltip: '%{BKY_REPORTB}',
+      helpUrl: '',
+    },
+    {
+      type: 'setbrightness',
+      message0: '%{BKY_SETBRIGHTNESS2}',
+      args0: [
+        {
+          type: 'field_dropdown',
+          name: 'EW_BRIGHTNESS',
+          options: [[defDevs, '0']],
+        },
+        {
+          type: 'input_value',
+          name: 'Value',
+          check: 'Number',
+        },
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: 240,
+      tooltip: '%{BKY_SETBR}',
+      helpUrl: '',
+    },
+    {
       type: 'battery',
       message0: '%{BKY_BATTERY1}',
       args0: [

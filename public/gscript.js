@@ -176,6 +176,7 @@ function ewGetDeviceState(device, field) {
   const res = ewGetDevice(device);
   let result = '';
   if (res) {
+    if (field.indexOf('.') >= 0) result = eval(`res.${field}`);
     if (field in res) result = res[field];
     if ('params' in res && field in res.params) result = res.params[field];
     console.log(`Got device ${device} (${res.name}), field ${field}, got state: ${result}`);
