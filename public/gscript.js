@@ -14,15 +14,16 @@
 /// The code below may be used witout any restrictions.
 /// We will be thankful if you will refer the iot-proxy.com
 
-let email = 'useremail';
-let password = 'userpassword';
-let region = 'userregion';
+let email = '';
+let password = '';
+let region = '';
 let devices = null;
 let verbose = false;
 let verboseLogin = false;
 const devcache = {};
 const mySheet = SpreadsheetApp.getActiveSheet();
-let lastUnusedRow = mySheet.getLastRow() + 1;
+if (!mySheet)console.log('ERROR! No any Google sheet corresponds to the script! The sheed should be created first, then this script attached to the sheet using Tools->Script editor.');
+let lastUnusedRow = mySheet ? mySheet.getLastRow() + 1 : 1;
 const scriptProperties = PropertiesService.getScriptProperties();
 const prevRunTime = getProperty('prevTime');
 const passedSinceLastRun = prevRunTime ? (new Date() - new Date(prevRunTime)) / 1000.0 : 0.0;
@@ -708,3 +709,9 @@ function setGlobalProperty(key, value) {
   }
   DriveApp.createFile(key, value);
 }
+
+/// The user data placed at the end to avoid exposing the sensitive data
+
+email = 'useremail';
+password = 'userpassword';
+region = 'userregion';
