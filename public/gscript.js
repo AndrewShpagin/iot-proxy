@@ -21,8 +21,11 @@ let devices = null;
 let verbose = false;
 let verboseLogin = false;
 const devcache = {};
+
 const mySheet = SpreadsheetApp.getActiveSheet();
 if (!mySheet)console.log('ERROR! No any Google sheet corresponds to the script! The sheed should be created first, then this script attached to the sheet using Tools->Script editor.');
+else console.log('The attached sheet:', mySheet.getName());
+
 let lastUnusedRow = mySheet ? mySheet.getLastRow() + 1 : 1;
 const scriptProperties = PropertiesService.getScriptProperties();
 const prevRunTime = getProperty('prevTime');
@@ -45,7 +48,7 @@ function setup(mail, pass, reg) {
   region = reg;
 }
 
-const APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
+let APP_ID = '';
 function baseUrl() {
   return `https://${region}-api.coolkit.cc:8080/api/user`;
 }
@@ -715,3 +718,4 @@ function setGlobalProperty(key, value) {
 email = 'useremail';
 password = 'userpassword';
 region = 'userregion';
+APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
