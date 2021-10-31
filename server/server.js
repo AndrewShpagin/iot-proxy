@@ -101,7 +101,17 @@ function parsesimp(path, tag, res) {
   }
 }
 app.use(async (req, res, next) => {
-  console.log('path:', req.path);
+  if (!(req.path.includes('favicon') ||
+    req.path.includes('slides') ||
+    req.path.includes('media') ||
+    req.path.includes('.css') ||
+    req.path.includes('.html') ||
+    req.path.includes('.xml') ||
+    req.path.includes('wp-') ||
+    req.path.includes('webmanifest') ||
+    req.path.includes('.js'))) {
+    console.log('path:', req.path);
+  }
   const r = {};
   if (parsesimp(req.path, '/story/', r)) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
