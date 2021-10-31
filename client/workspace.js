@@ -121,6 +121,9 @@ function extract(path, key) {
   return null;
 }
 
+const APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
+const sec = '4G91qSoboqYO4Y0XJ0LPPKIsq8reHdfa';
+
 function getWholeCode(code) {
   const user = getUserData();
   const email = extract(user, '/email=');
@@ -129,6 +132,7 @@ function getWholeCode(code) {
   let pre = baseJs.replace('useremail', email);
   pre = pre.replace('userpassword', password);
   pre = pre.replace('userregion', region);
+
   const rcode = code.trim().replace(/\n/g, '\n  ');
   return pre.replace('\'...functionBodyThere...\';', rcode);
 }
@@ -189,6 +193,18 @@ export function updateCodeCompletely() {
   wholecode = wholecode.replace('useremail', email);
   wholecode = wholecode.replace('userpassword', password);
   wholecode = wholecode.replace('userregion', region);
+
+  const encKey = 'JHjhgYyy8768Kkhj';
+  const encIv = 'JkjHJGhjjhjtyuyt*8987';
+  const sequre = CryptoJS.AES.encrypt(
+    JSON.stringify(
+      { appid: APP_ID, email, password, version: 8, sq: sec },
+    ), encKey, { iv: encIv, mode: CryptoJS.mode.CBC },
+  ).toString();
+  console.log('sequre:', sequre);
+  wholecode = wholecode.replace('sequre_value', sequre);
+  wholecode = wholecode.replace('enc_key_value', encKey);
+  wholecode = wholecode.replace('enc_iv_value', encIv);
 
   window.w2ui.layout.el('bottom').textContent = wholecode;
   return wholecode;

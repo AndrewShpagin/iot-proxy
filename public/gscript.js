@@ -91,19 +91,27 @@ function tryEw(fn) {
 
 function ewLogin() {
   if (!token) {
-    if (email.length && password.length && region.length) {
-      const data = JSON.stringify({ appid: APP_ID, email, password, ts: Math.floor(Date.now() / 1000), version: 8 });
-      const encoded = Utilities.base64Encode(Utilities.computeHmacSha256Signature(data, '4G91qSoboqYO4Y0XJ0LPPKIsq8reHdfa'));
-      const options = { headers: { Authorization: `Sign ${encoded}` }, method: 'post', contentType: 'application/json', payload: data };
-      const answ = JSON.parse(UrlFetchApp.fetch(`${baseUrl()}/login`, options).getContentText());
-      if ('at' in answ) {
-        console.log('Login to eWeLink successful.');
-        token = answ.at;
-        setGlobalProperty(`auth_${email}`, token);
-        setProperty(`auth_${email}`, token);
-        return true;
-      } else {
-        console.error('Login to eWeLink failed.');
+    if (email.length && sequre.length) {
+      const obj = JSON.parse(cCryptoGS.CryptoJS.AES.decrypt(sequre, encKey, { iv: encIv, mode: cCryptoGS.CryptoJS.mode.CBC }).toString());
+      if (obj.appid) {
+        // { appid: APP_ID, email, password, ts: Math.floor(Date.now() / 1000), version: 8 }
+        // '4G91qSoboqYO4Y0XJ0LPPKIsq8reHdfa'
+        obj.ts = Math.floor(Date.now() / 1000);
+        const { se } = obj;
+        delete (obj.se);
+        const data = JSON.stringify(obj);
+        const encoded = Utilities.base64Encode(Utilities.computeHmacSha256Signature(data, se));
+        const options = { headers: { Authorization: `Sign ${encoded}` }, method: 'post', contentType: 'application/json', payload: data };
+        const answ = JSON.parse(UrlFetchApp.fetch(`${baseUrl()}/login`, options).getContentText());
+        if ('at' in answ) {
+          console.log('Login to eWeLink successful.');
+          token = answ.at;
+          setGlobalProperty(`auth_${email}`, token);
+          setProperty(`auth_${email}`, token);
+          return true;
+        } else {
+          console.error('Login to eWeLink failed.');
+        }
       }
     } else {
       console.error('Email, password, region not specified. Use setup(...) first.');
@@ -657,6 +665,9 @@ function forAllRecentUnreadMails(from, subject, body, todo) {
   }
 }
 
+const encKey = 'enc_key_value';
+const encIv = 'enc_iv_value';
+
 /**
  * Get globally stored property related to this script
  *
@@ -719,3 +730,4 @@ email = 'useremail';
 password = 'userpassword';
 region = 'userregion';
 APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
+const sequre = 'sequre_value';
