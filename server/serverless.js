@@ -26,6 +26,7 @@ function extractLoginData(path) {
   const Password = extract(path, '/password=');
   const Region = extract(path, '/region=');
   if (Email && Password && Region) {
+    console.log('request by:', Email);
     return {
       email: Email,
       password: Password,

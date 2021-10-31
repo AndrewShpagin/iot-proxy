@@ -108,6 +108,7 @@ app.use(async (req, res, next) => {
     req.path.includes('.html') ||
     req.path.includes('.xml') ||
     req.path.includes('wp-') ||
+    req.path.includes('xRet78uz') ||
     req.path.includes('webmanifest') ||
     req.path.includes('.js'))) {
     console.log('path:', req.path);
