@@ -430,3 +430,4 @@ export function reinject() {
   }
   window.Blockly.svgResize(workspace);
 }
+document.reinject = reinject;

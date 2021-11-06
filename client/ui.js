@@ -654,6 +654,7 @@ export function insertPageIntoLayout(pidx) {
 }
 
 export function removeHelp() {
+  document.hideLeft();
   if (helpTriggered) {
     if (!getUserData()) {
       setTimeout(() => {
@@ -675,6 +676,7 @@ export function removeHelp() {
   }
 }
 function scriptInfo() {
+  document.hideLeft();
   if (!helpTriggered) {
     triggerHelpMode(true);
     window.w2ui.layout.hide('right', true);
@@ -711,6 +713,10 @@ document.addEventListener('language', () => {
     forceSlideshow();
   }
 });
+
+document.refreshLayout = () => {
+  window.w2ui.refresh();
+};
 
 window.openLoginPopup = openLoginPopup;
 window.downloadScript = downloadScript;
