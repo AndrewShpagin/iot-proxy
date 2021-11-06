@@ -14,6 +14,7 @@
   <script src="jquery.min.js"></script>
   <script type="text/javascript" src="w2ui-1.5.rc1.min.js"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
+  <script src="https://use.fontawesome.com/1d41d85efe.js"></script>
 
   <script src="blockly_compressed.js"></script>
   <script src="javascript_compressed.js"></script>
@@ -59,6 +60,57 @@
       grid-template-columns: auto 1fr;
     }
 
+    .hlayout{
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      background-color: #333;
+    }
+
+    .zerow {
+      width: 0pt;
+    }
+
+    .sidemenu{
+      height: 20px;
+      display: grid;
+      width:max-content;
+      grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto;
+      
+    }
+
+    .sidemenu a {
+      float: left;
+      color: #f2f2f2;
+      text-align: left;
+      padding: 14px 14px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .sidemenu div {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 1px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .sidemenu a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .sidemenu a.active {
+      height: 100%;
+      background-color: #4CAF50;
+      text-shadow: 0px 1px 0px #2f6627;
+      color: white;
+      font-weight: bold;
+    }
+
     .topnav {
       background-color: #333;
       height: 33pt;
@@ -70,6 +122,7 @@
     }
 
     .headimage {
+      cursor: pointer;
       position: absolute;      
       height: 39.3pt;
       z-index: 2147483647;
@@ -79,9 +132,9 @@
       float: left;
       color: #f2f2f2;
       text-align: center;
-      padding: 14px 16px;
+      padding: 13px 16px;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 16px;
     }
 
     .topnav div {
@@ -90,7 +143,7 @@
       text-align: center;
       padding: 14px 16px;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 18px;
     }
 
     .topnav a:hover {
@@ -214,24 +267,33 @@
     <div class="headline">
       <div class="imgbg">
         <!--a tid="HEADER" class="active" href="#home">Manage eWeLink devices via Blockly and GoogleSheets</a-->
-        <img src="/iotheader.png" class="headimage" href="#home"></img>
+        <img src="/menu_iotheader.png" class="headimage" onclick="toggleLeftMenu()"></img>
       </div>
       <div class="topnav">
-        <div style="width: 105px"></div>
-        <a tid="HOWITWORKS" onclick="scriptInfo()"><i class="fa fa-info"></i> How it works?</a>
-        <a tid="MANUAL" href="https://docs.google.com/document/d/1ckwvFJqhOlyuerxbAfL47KA1mOulG-i4DDkFRVevomY/edit?usp=sharing" target="_blank" rel="noopener noreferrer"><i class="fab fa-readme"></i> Manual</a>
-        <a id="DEVLOGIN" tid="DEVLOGIN" onclick="openLoginPopup()" style="display: none;"><i class="fas fa-microchip"></i>
+        <div style="width: 135px"></div>
+        <!--a tid="HOWITWORKS" onclick="scriptInfo()"><i class="fa fa-info"></i> How it works?</a-->
+        <!--a tid="MANUAL" href="https://docs.google.com/document/d/1ckwvFJqhOlyuerxbAfL47KA1mOulG-i4DDkFRVevomY/edit?usp=sharing" target="_blank" rel="noopener noreferrer"><i class="fab fa-readme"></i> Manual</a-->
+        <a id="DEVLOGIN" tid="DEVLOGIN" onclick="openLoginPopup()" style="display: none;"><i class="fa fa-microchip" aria-hidden="true"></i>
           Login</a>
-        <a id="LOGOUT" tid="LOGOUT" onclick="logoutPopup()" style="display: none;"><i class="far fa-window-close"></i> Log out</a>
-        <a tid="AUTHOR" href="https://www.patreon.com/AndrewShpagin" target="_blank"><i class="fab fa-patreon"></i>
-          About</a>
-        <a tid="SETLANG" onclick="setLang()"><i class="fas fa-globe"></i> RU</a>
+        <a id="LOGOUT" tid="LOGOUT" onclick="logoutPopup()" style="display: none;"><i class="fa fa-ban" aria-hidden="true"></i> Log out</a>
+        <!--a tid="AUTHOR" href="https://www.patreon.com/AndrewShpagin" target="_blank"><i class="fab fa-patreon"></i>
+          About</a-->
+        <a tid="SETLANG" onclick="setLang()"><i class="fa fa-globe" aria-hidden="true"></i> RU</a>
 
-        <a id="gsignin" style="display: none;"><i class="fab fa-google"></i> Sign in</a>
-        <a id="gsignout" style="display: none;"><i class="fab fa-google"></i> Sign out</a>
+        <a id="gsignin" style="display: none;"><i class="fa fa-google" aria-hidden="true"></i> Sign in</a>
+        <a id="gsignout" style="display: none;"><i class="fa fa-google" aria-hidden="true"></i> Sign out</a>
       </div>
     </div>
-    <div id="layout" style="width: 100%; height: 100%;"></div>
+    <div class="hlayout">
+      <div id="sidemenu" class="zerow">
+        <a tid="HOWITWORKS" onclick="scriptInfo()"><i class="fa fa-info"></i> How it works?</a>
+        <a tid="MANUAL" href="https://docs.google.com/document/d/1ckwvFJqhOlyuerxbAfL47KA1mOulG-i4DDkFRVevomY/edit?usp=sharing" target="_blank" rel="noopener noreferrer"><i class="fa fa-book" aria-hidden="true"></i> Manual</a>       
+        <a href="https://www.facebook.com/AndrewShpagin" target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook</a>
+        <a href="https://github.com/AndrewShpagin/eWeLink-blockly" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> GitHub</a>
+        <a tid="AUTHOR" href="https://www.patreon.com/AndrewShpagin" target="_blank"><i class="fa fa-user" aria-hidden="true"></i> About</a>        
+      </div>
+      <div id="layout" style="width: 100%; height: 100%;"></div>
+    </div>
     
   </div>
   <div id="cookieConsent">
@@ -249,6 +311,15 @@
         $("#cookieConsent").fadeOut(200);
       });
     });
+    function toggleLeftMenu(){
+      if($("#sidemenu").hasClass("zerow")){
+        $("#sidemenu").removeClass("zerow");
+        $("#sidemenu").addClass("sidemenu");        
+      } else{
+        $("#sidemenu").removeClass("sidemenu");
+        $("#sidemenu").addClass("zerow");   
+      }
+    }
   </script>
 </body>
 
