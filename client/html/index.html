@@ -51,11 +51,28 @@
       display: grid;
       grid-template-rows: auto 1fr auto;
     }
+    
+    .headline {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: auto 1fr;
+    }
 
     .topnav {
-      overflow: hidden;
       background-color: #333;
       height: 33pt;
+    }
+
+    .imgbg {
+      background-color: white;
+      height: 33pt;
+    }
+
+    .headimage {
+      position: absolute;      
+      height: 39.3pt;
+      z-index: 2147483647;
     }
 
     .topnav a {
@@ -185,22 +202,27 @@
 
 <body>
   <div class="container">
-    <div id="mainmenu" class="topnav">
-      <a tid="HEADER" class="active" href="#home">Manage eWeLink devices via Blockly and GoogleSheets</a>
-      <a tid="HOWITWORKS" onclick="scriptInfo()"><i class="fa fa-info"></i> How it works?</a>
-      <a tid="MANUAL" href="https://docs.google.com/document/d/1ckwvFJqhOlyuerxbAfL47KA1mOulG-i4DDkFRVevomY/edit?usp=sharing" target="_blank" rel="noopener noreferrer"><i class="fab fa-readme"></i> Manual</a>
-      <a id="DEVLOGIN" tid="DEVLOGIN" onclick="openLoginPopup()" style="display: none;"><i class="fas fa-user"></i>
-        Login</a>
-      <a id="LOGOUT" tid="LOGOUT" onclick="logoutPopup()" style="display: none;"><i class="fas fa-user"></i> Log out</a>
-      <a tid="AUTHOR" href="https://www.patreon.com/AndrewShpagin" target="_blank"><i class="fab fa-patreon"></i>
-        About</a>
-      <a tid="SETLANG" onclick="setLang()"><i class="fas fa-globe"></i> RU</a>
+    <div class="headline">
+      <div class="imgbg">
+        <!--a tid="HEADER" class="active" href="#home">Manage eWeLink devices via Blockly and GoogleSheets</a-->
+        <img src="/iotheader.png" class="headimage" href="#home"></img>
+      </div>
+      <div class="topnav">
+        <a tid="HOWITWORKS" onclick="scriptInfo()"><i class="fa fa-info"></i> How it works?</a>
+        <a tid="MANUAL" href="https://docs.google.com/document/d/1ckwvFJqhOlyuerxbAfL47KA1mOulG-i4DDkFRVevomY/edit?usp=sharing" target="_blank" rel="noopener noreferrer"><i class="fab fa-readme"></i> Manual</a>
+        <a id="DEVLOGIN" tid="DEVLOGIN" onclick="openLoginPopup()" style="display: none;"><i class="fas fa-microchip"></i>
+          Login</a>
+        <a id="LOGOUT" tid="LOGOUT" onclick="logoutPopup()" style="display: none;"><i class="far fa-window-close"></i> Log out</a>
+        <a tid="AUTHOR" href="https://www.patreon.com/AndrewShpagin" target="_blank"><i class="fab fa-patreon"></i>
+          About</a>
+        <a tid="SETLANG" onclick="setLang()"><i class="fas fa-globe"></i> RU</a>
 
-      <a id="gsignin" style="display: none;"><i class="fab fa-google"></i> Sign in</a>
-      <a id="gsignout" style="display: none;"><i class="fab fa-google"></i> Sign out</a>
-
+        <a id="gsignin" style="display: none;"><i class="fab fa-google"></i> Sign in</a>
+        <a id="gsignout" style="display: none;"><i class="fab fa-google"></i> Sign out</a>
+      </div>
     </div>
     <div id="layout" style="width: 100%; height: 100%;"></div>
+    
   </div>
   <div id="cookieConsent">
     <div id="closeCookieConsent">x</div>
