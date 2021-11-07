@@ -255,6 +255,13 @@
       border-radius: 3px;
     }
 
+    .w2ui-toolbar table.w2ui-button .w2ui-tb-caption {
+      font-size: 16px;
+      padding: 4px 4px 0px 8px;
+    }
+
+   
+
   </style>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-211549201-1">
@@ -275,16 +282,14 @@
   <div class="container">
     <div class="headline">
       <div class="imgbg">
-        <!--a tid="HEADER" class="active" href="#home">Manage eWeLink devices via Blockly and GoogleSheets</a-->
         <img src="/menu_iotheader.png" class="headimage" onclick="toggleLeftMenu()"></img>
       </div>
       <div class="topnav">
-        <div style="width: 138px"></div>    
-           
+        <div style="width: 138px"></div>           
         <a id="gsignin" style="display: none;float: right;"><i class="fa fa-google" aria-hidden="true"></i> Sign in</a>
         <a id="gsignout" style="display: none;float: right;"><i class="fa fa-google" aria-hidden="true"></i> Sign out</a>
         <a id="DEVLOGIN" tid="DEVLOGIN" onclick="openLoginPopup()" style="display: none;float: right;"><i class="fa fa-plus-circle" aria-hidden="true"></i> Login</a> 
-        <div style="float: left;"><i class="fa fa-microchip" aria-hidden="true"></i> Manage the IoT devices with Scratch-blocks!</div>  
+        <div style="float: left;"><i class="fas fa-laptop-code"></i> Manage the IoT devices with Scratch-blocks!</div>  
       </div>
     </div>
     <div class="hlayout">
@@ -324,13 +329,6 @@
     function toggleLeftMenu(){
       if(OpenState)closeNav();
       else openNav();
-      /*
-      if($("#sidemenu").hasClass("zerow")){
-        document.showLeft();       
-      } else{
-        document.hideLeft();
-      }
-      */
     }
     var OpenState = false;
     document.hideLeft = () => {
