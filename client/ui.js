@@ -701,6 +701,7 @@ export function showPage(uri, percent) {
     window.w2ui.layout.load('bottom', uri);
   }
 }
+document.showPage = showPage;
 
 export function forceSlideshow() {
   window.w2ui.layout.load('bottom', 'slides/slideshow.html');

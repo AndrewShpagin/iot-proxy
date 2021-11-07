@@ -69,57 +69,9 @@
       background-color: #333;
     }
 
-    .zerow {
-      width: 0pt;
-      background-color: white;
-      color:white;
-      font-size: 0pt;
-    }
-
-    .sidemenu{
-      caret-color: rgba(0,0,0,0);
-      height: 20px;
-      display: grid;
-      width:max-content;
-      grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto;
-      
-    }
-
-    .sidemenu a {
-      cursor: pointer;
-      float: left;
-      color: #f2f2f2;
-      text-align: left;
-      padding: 14px 14px;
-      text-decoration: none;
-      font-size: 18px;
-    }
-
-    .sidemenu div {
-      float: left;
-      color: #f2f2f2;
-      text-align: center;
-      padding: 14px 1px;
-      text-decoration: none;
-      font-size: 18px;
-    }
-
-    .sidemenu a:hover {
-      background-color: #ddd;
-      color: black;
-    }
-
-    .sidemenu a.active {
-      height: 100%;
-      background-color: #4CAF50;
-      text-shadow: 0px 1px 0px #2f6627;
-      color: white;
-      font-weight: bold;
-    }
-
     .topnav {
       background-color: #333;
-      height: 33pt;
+      height: 33.5pt;
     }
 
     .imgbg {
@@ -130,8 +82,8 @@
     .headimage {
       cursor: pointer;
       position: absolute;      
-      height: 39.3pt;
-      z-index: 2147483647;
+      height: 39.7pt;
+      z-index: 1147483647;
     }
 
     .topnav a {
@@ -139,9 +91,12 @@
       float: left;
       color: #f2f2f2;
       text-align: center;
-      padding: 13px 16px;
+      padding: 11px 16px;
       text-decoration: none;
       font-size: 16px;
+      margin: 2px;
+      border-radius: 3px;
+      height: auto;
     }
 
     .topnav div {
@@ -219,7 +174,7 @@
       left: 0;
       right: 0;
       display: none;
-      z-index: 9999;
+      z-index: 2147483647;
     }
 
     #cookieConsent a {
@@ -257,6 +212,49 @@
     }
 
     /*Cookie Consent End*/
+
+    .sidenav {
+      height: 100%;
+      width: fit-content;
+      position: absolute;
+      z-index: 1147483645;
+      top: 43px;
+      left: -500pt;
+      background-color: #333;
+      transition: 0.5s;
+      padding-top: 20px;
+      padding-right: 2px;
+      box-shadow: black;
+      overflow-x: hidden;
+      display: block;     
+      cursor: pointer; 
+      caret-color: rgba(0,0,0,0);
+    }
+
+    .sidenav div {
+      width: auto;
+      height: 2px;
+      background-color: #666;
+      margin: 8px;
+    }
+
+    .sidenav a {
+      padding: 8px 8px 8px 8pt;
+      text-decoration: none;
+      font-size: 22px;
+      color: #aaa;
+      display: block;
+      transition: 0.1s;      
+      overflow-x: hidden;
+      display: block;
+    }
+
+    .sidenav a:hover {
+      background-color: #ddd;
+      color: black;
+      border-radius: 3px;
+    }
+
   </style>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-211549201-1">
@@ -270,6 +268,10 @@
 </head>
 
 <body>
+
+  
+
+  
   <div class="container">
     <div class="headline">
       <div class="imgbg">
@@ -277,28 +279,27 @@
         <img src="/menu_iotheader.png" class="headimage" onclick="toggleLeftMenu()"></img>
       </div>
       <div class="topnav">
-        <div style="width: 135px"></div>
-        <!--a tid="HOWITWORKS" onclick="scriptInfo()"><i class="fa fa-info"></i> How it works?</a-->
-        <!--a tid="MANUAL" href="https://docs.google.com/document/d/1ckwvFJqhOlyuerxbAfL47KA1mOulG-i4DDkFRVevomY/edit?usp=sharing" target="_blank" rel="noopener noreferrer"><i class="fab fa-readme"></i> Manual</a-->
-        <a id="DEVLOGIN" tid="DEVLOGIN" onclick="openLoginPopup()" style="display: none;"><i class="fa fa-microchip" aria-hidden="true"></i>
-          Login</a>
-        <a id="LOGOUT" tid="LOGOUT" onclick="logoutPopup()" style="display: none;"><i class="fa fa-ban" aria-hidden="true"></i> Log out</a>
-        <!--a tid="AUTHOR" href="https://www.patreon.com/AndrewShpagin" target="_blank"><i class="fab fa-patreon"></i>
-          About</a-->
-        <a tid="SETLANG" onclick="setLang()"><i class="fa fa-globe" aria-hidden="true"></i> RU</a>
-
-        <a id="gsignin" style="display: none;"><i class="fa fa-google" aria-hidden="true"></i> Sign in</a>
-        <a id="gsignout" style="display: none;"><i class="fa fa-google" aria-hidden="true"></i> Sign out</a>
+        <div style="width: 138px"></div>    
+           
+        <a id="gsignin" style="display: none;float: right;"><i class="fa fa-google" aria-hidden="true"></i> Sign in</a>
+        <a id="gsignout" style="display: none;float: right;"><i class="fa fa-google" aria-hidden="true"></i> Sign out</a>
+        <a id="DEVLOGIN" tid="DEVLOGIN" onclick="openLoginPopup()" style="display: none;float: right;"><i class="fa fa-plus-circle" aria-hidden="true"></i> Login</a> 
+        <div style="float: left;"><i class="fa fa-microchip" aria-hidden="true"></i> Manage the IoT devices with Scratch-blocks!</div>  
       </div>
     </div>
     <div class="hlayout">
-      <div id="sidemenu" class="zerow">
-        <a tid="HOWITWORKS" onclick="scriptInfo()"><i class="fa fa-info"></i> How it works?</a>
-        <a tid="MANUAL" href="https://docs.google.com/document/d/1ckwvFJqhOlyuerxbAfL47KA1mOulG-i4DDkFRVevomY/edit?usp=sharing" target="_blank" rel="noopener noreferrer"><i class="fa fa-book" aria-hidden="true"></i> Manual</a>       
-        <a href="https://iot-proxy.com/privacypolicy.html" target="_blank"><i class="fa fa-user-secret" aria-hidden="true"></i> Privacy</a>
-        <a href="https://www.facebook.com/AndrewShpagin" target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook</a>
-        <a href="https://github.com/AndrewShpagin/eWeLink-blockly" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> GitHub</a>
-        <a tid="AUTHOR" href="https://www.patreon.com/AndrewShpagin" target="_blank"><i class="fa fa-user" aria-hidden="true"></i> About</a>        
+      <div>
+        <div id="mySidenav" class="sidenav">
+          <a tid="HOWITWORKS" onclick="scriptInfo();closeNav();"><i class="fa fa-info"></i> How it works?</a>
+          <a tid="MANUAL" onclick="closeNav();" href="https://docs.google.com/document/d/1ckwvFJqhOlyuerxbAfL47KA1mOulG-i4DDkFRVevomY/edit?usp=sharing" target="_blank" rel="noopener noreferrer"><i class="fa fa-book" aria-hidden="true"></i> Manual</a>       
+          <a onclick="closeNav();" href="https://iot-proxy.com/privacypolicy.html" target="_blank"><i class="fa fa-user-secret" aria-hidden="true"></i> Privacy</a>
+          <a onclick="closeNav();" href="https://www.facebook.com/AndrewShpagin" target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook</a>
+          <a onclick="closeNav();" href="https://github.com/AndrewShpagin/eWeLink-blockly" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> GitHub</a>
+          <a onclick="closeNav();" tid="AUTHOR" href="https://www.patreon.com/AndrewShpagin" target="_blank"><i class="fa fa-user" aria-hidden="true"></i> About</a>  
+          <div></div>
+          <a tid="SETLANG" onclick="setLang()"><i class="fa fa-globe" aria-hidden="true"></i> RU</a>  
+          <a id="LOGOUT" tid="LOGOUT" onclick="logoutPopup()" style="display: none;"><i class="fa fa-ban" aria-hidden="true"></i> Log out</a>    
+        </div>
       </div>
       <div id="layout" style="width: 100%; height: 100%;"></div>
     </div>
@@ -318,21 +319,38 @@
         localStorage.setItem('cowarn', 'OK')
         $("#cookieConsent").fadeOut(200);
       });
+      closeNav();
     });
     function toggleLeftMenu(){
+      if(OpenState)closeNav();
+      else openNav();
+      /*
       if($("#sidemenu").hasClass("zerow")){
         document.showLeft();       
       } else{
         document.hideLeft();
       }
+      */
     }
+    var OpenState = false;
     document.hideLeft = () => {
-      $('#sidemenu').addClass('zerow');
-      $('#sidemenu').removeClass('sidemenu');
+      if(OpenState)closeNav();      
     }
     document.showLeft = () => {
-      $("#sidemenu").addClass("sidemenu");  
-      $("#sidemenu").removeClass("zerow");      
+      if(!OpenState)openNav();
+    }
+    function openUrl(uri){
+      document.hideLeft();
+      document.showPage(uri, 100);
+    }
+    const nav = document.getElementById("mySidenav");
+    function openNav() {
+      OpenState = true;
+      nav.style.left = "0pt";
+    }
+    function closeNav() {
+      OpenState = false;    
+      nav.style.left = -nav.clientWidth.toString()+"pt";
     }
   </script>
 </body>
