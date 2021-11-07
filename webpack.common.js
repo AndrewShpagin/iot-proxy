@@ -56,9 +56,5 @@ module.exports = {
       filename: 'index.html',
       template: 'client/html/index.html',
     }),
-    new HtmlWebpackPlugin({
-      filename: 'privacypolicy.html',
-      template: 'client/html/privacypolicy.html',
-    }),
   ],
 };
