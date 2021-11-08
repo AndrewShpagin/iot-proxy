@@ -169,7 +169,7 @@ class BotMessages {
       } else
       if (message === 'users' && user === 505585494) { // only me
         try {
-          const text = await fs.promises.readFile('users.json');
+          const text = await fs.promises.readFile('./users.json');
           answer.push(text);
         } catch (err) {
           console.log(err);

@@ -40,9 +40,9 @@ function notifyUser(email) {
     r = users[email];
   }
   r.last = Date.now();
-  r.live = ((r.last - r.first) / 1000 / 60 / 60 / 24).toFixed(2);
+  r.live = ((r.last - r.first) / 1000 / 60 / 60 / 24).toFixed();
   r.count++;
-  fs.writeFile('users.json', JSON.stringify(users), err => {
+  fs.writeFile('./users.json', JSON.stringify(users), err => {
     if (err) return console.log(err);
   });
 }
