@@ -34,13 +34,17 @@ function notifyUser(email) {
     users[email] = {
       last: Date.now(),
       first: Date.now(),
+      live: 0,
       count: 1,
     };
     r = users[email];
   }
   r.last = Date.now();
+  r.live = ((r.last - r.first) / 1000 / 60 / 60 / 24).toFixed(2);
   r.count++;
-  fs.writeFile('users.json', JSON.stringify(users));
+  fs.writeFile('users.json', JSON.stringify(users), err => {
+    if (err) return console.log(err);
+  });
 }
 
 function extractLoginData(path) {
@@ -213,4 +217,4 @@ async function ewRequest(req, res, next) {
   next();
 }
 
-module.exports = { ewRequest, proxyRequest };
+module.exports = { ewRequest, proxyRequest, notifyUser };
