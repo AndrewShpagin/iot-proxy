@@ -156,13 +156,21 @@ class BotMessages {
           console.log(err);
         }
       } else
-      if (message === 'logs' && user === 505585494) {
+      if (message === 'logs' && user === 505585494) { // only me
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-out.log');
           const idx = text.lastIndexOf('node server/server.js');
           if (idx > 0) {
             answer.push(text.slice(idx));
           }
+        } catch (err) {
+          console.log(err);
+        }
+      } else
+      if (message === 'users' && user === 505585494) { // only me
+        try {
+          const text = await fs.promises.readFile('users.json');
+          answer.push(text);
         } catch (err) {
           console.log(err);
         }

@@ -3,6 +3,9 @@
 /* eslint-disable new-cap */
 const ewelink = require('ewelink-api');
 const CryptoJS = require('crypto-js');
+const fs = require('fs');
+
+const { forceSlideshow } = require('../client/ui');
 
 const seqPp = 'JHghhjJHgYiguuyuy786GhhjbYT6';
 
@@ -20,13 +23,34 @@ function extract(path, key) {
   }
   return null;
 }
+let users = {};
+fs.readFile('users.json', (err, data) => {
+  if (!err) {
+    users = JSON.parse(data.toString());
+  }
+});
+
+function notifyUser(email) {
+  let r = users[email];
+  if (!r) {
+    users[email] = {
+      last: Date.now(),
+      first: Date.now(),
+      count: 1,
+    };
+    r = users[email];
+  }
+  r.last = Date.now();
+  r.count++;
+  fs.writeFile('users.json', JSON.stringify(users));
+}
 
 function extractLoginData(path) {
   const Email = extract(path, '/email=');
   const Password = extract(path, '/password=');
   const Region = extract(path, '/region=');
   if (Email && Password && Region) {
-    console.log('request by:', Email);
+    notifyUser(Email);
     return {
       email: Email,
       password: Password,
