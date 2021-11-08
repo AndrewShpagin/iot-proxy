@@ -5,8 +5,6 @@ const ewelink = require('ewelink-api');
 const CryptoJS = require('crypto-js');
 const fs = require('fs');
 
-const { forceSlideshow } = require('../client/ui');
-
 const seqPp = 'JHghhjJHgYiguuyuy786GhhjbYT6';
 
 function decStr(str) {
