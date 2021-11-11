@@ -36,4 +36,10 @@ As a result of your job, there is a script that will be run once in some time pe
 ### What it may not do:
 It may not react immediately. The script called once in some time period (once in a minute is most frequent), so it can’t turn the light immediately when you open the door.
 
-Any participation is very welcome! It includes participation in the development, donations at Patreon, testing, sharing this project! Paying for servers - it is not free to me, so donations are greatly appreciated.
+
+### How you may participate
+
+Any participation is very welcome! It includes:
+1) Participation in the development (I may do you the contributor if you want).
+2) Testing the application, feedback is welcome.
+3) Donations at Patreon, testing, sharing this project! Paying for servers - it is not free to me, so donations are greatly appreciated.
