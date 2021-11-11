@@ -56,6 +56,7 @@ class BotMessages {
   }
 
   async addMsg(user, message) {
+    const me = user === 505585494 || user === 'ZO0GqUtfkI8I9haxUWwQ9Q==';
     const answer = [];
     try {
       console.log('msg', user, message);
@@ -145,7 +146,7 @@ class BotMessages {
       if (message === '/story') {
         answer.push(JSON.stringify(msg));
       } else
-      if (message === 'errors' && user === 505585494) {
+      if (message === 'errors' && me) {
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-error.log');
           const idx = text.lastIndexOf('Errors logging started.');
@@ -156,7 +157,7 @@ class BotMessages {
           console.log(err);
         }
       } else
-      if (message === 'logs' && user === 505585494) { // only me
+      if (message === 'logs' && me) { // only me
         try {
           const text = await fs.promises.readFile('/root/.pm2/logs/iot-out.log');
           const idx = text.lastIndexOf('node server/server.js');
@@ -167,7 +168,7 @@ class BotMessages {
           console.log(err);
         }
       } else
-      if (message === 'users' && user === 505585494) { // only me
+      if (message === 'users' && me) { // only me
         try {
           const text = await fs.promises.readFile('./users.json');
           answer.push(text);
