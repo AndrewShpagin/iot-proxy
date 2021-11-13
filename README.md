@@ -42,4 +42,5 @@ It may not react immediately. The script called once in some time period (once i
 Any participation is very welcome! It includes:
 1) Participation in the development (I may do you the contributor if you want).
 2) Testing the application, feedback is welcome.
-3) Donations at Patreon, testing, sharing this project! Paying for servers - it is not free to me, so donations are greatly appreciated.
+3) Share the link to the iot-proxy, spread the news.
+4) Donations at Patreon, paying for servers - it is not free to me, so donations are greatly appreciated.
