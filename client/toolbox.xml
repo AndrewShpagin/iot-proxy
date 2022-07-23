@@ -110,6 +110,23 @@
         </shadow>
       </value>  
     </block>
+    <block type="checktgpublic">
+      <value name="tgpublic">
+        <shadow type="text">
+          <field name="TEXT">Paste telegram public address @...</field>
+        </shadow>
+      </value>   
+      <value name="minutes">
+        <shadow type="math_number">
+          <field name="NUM">15</field>
+        </shadow>
+      </value>     
+      <value name="substring">
+        <shadow type="text">
+          <field name="TEXT">ВОЗДУШНАЯ ТРЕВОГА</field>
+        </shadow>
+      </value>
+    </block>
     <block type="getfrom"></block>
   </category>
   <category name="" colour="#60AA40"> 

@@ -95,5 +95,6 @@
 	"GETEMPTYROWCOL": "Get empty row in column %1",
 	"INSERTROW": "Insert the empty row at %1",
 	"INSERTCOL": "Insert the empty column at %1",
-	"GOTMSG": "For each message, sent to bot, chat-id: %1 , place it to the variable %2 %3 do: %4"
+	"GOTMSG": "For each message, sent to bot, chat-id: %1 , place it to the variable %2 %3 do: %4",
+	"CHECKTGPUBLIC": "Check telegram channel %1 for the last %2 minutes if there is text %3"
 }

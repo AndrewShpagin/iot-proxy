@@ -1313,6 +1313,32 @@ const customBlocks =
       helpUrl: 'https://t.me/iotproxy_bot',
     },
     {
+      type: 'checktgpublic',
+      message0: '%{BKY_CHECKTGPUBLIC}',
+      args0: [
+        {
+          type: 'input_value',
+          name: 'tgpublic',
+          check: 'String',
+        },
+        {
+          type: 'input_value',
+          name: 'minutes',
+          check: 'Number',
+        },
+        {
+          type: 'input_value',
+          name: 'substring',
+          check: 'String',
+        },
+      ],
+      inputsInline: true,
+      output: 'Boolean',
+      colour: 230,
+      tooltip: '',
+      helpUrl: '',
+    },
+    {
       type: 'sendviber',
       message0: '%{BKY_SENDVIBER}',
       args0: [

@@ -478,6 +478,14 @@ Blockly.JavaScript.sincelastrun = function (block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
+Blockly.JavaScript.checktgpublic = function (block) {
+  const tgpublic = Blockly.JavaScript.valueToCode(block, 'tgpublic', Blockly.JavaScript.ORDER_ATOMIC);
+  const minutes = Blockly.JavaScript.valueToCode(block, 'minutes', Blockly.JavaScript.ORDER_ATOMIC);
+  const substring = Blockly.JavaScript.valueToCode(block, 'substring', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `checkTelegramMessages(${tgpublic}, ${minutes}, ${substring})`;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
 Blockly.JavaScript.accumtime = function (block) {
   const value_value = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
   const value_limit = Blockly.JavaScript.valueToCode(block, 'LIMIT', Blockly.JavaScript.ORDER_ATOMIC);

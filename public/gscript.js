@@ -716,6 +716,34 @@ function setGlobalProperty(key, value) {
   DriveApp.createFile(key, value);
 }
 
+/**
+ * Check if the public telegram channel messages within the last delta minutes contains the substring 
+ *
+ * @param{string} name - the name of the property
+ * @param{number} delta - the amount of minutes
+ * @param{string} value - the substring to check
+ */
+function checkTelegramMessages(name, delta, substring) {
+  var tg=name;
+  if(tg.length<1)return false;
+  if(tg[0]=='@')tg = tg.substring(1);
+  for(var k=1;k<8;k++){
+    var url=`https://t-me.vercel.app/${tg}/${k}`;
+    var obj = UrlFetchApp.fetch(url).getContentText();
+    if(obj != 'null' && obj.length > 0 && obj[0] == '{'){
+      var m = JSON.parse(obj);
+      if(m.datetime && m.markdown){
+        var dt = (Date.now() - Date.parse(m.datetime))/1000/60;
+        if(dt > delta)return false;
+        if(m.markdown && m.markdown.includes(substring)){
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 /// The user data placed at the end to avoid exposing the sensitive data
 
 email = 'useremail';
