@@ -93,7 +93,7 @@ function ewLogin() {
   if (!token) {
     if (email.length && password.length && region.length) {
       const data = JSON.stringify({ appid: APP_ID, email, password, ts: Math.floor(Date.now() / 1000), version: 8 });
-      const encoded = Utilities.base64Encode(Utilities.computeHmacSha256Signature(data, '4G91qSoboqYO4Y0XJ0LPPKIsq8reHdfa'));
+      const encoded = Utilities.base64Encode(Utilities.computeHmacSha256Signature(data, 'mXLOjea0woSMvK9gw7Fjsy7YlFO4iSu6'));
       const options = { headers: { Authorization: `Sign ${encoded}` }, method: 'post', contentType: 'application/json', payload: data };
       const answ = JSON.parse(UrlFetchApp.fetch(`${baseUrl()}/login`, options).getContentText());
       if ('at' in answ) {
@@ -749,5 +749,5 @@ function checkTelegramMessages(name, delta, substring) {
 email = 'useremail';
 password = 'userpassword';
 region = 'userregion';
-APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
+APP_ID = 'Uw83EKZFxdif7XFXEsrpduz5YyjP7nTl';
 const sequre = 'sequre_value';
