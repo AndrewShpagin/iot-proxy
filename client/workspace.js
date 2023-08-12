@@ -121,8 +121,8 @@ function extract(path, key) {
   return null;
 }
 
-const APP_ID = 'YzfeftUVcZ6twZw1OoVKPRFYTrGEg01Q';
-const sec = '4G91qSoboqYO4Y0XJ0LPPKIsq8reHdfa';
+const APP_ID = 'Uw83EKZFxdif7XFXEsrpduz5YyjP7nTl';
+const sec = 'mXLOjea0woSMvK9gw7Fjsy7YlFO4iSu6';
 
 function getWholeCode(code) {
   const user = getUserData();
