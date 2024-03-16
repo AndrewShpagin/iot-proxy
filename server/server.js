@@ -8,6 +8,7 @@ const express = require('express');
 const webpack = require('webpack');
 const cors = require('cors');
 const https = require('https');
+const http = require('http');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const fs = require('fs');
 const fetch = require('node-fetch');
@@ -203,4 +204,25 @@ bot.on('message', msg => {
   bom.addMsg(chatId, msg.text).then(
     res => bom.bulkSend(res, m => bot.sendMessage(chatId, m)),
   ).catch(error => console.log(error));
+});
+
+const httpApp = express();
+
+// Handle all requests to /.well-known/pki-validation
+httpApp.get('/.well-known/pki-validation/:filename', (req, res) => {
+  // Construct the path to the file based on the request
+  const filePath = `/path/to/your/validation/files/${req.params.filename}`;
+  res.sendFile(__dirname + filePath);
+});
+
+// Optionally, redirect all other HTTP requests to HTTPS
+httpApp.get('*', (req, res) => {
+  res.redirect(`https://${req.headers.host}${req.url}`);
+});
+
+// Create HTTP server
+const httpServer = http.createServer(httpApp);
+
+httpServer.listen(80, () => {
+  console.log('HTTP Server running on port 80');
 });
