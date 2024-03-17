@@ -212,7 +212,7 @@ const httpApp = express();
 // Handle all requests to /.well-known/pki-validation
 httpApp.get('/.well-known/pki-validation/:filename', (req, res) => {
   // Construct the path to the file based on the request
-  const filePath = `/path/to/your/validation/files/${req.params.filename}`;
+  const filePath = `/public/.well-known/pki-validation/${req.params.filename}`;
   res.sendFile(__dirname + filePath);
 });
 
