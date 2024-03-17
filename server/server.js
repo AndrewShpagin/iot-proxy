@@ -206,7 +206,7 @@ bot.on('message', msg => {
   ).catch(error => console.log(error));
 });
 
-/*
+
 const httpApp = express();
 
 // Handle all requests to /.well-known/pki-validation
@@ -224,7 +224,6 @@ httpApp.get('*', (req, res) => {
 // Create HTTP server
 const httpServer = http.createServer(httpApp);
 
-httpServer.listen(80, () => {
-  console.log('HTTP Server running on port 80');
+httpServer.listen(9090, () => {
+  console.log('HTTP Server running on port 9090');
 });
-*/
